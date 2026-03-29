@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { searchApi } from '../../api/search'
 import PostCard from '../../components/post/PostCard'
+import { useI18n } from '../../lib/i18n'
 import type { Post, UserBrief, Hashtag } from '../../types'
 
 export default function SearchPage() {
+  const { t } = useI18n()
   const [query, setQuery] = useState('')
   const [tab, setTab] = useState<'users' | 'posts' | 'hashtags'>('users')
   const [users, setUsers] = useState<UserBrief[]>([])
@@ -31,7 +33,7 @@ export default function SearchPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Search</h1>
+      <h1 className="text-xl font-bold mb-4">{t('search.title')}</h1>
 
       <div className="flex gap-2 mb-4">
         <div className="relative flex-1">
@@ -40,33 +42,33 @@ export default function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Search users, posts, hashtags..."
+            placeholder={t('search.placeholder')}
             data-testid="nav-search-input"
             className="input-field pl-9"
           />
         </div>
-        <button onClick={handleSearch} className="btn-primary">Search</button>
+        <button onClick={handleSearch} className="btn-primary">{t('common.search')}</button>
       </div>
 
       <div className="flex gap-1 mb-4 border-b border-gray-200">
-        {(['users', 'posts', 'hashtags'] as const).map((t) => (
+        {(['users', 'posts', 'hashtags'] as const).map((tabKey) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabKey}
+            onClick={() => setTab(tabKey)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              tab === t ? 'border-brand-600 text-brand-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+              tab === tabKey ? 'border-brand-600 text-brand-600' : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            {t.charAt(0).toUpperCase() + t.slice(1)}
+            {t(`search.${tabKey}`)}
             <span className="text-xs text-gray-400 ml-1">
-              ({t === 'users' ? users.length : t === 'posts' ? posts.length : hashtags.length})
+              ({tabKey === 'users' ? users.length : tabKey === 'posts' ? posts.length : hashtags.length})
             </span>
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-400">Searching...</div>
+        <div className="text-center py-8 text-gray-400">{t('search.searching')}</div>
       ) : (
         <>
           {tab === 'users' && (
@@ -82,14 +84,14 @@ export default function SearchPage() {
                   </div>
                 </Link>
               ))}
-              {users.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">No users found</p>}
+              {users.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">{t('search.no_users')}</p>}
             </div>
           )}
 
           {tab === 'posts' && (
             <div>
               {posts.map((p) => <PostCard key={p.id} post={p} />)}
-              {posts.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">No posts found</p>}
+              {posts.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">{t('search.no_posts')}</p>}
             </div>
           )}
 
@@ -101,7 +103,7 @@ export default function SearchPage() {
                   <p className="text-xs text-gray-400">{h.posts_count} posts</p>
                 </Link>
               ))}
-              {hashtags.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">No hashtags found</p>}
+              {hashtags.length === 0 && <p className="text-center py-6 text-gray-400 text-sm">{t('search.no_hashtags')}</p>}
             </div>
           )}
         </>

@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Repeat2, Bookmark, Pin, MoreHorizontal, Trash2, E
 import { formatDistanceToNow } from 'date-fns'
 import { postsApi } from '../../api/posts'
 import { useAuth } from '../../context/AuthContext'
+import { useI18n } from '../../lib/i18n'
 import type { Post } from '../../types'
 import { cn, tid } from '../../lib/utils'
 
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function PostCard({ post, onUpdate }: Props) {
+  const { t } = useI18n()
   const { user } = useAuth()
   const [liked, setLiked] = useState(post.is_liked)
   const [likesCount, setLikesCount] = useState(post.likes_count)
@@ -48,7 +50,7 @@ export default function PostCard({ post, onUpdate }: Props) {
   }
 
   const handleDelete = async () => {
-    if (!confirm('Delete this post?')) return
+    if (!confirm(t('post.delete_confirm'))) return
     try {
       await postsApi.delete(post.id)
       onUpdate?.()
@@ -77,14 +79,14 @@ export default function PostCard({ post, onUpdate }: Props) {
       {post.is_pinned && (
         <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
           <Pin size={12} />
-          <span>Pinned post</span>
+          <span>{t('post.pinned')}</span>
         </div>
       )}
 
       {post.repost_type && (
         <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
           <Repeat2 size={12} />
-          <span>{post.repost_type === 'repost' ? 'Reposted' : 'Quoted'}</span>
+          <span>{post.repost_type === 'repost' ? t('post.reposted') : t('post.quoted')}</span>
         </div>
       )}
 
@@ -131,7 +133,7 @@ export default function PostCard({ post, onUpdate }: Props) {
                         data-testid={`post-edit-btn-${id}`}
                         className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 w-full"
                       >
-                        <Edit size={14} /> Edit
+                        <Edit size={14} /> {t('post.edit')}
                       </Link>
                     )}
                     <button
@@ -139,7 +141,7 @@ export default function PostCard({ post, onUpdate }: Props) {
                       data-testid={`post-delete-btn-${id}`}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full"
                     >
-                      <Trash2 size={14} /> Delete
+                      <Trash2 size={14} /> {t('post.delete')}
                     </button>
                   </div>
                 )}

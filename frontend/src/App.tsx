@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { I18nProvider } from './lib/i18n'
 import { AuthProvider } from './context/AuthContext'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/auth/LoginPage'
@@ -23,6 +24,7 @@ import DocsPage from './pages/docs/DocsPage'
 
 export default function App() {
   return (
+    <I18nProvider>
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -51,5 +53,6 @@ export default function App() {
         <Toaster position="top-right" />
       </AuthProvider>
     </BrowserRouter>
+    </I18nProvider>
   )
 }

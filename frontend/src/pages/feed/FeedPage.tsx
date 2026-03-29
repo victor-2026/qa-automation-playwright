@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { postsApi } from '../../api/posts'
 import PostCard from '../../components/post/PostCard'
 import PostComposer from '../../components/post/PostComposer'
+import { useI18n } from '../../lib/i18n'
 import type { Post } from '../../types'
 
 export default function FeedPage() {
+  const { t } = useI18n()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -35,15 +37,15 @@ export default function FeedPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Feed</h1>
+      <h1 className="text-xl font-bold mb-4">{t('feed.title')}</h1>
       <PostComposer onCreated={handleRefresh} />
 
       {loading ? (
-        <div className="text-center py-8 text-gray-400">Loading...</div>
+        <div className="text-center py-8 text-gray-400">{t('feed.loading')}</div>
       ) : posts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Your feed is empty</p>
-          <p className="text-gray-400 text-sm mt-1">Follow people to see their posts here</p>
+          <p className="text-gray-500 text-lg">{t('feed.empty')}</p>
+          <p className="text-gray-400 text-sm mt-1">{t('feed.empty_hint')}</p>
         </div>
       ) : (
         <>
@@ -52,7 +54,7 @@ export default function FeedPage() {
           ))}
           {hasMore && (
             <button onClick={loadMore} className="btn-secondary w-full mt-2">
-              Load more
+              {t('feed.load_more')}
             </button>
           )}
         </>

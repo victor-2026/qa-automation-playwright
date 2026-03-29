@@ -5,11 +5,13 @@ import { messagesApi } from '../../api/messages'
 import { useAuth } from '../../context/AuthContext'
 import { formatDistanceToNow } from 'date-fns'
 import { cn, tid } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 import type { Conversation, Message } from '../../types'
 
 export default function ConversationPage() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
+  const { t } = useI18n()
   const [conversation, setConversation] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -46,15 +48,15 @@ export default function ConversationPage() {
     finally { setSending(false) }
   }
 
-  if (loading) return <div className="text-center py-8 text-gray-400">Loading...</div>
-  if (!conversation) return <div className="text-center py-8 text-gray-500">Conversation not found</div>
+  if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
+  if (!conversation) return <div className="text-center py-8 text-gray-500">{t('common.not_found')}</div>
 
   const otherParticipants = conversation.participants.filter((p) => p.id !== user?.id)
   const title = conversation.is_group
     ? conversation.name || otherParticipants.map((p) => p.display_name).join(', ')
     : otherParticipants[0]?.display_name || 'Unknown'
   const subtitle = conversation.is_group
-    ? `${conversation.participants.length} participants`
+    ? `${conversation.participants.length} ${t('messages.participants')}`
     : `@${otherParticipants[0]?.username || 'unknown'}`
 
   return (
@@ -84,7 +86,7 @@ export default function ConversationPage() {
       <div className="flex-1 overflow-y-auto space-y-3 mb-3 px-1">
         {messages.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">
-            No messages yet. Say hello!
+            {t('messages.no_messages')}
           </div>
         )}
         {messages.map((msg) => {
@@ -127,7 +129,7 @@ export default function ConversationPage() {
         <input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder={t('messages.type_message')}
           data-testid="message-input"
           className="input-field flex-1"
           maxLength={2000}

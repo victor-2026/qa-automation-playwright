@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { adminApi } from '../../api/admin'
 import { tid } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 import type { User } from '../../types'
 import toast from 'react-hot-toast'
 
 export default function AdminUsersPage() {
+  const { t } = useI18n()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -53,14 +55,14 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">User Management</h1>
+      <h1 className="text-xl font-bold mb-4">{t('admin.users_mgmt')}</h1>
 
       <div className="mb-4">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && load()}
-          placeholder="Search users..."
+          placeholder={t('admin.search')}
           data-testid="admin-search-input"
           className="input-field"
         />
@@ -98,7 +100,7 @@ export default function AdminUsersPage() {
                     data-testid={`admin-verify-btn-${uid}`}
                     className={`text-xs px-2 py-1 rounded ${u.is_verified ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}
                   >
-                    {u.is_verified ? 'Verified' : 'Verify'}
+                    {u.is_verified ? t('admin.verified') : t('admin.verify')}
                   </button>
 
                   <button
@@ -106,7 +108,7 @@ export default function AdminUsersPage() {
                     data-testid={`admin-ban-btn-${uid}`}
                     className={`text-xs px-2 py-1 rounded ${u.is_active ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
                   >
-                    {u.is_active ? 'Ban' : 'Unban'}
+                    {u.is_active ? t('admin.ban') : t('admin.unban')}
                   </button>
                 </div>
               </div>

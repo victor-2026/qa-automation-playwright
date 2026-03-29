@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useI18n } from '../../lib/i18n'
 import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
   const { user, register, loading } = useAuth()
+  const { t, lang, setLang } = useI18n()
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', username: '', password: '', display_name: '' })
   const [submitting, setSubmitting] = useState(false)
@@ -19,7 +21,7 @@ export default function RegisterPage() {
     setSubmitting(true)
     try {
       await register(form)
-      toast.success('Account created! Please sign in.')
+      toast.success(t('auth.created'))
       navigate('/login')
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed')
@@ -29,15 +31,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-blue-50 px-4 relative">
+      <div className="absolute top-4 right-4 flex gap-1">
+        <button onClick={() => setLang('en')} className={`text-xs px-2 py-1 rounded ${lang === 'en' ? 'bg-brand-100 text-brand-700 font-medium' : 'text-gray-400 hover:text-gray-600'}`} data-testid="lang-en">EN</button>
+        <button onClick={() => setLang('ru')} className={`text-xs px-2 py-1 rounded ${lang === 'ru' ? 'bg-brand-100 text-brand-700 font-medium' : 'text-gray-400 hover:text-gray-600'}`} data-testid="lang-ru">RU</button>
+      </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-brand-600 rounded-2xl flex items-center justify-center text-white text-xl font-bold mx-auto shadow-lg shadow-brand-200">QA</div>
-          <h1 className="text-3xl font-bold text-gray-900 mt-4">Create Account</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mt-4">{t('auth.create_account')}</h1>
         </div>
 
         <div className="card">
-          <h2 className="text-xl font-semibold mb-6">Create account</h2>
+          <h2 className="text-xl font-semibold mb-6">{t('auth.create_account')}</h2>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm" data-testid="auth-error-message">
@@ -47,7 +53,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.display_name')}</label>
               <input
                 value={form.display_name}
                 onChange={(e) => setForm({ ...form, display_name: e.target.value })}
@@ -59,7 +65,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.username')}</label>
               <input
                 value={form.username}
                 onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -73,7 +79,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
               <input
                 type="email"
                 value={form.email}
@@ -85,7 +91,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
               <input
                 type="password"
                 value={form.password}
@@ -103,14 +109,14 @@ export default function RegisterPage() {
               data-testid="auth-register-btn"
               className="btn-primary w-full"
             >
-              {submitting ? 'Creating...' : 'Create account'}
+              {submitting ? t('auth.creating') : t('auth.create_account')}
             </button>
           </form>
 
           <p className="mt-4 text-center text-sm text-gray-500">
-            Already have an account?{' '}
+            {t('auth.have_account')}{' '}
             <Link to="/login" className="text-brand-600 hover:underline">
-              Sign in
+              {t('auth.signin')}
             </Link>
           </p>
         </div>

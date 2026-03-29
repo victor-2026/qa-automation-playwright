@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usersApi } from '../../api/users'
+import { useI18n } from '../../lib/i18n'
 import type { UserBrief } from '../../types'
 
 export default function FollowersPage() {
+  const { t } = useI18n()
   const { username } = useParams<{ username: string }>()
   const [users, setUsers] = useState<UserBrief[]>([])
   const [loading, setLoading] = useState(true)
@@ -15,13 +17,13 @@ export default function FollowersPage() {
       .finally(() => setLoading(false))
   }, [username])
 
-  if (loading) return <div className="text-center py-8 text-gray-400">Loading...</div>
+  if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
 
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">
         <Link to={`/profile/${username}`} className="text-brand-600 hover:underline">@{username}</Link>
-        {' '} — Followers
+        {' '} — {t('profile.followers')}
       </h1>
       {users.length === 0 ? (
         <p className="text-gray-500 text-center py-8">No followers</p>

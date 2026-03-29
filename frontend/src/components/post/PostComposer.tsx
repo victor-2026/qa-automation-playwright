@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Image, Send, X } from 'lucide-react'
 import { postsApi } from '../../api/posts'
 import { useAuth } from '../../context/AuthContext'
+import { useI18n } from '../../lib/i18n'
 import client from '../../api/client'
 import toast from 'react-hot-toast'
 
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function PostComposer({ onCreated }: Props) {
+  const { t } = useI18n()
   const { user } = useAuth()
   const [content, setContent] = useState('')
   const [imageUrl, setImageUrl] = useState<string | null>(null)
@@ -28,7 +30,7 @@ export default function PostComposer({ onCreated }: Props) {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       setImageUrl(res.data.url)
-      toast.success('Image uploaded!')
+      toast.success(t('post.image_uploaded'))
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Upload failed')
     } finally {
@@ -47,7 +49,7 @@ export default function PostComposer({ onCreated }: Props) {
       })
       setContent('')
       setImageUrl(null)
-      toast.success('Post created!')
+      toast.success(t('post.created'))
       onCreated?.()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Failed to create post')
@@ -66,7 +68,7 @@ export default function PostComposer({ onCreated }: Props) {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="What's buzzing?"
+            placeholder={t('post.composer_placeholder')}
             data-testid="post-composer-input"
             maxLength={2000}
             rows={3}
@@ -104,7 +106,7 @@ export default function PostComposer({ onCreated }: Props) {
               >
                 <Image size={18} />
               </button>
-              {uploading && <span className="text-xs text-gray-400 self-center">Uploading...</span>}
+              {uploading && <span className="text-xs text-gray-400 self-center">{t('post.uploading')}</span>}
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-gray-400">{content.length}/2000</span>
@@ -115,7 +117,7 @@ export default function PostComposer({ onCreated }: Props) {
                 className="btn-primary text-sm px-4 py-1.5 flex items-center gap-1.5"
               >
                 <Send size={14} />
-                {loading ? 'Posting...' : 'Post'}
+                {loading ? t('post.posting') : t('post.post')}
               </button>
             </div>
           </div>

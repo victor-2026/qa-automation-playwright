@@ -5,11 +5,13 @@ import { format } from 'date-fns'
 import { usersApi } from '../../api/users'
 import { messagesApi } from '../../api/messages'
 import { useAuth } from '../../context/AuthContext'
+import { useI18n } from '../../lib/i18n'
 import PostCard from '../../components/post/PostCard'
 import type { Post, User } from '../../types'
 import toast from 'react-hot-toast'
 
 export default function ProfilePage() {
+  const { t } = useI18n()
   const { username } = useParams<{ username: string }>()
   const { user: currentUser } = useAuth()
   const navigate = useNavigate()
@@ -59,8 +61,8 @@ export default function ProfilePage() {
     }
   }
 
-  if (loading) return <div className="text-center py-8 text-gray-400">Loading...</div>
-  if (!profile) return <div className="text-center py-8 text-gray-500">User not found</div>
+  if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
+  if (!profile) return <div className="text-center py-8 text-gray-500">{t('common.not_found')}</div>
 
   const isOwnProfile = currentUser?.id === profile.id
 
@@ -91,7 +93,7 @@ export default function ProfilePage() {
                 <Lock size={16} className="text-gray-400" />
               )}
               {!isOwnProfile && profile.is_followed_by && (
-                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Follows you</span>
+                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{t('profile.follows_you')}</span>
               )}
             </div>
             <p className="text-gray-500 text-sm" data-testid="profile-username">@{profile.username}</p>
@@ -103,21 +105,21 @@ export default function ProfilePage() {
 
             <div className="flex items-center gap-1 text-xs text-gray-400 mt-2">
               <Calendar size={12} />
-              <span>Joined {format(new Date(profile.created_at), 'MMMM yyyy')}</span>
+              <span>{t('profile.joined')} {format(new Date(profile.created_at), 'MMMM yyyy')}</span>
             </div>
 
             <div className="flex gap-4 mt-3 text-sm">
               <Link to={`/profile/${profile.username}/following`} className="hover:underline">
                 <span className="font-bold" data-testid="profile-following-count">{profile.following_count}</span>
-                <span className="text-gray-500 ml-1">Following</span>
+                <span className="text-gray-500 ml-1">{t('profile.following')}</span>
               </Link>
               <Link to={`/profile/${profile.username}/followers`} className="hover:underline">
                 <span className="font-bold" data-testid="profile-followers-count">{profile.followers_count}</span>
-                <span className="text-gray-500 ml-1">Followers</span>
+                <span className="text-gray-500 ml-1">{t('profile.followers')}</span>
               </Link>
               <span>
                 <span className="font-bold" data-testid="profile-posts-count">{profile.posts_count}</span>
-                <span className="text-gray-500 ml-1">Posts</span>
+                <span className="text-gray-500 ml-1">{t('profile.posts')}</span>
               </span>
             </div>
 
@@ -129,20 +131,20 @@ export default function ProfilePage() {
                     data-testid="profile-follow-btn"
                     className={profile.is_following ? 'btn-secondary' : 'btn-primary'}
                   >
-                    {profile.is_following ? 'Unfollow' : profile.is_private ? 'Request to Follow' : 'Follow'}
+                    {profile.is_following ? t('profile.unfollow') : profile.is_private ? t('profile.request_follow') : t('profile.follow')}
                   </button>
                   <button
                     onClick={handleMessage}
                     data-testid="profile-message-btn"
                     className="btn-outline flex items-center gap-1.5"
                   >
-                    <MessageCircle size={16} /> Message
+                    <MessageCircle size={16} /> {t('profile.message')}
                   </button>
                 </>
               )}
               {isOwnProfile && (
                 <Link to="/settings" data-testid="profile-edit-btn" className="btn-secondary inline-block">
-                  Edit profile
+                  {t('profile.edit')}
                 </Link>
               )}
             </div>
@@ -150,9 +152,9 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <h2 className="text-lg font-semibold mb-3">Posts</h2>
+      <h2 className="text-lg font-semibold mb-3">{t('profile.posts')}</h2>
       {posts.length === 0 ? (
-        <div className="text-center py-8 text-gray-400">No posts yet</div>
+        <div className="text-center py-8 text-gray-400">{t('profile.no_posts')}</div>
       ) : (
         posts.map((post) => <PostCard key={post.id} post={post} onUpdate={load} />)
       )}

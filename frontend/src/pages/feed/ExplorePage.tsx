@@ -3,9 +3,11 @@ import { useSearchParams } from 'react-router-dom'
 import { postsApi } from '../../api/posts'
 import { searchApi } from '../../api/search'
 import PostCard from '../../components/post/PostCard'
+import { useI18n } from '../../lib/i18n'
 import type { Hashtag, Post } from '../../types'
 
 export default function ExplorePage() {
+  const { t } = useI18n()
   const [searchParams] = useSearchParams()
   const hashtagFilter = searchParams.get('hashtag')
   const [posts, setPosts] = useState<Post[]>([])
@@ -30,12 +32,12 @@ export default function ExplorePage() {
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">
-        {hashtagFilter ? `#${hashtagFilter}` : 'Explore'}
+        {hashtagFilter ? `#${hashtagFilter}` : t('explore.title')}
       </h1>
 
       {trending.length > 0 && !hashtagFilter && (
         <div className="card mb-4">
-          <h2 className="text-sm font-semibold text-gray-700 mb-2">Trending</h2>
+          <h2 className="text-sm font-semibold text-gray-700 mb-2">{t('explore.trending')}</h2>
           <div className="flex flex-wrap gap-2">
             {trending.map((tag) => (
               <a
@@ -51,9 +53,9 @@ export default function ExplorePage() {
       )}
 
       {loading ? (
-        <div className="text-center py-8 text-gray-400">Loading...</div>
+        <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">No posts found</div>
+        <div className="text-center py-12 text-gray-500">{t('explore.no_posts')}</div>
       ) : (
         posts.map((post) => <PostCard key={post.id} post={post} onUpdate={load} />)
       )}

@@ -7,9 +7,11 @@ import type { Comment, Post } from '../../types'
 import { formatDistanceToNow } from 'date-fns'
 import { Heart, MessageCircle, Send, ChevronDown } from 'lucide-react'
 import { cn, tid } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 import toast from 'react-hot-toast'
 
 export default function PostDetailPage() {
+  const { t } = useI18n()
   const { id } = useParams<{ id: string }>()
   const [post, setPost] = useState<Post | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
@@ -40,13 +42,13 @@ export default function PostDetailPage() {
     try {
       if (replyTo) {
         await commentsApi.reply(replyTo.id, { content: newComment.trim() })
-        toast.success('Reply added!')
+        toast.success(t('comment.reply_added'))
         // Refresh replies for that comment
         const res = await commentsApi.getReplies(replyTo.id)
         setExpandedReplies((prev) => ({ ...prev, [replyTo.id]: res.data.items }))
       } else {
         await commentsApi.create(id, { content: newComment.trim() })
-        toast.success('Comment added!')
+        toast.success(t('comment.added'))
       }
       setNewComment('')
       setReplyTo(null)
@@ -74,8 +76,8 @@ export default function PostDetailPage() {
     } catch { /* ignore */ }
   }
 
-  if (loading) return <div className="text-center py-8 text-gray-400">Loading...</div>
-  if (!post) return <div className="text-center py-8 text-gray-500">Post not found</div>
+  if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
+  if (!post) return <div className="text-center py-8 text-gray-500">{t('common.not_found')}</div>
 
   const renderComment = (comment: Comment, depth: number = 0) => {
     const cid = tid(comment.id)
@@ -118,14 +120,14 @@ export default function PostDetailPage() {
                   data-testid={`comment-reply-btn-${cid}`}
                   className="flex items-center gap-1 text-xs text-gray-400 hover:text-brand-600"
                 >
-                  <MessageCircle size={14} /> Reply
+                  <MessageCircle size={14} /> {t('comment.reply')}
                 </button>
                 {comment.replies_count > 0 && !expandedReplies[comment.id] && (
                   <button
                     onClick={() => handleLoadReplies(comment.id)}
                     className="flex items-center gap-1 text-xs text-brand-600 hover:underline"
                   >
-                    <ChevronDown size={14} /> {comment.replies_count} replies
+                    <ChevronDown size={14} /> {comment.replies_count} {t('comment.replies')}
                   </button>
                 )}
               </div>
@@ -144,15 +146,15 @@ export default function PostDetailPage() {
       <div className="card mb-3">
         {replyTo && (
           <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
-            <span>Replying to <b>@{replyTo.author.username}</b></span>
-            <button onClick={() => setReplyTo(null)} className="text-red-500 hover:underline">Cancel</button>
+            <span>{t('comment.reply_to')} <b>@{replyTo.author.username}</b></span>
+            <button onClick={() => setReplyTo(null)} className="text-red-500 hover:underline">{t('comment.cancel')}</button>
           </div>
         )}
         <div className="flex gap-3">
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder={replyTo ? `Reply to @${replyTo.author.username}...` : 'Write a comment...'}
+            placeholder={replyTo ? `${t('comment.reply_to')} @${replyTo.author.username}...` : t('comment.placeholder')}
             data-testid="comment-input"
             maxLength={1000}
             rows={2}
@@ -172,7 +174,7 @@ export default function PostDetailPage() {
       <div className="space-y-1">
         {comments.map((comment) => renderComment(comment))}
         {comments.length === 0 && (
-          <div className="text-center py-6 text-gray-400 text-sm">No comments yet</div>
+          <div className="text-center py-6 text-gray-400 text-sm">{t('comment.none')}</div>
         )}
       </div>
     </div>

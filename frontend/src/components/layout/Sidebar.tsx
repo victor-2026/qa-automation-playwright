@@ -5,10 +5,12 @@ import { useAuth } from '../../context/AuthContext'
 import { notificationsApi } from '../../api/notifications'
 import { messagesApi } from '../../api/messages'
 import { cn } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 
 export default function Sidebar() {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
+  const { t, lang, setLang } = useI18n()
   const [unreadNotifs, setUnreadNotifs] = useState(0)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
@@ -32,12 +34,12 @@ export default function Sidebar() {
   }, [user])
 
   const navItems = [
-    { path: '/', icon: Home, label: 'Feed', testId: 'nav-feed', badge: 0 },
-    { path: '/explore', icon: Compass, label: 'Explore', testId: 'nav-explore', badge: 0 },
-    { path: '/search', icon: Search, label: 'Search', testId: 'nav-search', badge: 0 },
-    { path: '/messages', icon: MessageCircle, label: 'Messages', testId: 'nav-messages', badge: unreadMessages },
-    { path: '/notifications', icon: Bell, label: 'Notifications', testId: 'nav-notifications', badge: unreadNotifs },
-    { path: '/bookmarks', icon: Bookmark, label: 'Bookmarks', testId: 'nav-bookmarks', badge: 0 },
+    { path: '/', icon: Home, label: t('nav.feed'), testId: 'nav-feed', badge: 0 },
+    { path: '/explore', icon: Compass, label: t('nav.explore'), testId: 'nav-explore', badge: 0 },
+    { path: '/search', icon: Search, label: t('nav.search'), testId: 'nav-search', badge: 0 },
+    { path: '/messages', icon: MessageCircle, label: t('nav.messages'), testId: 'nav-messages', badge: unreadMessages },
+    { path: '/notifications', icon: Bell, label: t('nav.notifications'), testId: 'nav-notifications', badge: unreadNotifs },
+    { path: '/bookmarks', icon: Bookmark, label: t('nav.bookmarks'), testId: 'nav-bookmarks', badge: 0 },
   ]
 
   return (
@@ -87,7 +89,7 @@ export default function Sidebar() {
             )}
           >
             <User size={20} />
-            <span>Profile</span>
+            <span>{t('nav.profile')}</span>
           </Link>
         )}
 
@@ -102,7 +104,7 @@ export default function Sidebar() {
           )}
         >
           <Settings size={20} />
-          <span>Settings</span>
+          <span>{t('nav.settings')}</span>
         </Link>
 
         {user && (user.role === 'admin' || user.role === 'moderator') && (
@@ -117,7 +119,7 @@ export default function Sidebar() {
             )}
           >
             <Shield size={20} />
-            <span>Admin</span>
+            <span>{t('nav.admin')}</span>
           </Link>
         )}
 
@@ -134,9 +136,14 @@ export default function Sidebar() {
           )}
         >
           <BookOpen size={20} />
-          <span>QA Docs</span>
+          <span>{t('nav.docs')}</span>
         </Link>
       </nav>
+
+      <div className="flex items-center gap-1 px-3 py-2">
+        <button onClick={() => setLang('en')} className={cn('text-xs px-2 py-1 rounded', lang === 'en' ? 'bg-brand-100 text-brand-700 font-medium' : 'text-gray-400 hover:text-gray-600')} data-testid="lang-en">EN</button>
+        <button onClick={() => setLang('ru')} className={cn('text-xs px-2 py-1 rounded', lang === 'ru' ? 'bg-brand-100 text-brand-700 font-medium' : 'text-gray-400 hover:text-gray-600')} data-testid="lang-ru">RU</button>
+      </div>
 
       {user && (
         <div className="border-t border-gray-200 pt-4 mt-4">
@@ -154,7 +161,7 @@ export default function Sidebar() {
             data-testid="auth-logout-btn"
             className="w-full mt-2 text-sm text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg text-left"
           >
-            Log out
+            {t('nav.logout')}
           </button>
         </div>
       )}

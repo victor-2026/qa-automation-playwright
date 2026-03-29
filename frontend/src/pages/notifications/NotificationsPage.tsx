@@ -4,6 +4,7 @@ import { Heart, MessageCircle, UserPlus, Repeat2, Bell, Check, Filter } from 'lu
 import { notificationsApi } from '../../api/notifications'
 import { formatDistanceToNow } from 'date-fns'
 import { cn, tid } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 import type { Notification } from '../../types'
 
 const iconMap: Record<string, typeof Heart> = {
@@ -26,14 +27,14 @@ const colorMap: Record<string, string> = {
   message: 'bg-brand-100 text-brand-600',
 }
 
-const textMap: Record<string, string> = {
-  like: 'liked your post',
-  comment: 'commented on your post',
-  follow: 'started following you',
-  follow_request: 'requested to follow you',
-  repost: 'reposted your post',
-  mention: 'mentioned you',
-  message: 'sent you a message',
+const textKeys: Record<string, string> = {
+  like: 'notif.liked',
+  comment: 'notif.commented',
+  follow: 'notif.followed',
+  follow_request: 'notif.follow_request',
+  repost: 'notif.reposted',
+  mention: 'notif.mentioned',
+  message: 'notif.messaged',
 }
 
 function getNotificationLink(n: Notification): string | null {
@@ -48,6 +49,7 @@ function getNotificationLink(n: Notification): string | null {
 }
 
 export default function NotificationsPage() {
+  const { t } = useI18n()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
@@ -80,13 +82,13 @@ export default function NotificationsPage() {
 
   const unreadCount = notifications.filter((n) => !n.is_read).length
 
-  if (loading) return <div className="text-center py-8 text-gray-400">Loading...</div>
+  if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold">Notifications</h1>
+          <h1 className="text-xl font-bold">{t('notifications.title')}</h1>
           {unreadCount > 0 && (
             <span className="bg-brand-600 text-white text-xs rounded-full px-2 py-0.5" data-testid="notifications-unread-badge">
               {unreadCount}
@@ -100,14 +102,14 @@ export default function NotificationsPage() {
               data-testid="notifications-filter-all"
               className={cn('text-xs px-3 py-1 rounded-md transition-colors', filter === 'all' ? 'bg-white shadow-sm font-medium' : 'text-gray-500')}
             >
-              All
+              {t('notifications.all')}
             </button>
             <button
               onClick={() => setFilter('unread')}
               data-testid="notifications-filter-unread"
               className={cn('text-xs px-3 py-1 rounded-md transition-colors', filter === 'unread' ? 'bg-white shadow-sm font-medium' : 'text-gray-500')}
             >
-              Unread
+              {t('notifications.unread')}
             </button>
           </div>
           <button
@@ -115,7 +117,7 @@ export default function NotificationsPage() {
             data-testid="notifications-mark-all-btn"
             className="flex items-center gap-1 text-sm text-brand-600 hover:underline"
           >
-            <Check size={14} /> Mark all read
+            <Check size={14} /> {t('notifications.mark_all')}
           </button>
         </div>
       </div>
@@ -123,7 +125,7 @@ export default function NotificationsPage() {
       {notifications.length === 0 ? (
         <div className="text-center py-12">
           <Bell size={40} className="mx-auto text-gray-300 mb-3" />
-          <p className="text-gray-500">{filter === 'unread' ? 'No unread notifications' : 'No notifications'}</p>
+          <p className="text-gray-500">{filter === 'unread' ? t('notifications.empty_unread') : t('notifications.empty')}</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -153,9 +155,9 @@ export default function NotificationsPage() {
                         {n.actor.display_name}
                       </Link>
                     ) : (
-                      <span className="font-semibold">Someone</span>
+                      <span className="font-semibold">{t('common.someone')}</span>
                     )}
-                    {' '}{textMap[n.type] || n.type}
+                    {' '}{textKeys[n.type] ? t(textKeys[n.type]) : n.type}
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}

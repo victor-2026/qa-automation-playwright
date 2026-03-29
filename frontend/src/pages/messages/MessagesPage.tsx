@@ -6,11 +6,13 @@ import { searchApi } from '../../api/search'
 import { formatDistanceToNow } from 'date-fns'
 import { useAuth } from '../../context/AuthContext'
 import { tid } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 import type { Conversation, UserBrief } from '../../types'
 import toast from 'react-hot-toast'
 
 export default function MessagesPage() {
   const { user } = useAuth()
+  const { t } = useI18n()
   const navigate = useNavigate()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [loading, setLoading] = useState(true)
@@ -50,13 +52,13 @@ export default function MessagesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Messages</h1>
+        <h1 className="text-xl font-bold">{t('messages.title')}</h1>
         <button
           onClick={() => setShowNewChat(true)}
           data-testid="new-conversation-btn"
           className="btn-primary text-sm px-3 py-1.5"
         >
-          New message
+          {t('messages.new')}
         </button>
       </div>
 
@@ -64,7 +66,7 @@ export default function MessagesPage() {
       {showNewChat && (
         <div className="card mb-4 border-brand-200" data-testid="new-conversation-modal">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-sm">Start a conversation</h3>
+            <h3 className="font-semibold text-sm">{t('messages.start')}</h3>
             <button onClick={() => setShowNewChat(false)} className="text-gray-400 hover:text-gray-600">
               <X size={16} />
             </button>
@@ -76,7 +78,7 @@ export default function MessagesPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Search users..."
+                placeholder={t('messages.search_users')}
                 data-testid="new-conversation-search"
                 className="input-field pl-8 text-sm"
                 autoFocus
@@ -112,8 +114,8 @@ export default function MessagesPage() {
       {conversations.length === 0 ? (
         <div className="text-center py-12">
           <MessageCircle size={40} className="mx-auto text-gray-300 mb-3" />
-          <p className="text-gray-500">No conversations yet</p>
-          <p className="text-gray-400 text-sm mt-1">Start a conversation with someone!</p>
+          <p className="text-gray-500">{t('messages.empty')}</p>
+          <p className="text-gray-400 text-sm mt-1">{t('messages.empty_hint')}</p>
         </div>
       ) : (
         <div className="space-y-1">

@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { adminApi } from '../../api/admin'
 import type { Post } from '../../types'
 import { formatDistanceToNow } from 'date-fns'
+import { useI18n } from '../../lib/i18n'
 import toast from 'react-hot-toast'
 
 export default function AdminContentPage() {
+  const { t } = useI18n()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [showDeleted, setShowDeleted] = useState(false)
@@ -36,20 +38,20 @@ export default function AdminContentPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Content Moderation</h1>
+      <h1 className="text-xl font-bold mb-4">{t('admin.content_mod')}</h1>
 
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setShowDeleted(false)}
           className={showDeleted ? 'btn-secondary text-sm' : 'btn-primary text-sm'}
         >
-          Active posts
+          {t('admin.active_posts')}
         </button>
         <button
           onClick={() => setShowDeleted(true)}
           className={showDeleted ? 'btn-primary text-sm' : 'btn-secondary text-sm'}
         >
-          Deleted posts
+          {t('admin.deleted_posts')}
         </button>
       </div>
 

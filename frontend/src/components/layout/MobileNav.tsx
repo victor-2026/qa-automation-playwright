@@ -5,10 +5,12 @@ import { notificationsApi } from '../../api/notifications'
 import { messagesApi } from '../../api/messages'
 import { useAuth } from '../../context/AuthContext'
 import { cn } from '../../lib/utils'
+import { useI18n } from '../../lib/i18n'
 
 export default function MobileNav() {
   const { pathname } = useLocation()
   const { user } = useAuth()
+  const { t } = useI18n()
   const [unreadNotifs, setUnreadNotifs] = useState(0)
   const [unreadMessages, setUnreadMessages] = useState(0)
 
@@ -32,11 +34,11 @@ export default function MobileNav() {
   }, [user])
 
   const items = [
-    { path: '/', icon: Home, label: 'Feed', testId: 'nav-feed-mobile', badge: 0 },
-    { path: '/explore', icon: Compass, label: 'Explore', testId: 'nav-explore-mobile', badge: 0 },
-    { path: '/search', icon: Search, label: 'Search', testId: 'nav-search-mobile', badge: 0 },
-    { path: '/messages', icon: MessageCircle, label: 'Messages', testId: 'nav-messages-mobile', badge: unreadMessages },
-    { path: '/notifications', icon: Bell, label: 'Alerts', testId: 'nav-notifications-mobile', badge: unreadNotifs },
+    { path: '/', icon: Home, label: t('nav.feed'), testId: 'nav-feed-mobile', badge: 0 },
+    { path: '/explore', icon: Compass, label: t('nav.explore'), testId: 'nav-explore-mobile', badge: 0 },
+    { path: '/search', icon: Search, label: t('nav.search'), testId: 'nav-search-mobile', badge: 0 },
+    { path: '/messages', icon: MessageCircle, label: t('nav.messages'), testId: 'nav-messages-mobile', badge: unreadMessages },
+    { path: '/notifications', icon: Bell, label: t('nav.notifications'), testId: 'nav-notifications-mobile', badge: unreadNotifs },
   ]
 
   return (
