@@ -24,16 +24,78 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ Login page test passed!');
   });
 
-  test('login with alice@buzzhive.com', async ({ page }) => {
+  test('AUTH-001: login with valid credentials creates session', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
+    
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
     await page.click('[data-testid="auth-login-btn"]');
+    
     await page.waitForURL('**/');
-    console.log('✅ Login successful!');
+    
+    const userProfile = page.locator('[data-testid="nav-profile"]');
+    await expect(userProfile).toBeVisible({ timeout: 5000 });
+    
+    console.log('✅ AUTH-001: Login creates session - PASSED');
   });
 
-  test('login with wrong password shows error', async ({ page }) => {
+  test('AUTH-001: JWT tokens stored after login', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForURL('**/');
+    
+    const tokens = await page.evaluate(() => {
+      return {
+        hasAccessToken: !!localStorage.getItem('access_token'),
+        hasRefreshToken: !!localStorage.getItem('refresh_token'),
+      };
+    });
+    
+    expect(tokens.hasAccessToken).toBe(true);
+    expect(tokens.hasRefreshToken).toBe(true);
+    
+    console.log('✅ AUTH-001: JWT tokens stored - PASSED');
+  });
+
+  test('AUTH-001: session persists on page reload', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForURL('**/');
+    
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    
+    const stillLoggedIn = await page.locator('[data-testid="nav-feed"]').isVisible({ timeout: 3000 }).catch(() => false);
+    expect(stillLoggedIn).toBe(true);
+    
+    console.log('✅ AUTH-001: Session persists on reload - PASSED');
+  });
+
+  test('AUTH-001: sidebar shows username after login', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForURL('**/');
+    await page.waitForLoadState('networkidle');
+    
+    const profileLink = page.locator('[data-testid="nav-profile"]');
+    await expect(profileLink).toBeVisible({ timeout: 5000 });
+    
+    console.log('✅ AUTH-001: Sidebar shows user - PASSED');
+  });
+
+  test('AUTH-002: login with wrong password shows error', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
@@ -41,7 +103,54 @@ test.describe('Buzzhive Social Network - Auth', () => {
     await page.waitForTimeout(1000);
     const errorMsg = page.locator('[data-testid="auth-error-message"]');
     await expect(errorMsg).toBeVisible({ timeout: 3000 });
-    console.log('✅ Error shown for wrong password!');
+    console.log('✅ AUTH-002: Wrong password error - PASSED');
+  });
+
+  test('AUTH-002: no tokens stored on failed login', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForTimeout(1000);
+    
+    const tokens = await page.evaluate(() => {
+      return {
+        accessToken: localStorage.getItem('access_token'),
+        refreshToken: localStorage.getItem('refresh_token'),
+      };
+    });
+    
+    expect(tokens.accessToken).toBeNull();
+    expect(tokens.refreshToken).toBeNull();
+    
+    console.log('✅ AUTH-002: No tokens on failed login - PASSED');
+  });
+
+  test('AUTH-002: user stays on login page after error', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForTimeout(1000);
+    await expect(page).toHaveURL(/.*\/login/);
+    
+    console.log('✅ AUTH-002: Stay on login page - PASSED');
+  });
+
+  test('AUTH-001: admin can login', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'admin123');
+    await page.click('[data-testid="auth-login-btn"]');
+    
+    await page.waitForURL('**/');
+    await expect(page.locator('[data-testid="nav-feed"]')).toBeVisible({ timeout: 5000 });
+    
+    console.log('✅ AUTH-001: Admin login - PASSED');
   });
 
   test('registration page - all fields present', async ({ page }) => {
