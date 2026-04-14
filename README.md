@@ -368,6 +368,39 @@ docker-compose up --build
 - Доступ без прав (403)
 - Загрузка невалидных файлов
 
+## E2E Тестирование с Playwright
+
+### Установка
+```bash
+npm install
+npx playwright install chromium
+```
+
+### Запуск тестов
+```bash
+npm test
+```
+
+### Структура тестов
+```
+tests/buzzhive.spec.ts  # 35 E2E тестов
+├── Auth         # Login, Register, Logout
+├── Navigation   # Pages navigation
+├── Posts        # Create, Like, Bookmark
+├── Search       # Users, Posts, Hashtags
+├── Profile      # View, Edit
+├── Messages     # Conversations
+├── Notifications # Mark as read
+└── Admin        # Ban user, Dashboard
+```
+
+### Просмотр отчёта
+```bash
+npx playwright show-report
+```
+
+---
+
 ## Сброс данных
 
 Через UI: Настройки → красная кнопка "Reset Sandbox"
