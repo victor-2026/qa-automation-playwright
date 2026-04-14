@@ -141,11 +141,27 @@
 
 ---
 
+## API Tests (API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-AUTH-001 | POST /auth/login | TC-API-AUTH-001 | Login returns tokens | ⏳ Pending |
+| API-AUTH-001 | POST /auth/login | TC-API-AUTH-001 | Wrong password returns 401 | ⏳ Pending |
+| API-AUTH-002 | GET /auth/me | TC-API-AUTH-002 | /me returns user profile | ⏳ Pending |
+| API-AUTH-002 | GET /auth/me | TC-API-AUTH-002 | No token returns 401 | ⏳ Pending |
+| API-AUTH-003 | POST /auth/register | TC-API-AUTH-003 | Register creates user | ⏳ Pending |
+| API-AUTH-003 | POST /auth/register | TC-API-AUTH-003 | Duplicate email returns 409 | ⏳ Pending |
+| API-AUTH-004 | POST /auth/refresh | TC-API-AUTH-004 | Refresh returns new tokens | ⏳ Pending |
+| API-AUTH-005 | POST /auth/logout | TC-API-AUTH-005 | Logout revokes token | ⏳ Pending |
+
+---
+
 ## Summary
 
 | Category | Total | Pass | Fail | Pending |
 |----------|-------|------|------|---------|
 | Authentication | 14 | 11 | 0 | 3 |
+| API Auth | 8 | 0 | 0 | 8 |
 | Posts | 7 | 4 | 0 | 3 |
 | Security | 6 | 4 | 0 | 2 |
 | Social | 5 | 4 | 0 | 1 |
@@ -155,9 +171,9 @@
 | Admin | 4 | 4 | 0 | 0 |
 | Moderator | 3 | 3 | 0 | 0 |
 | Performance | 6 | 6 | 0 | 0 |
-| **TOTAL** | **54** | **42** | **0** | **12** |
+| **TOTAL** | **62** | **42** | **0** | **20** |
 
-**Coverage: 78%** (42/54 requirements tested)
+**Coverage: 68%** (42/62 requirements tested)
 
 ---
 

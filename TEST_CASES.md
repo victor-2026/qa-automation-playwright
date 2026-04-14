@@ -833,6 +833,126 @@
 
 ---
 
+## API Tests (API)
+
+### TC-API-AUTH-001: POST /api/auth/login
+**Priority:** critical | **Type:** API
+
+**Endpoint:** `POST /api/auth/login`
+
+**Request:**
+```json
+{
+  "email": "alice@buzzhive.com",
+  "password": "alice123"
+}
+```
+
+**Expected Response (200):**
+```json
+{
+  "access_token": "...",
+  "refresh_token": "..."
+}
+```
+
+**Error Response (401):**
+```json
+{
+  "detail": "Invalid email or password"
+}
+```
+
+---
+
+### TC-API-AUTH-002: GET /api/auth/me
+**Priority:** critical | **Type:** API
+
+**Endpoint:** `GET /api/auth/me`
+
+**Headers:** `Authorization: Bearer {access_token}`
+
+**Expected Response (200):**
+```json
+{
+  "id": "...",
+  "email": "alice@buzzhive.com",
+  "username": "alice_dev",
+  "display_name": "Alice Developer"
+}
+```
+
+**Error Response (401):** No token or invalid token
+
+---
+
+### TC-API-AUTH-003: POST /api/auth/register
+**Priority:** critical | **Type:** API
+
+**Endpoint:** `POST /api/auth/register`
+
+**Request:**
+```json
+{
+  "email": "newuser@test.com",
+  "username": "newuser123",
+  "password": "password123",
+  "display_name": "New User"
+}
+```
+
+**Expected Response (201):**
+```json
+{
+  "access_token": "...",
+  "refresh_token": "..."
+}
+```
+
+**Error Response (409):** Email or username already exists
+
+---
+
+### TC-API-AUTH-004: POST /api/auth/refresh
+**Priority:** high | **Type:** API
+
+**Endpoint:** `POST /api/auth/refresh`
+
+**Request:**
+```json
+{
+  "refresh_token": "{refresh_token}"
+}
+```
+
+**Expected Response (200):**
+```json
+{
+  "access_token": "...",
+  "refresh_token": "..."
+}
+```
+
+---
+
+### TC-API-AUTH-005: POST /api/auth/logout
+**Priority:** medium | **Type:** API
+
+**Endpoint:** `POST /api/auth/logout`
+
+**Headers:** `Authorization: Bearer {access_token}`
+
+**Request:**
+```json
+{
+  "refresh_token": "{refresh_token}"
+}
+```
+
+**Expected Response (200):** Empty body or `{"message": "Logged out"}`
+
+---
+
 ## Test Data Reference
 
 | User | Email | Password | Role |
