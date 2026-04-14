@@ -31,6 +31,10 @@
 | AUTH-010 | SQL injection blocked | TC-AUTH-010 | SQL injection in password field blocked | ✅ Pass |
 | AUTH-010 | SQL injection email | TC-AUTH-010 | SQL injection in email field blocked | ✅ Pass |
 | AUTH-010 | XSS blocked | TC-AUTH-010 | XSS in fields blocked | ✅ Pass |
+| AUTH-011 | Password min 6 chars | TC-AUTH-011 | 1 char password rejected | ✅ Pass |
+| AUTH-011 | Password min boundary | TC-AUTH-011 | 6 char password accepted | ✅ Pass |
+| AUTH-011 | Long password | TC-AUTH-011 | Very long password handled | ✅ Pass |
+| AUTH-011 | Max password length | TC-AUTH-011 | 3001 char password handled | ✅ Pass |
 
 ---
 

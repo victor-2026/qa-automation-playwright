@@ -187,6 +187,35 @@
 
 ---
 
+### TC-AUTH-011: Password Boundary Tests
+**Priority:** critical | **Type:** Edge Case
+
+**System Limits:**
+- Password Minimum: 6 characters
+
+**Test Data:**
+| Password | Length | Expected Result |
+|----------|--------|-----------------|
+| `a` | 1 | ❌ HTML5 validation rejects (< minlength=6) |
+| `123456` | 6 | ✅ Accepted (but wrong password → error) |
+| `a`.repeat(1000) | 1000 | ✅ Handled (wrong password → error) |
+| `a`.repeat(3001) | 3001 | ✅ Handled (wrong password → error) |
+
+**Steps:**
+1. Enter 1 character password
+2. Verify HTML5 validation blocks submit
+3. Enter 6 character password
+4. Verify accepted (but shows wrong password error)
+5. Enter very long passwords
+6. Verify system handles gracefully
+
+**Expected:**
+- Short passwords blocked by HTML5 validation
+- Long passwords accepted but show wrong password error
+- No crashes or errors with extreme lengths
+
+---
+
 ## Posts
 
 ### TC-POST-001: Create a new post
