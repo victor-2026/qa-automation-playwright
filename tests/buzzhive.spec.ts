@@ -106,6 +106,70 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-002: Wrong password error - PASSED');
   });
 
+  test('AUTH-010: SQL injection in password field is blocked', async ({ page }) => {
+    const sqlPayloads = [
+      "' OR '1'='1",
+      "admin'--",
+      "' OR 1=1--",
+      "'; DROP TABLE users;--",
+    ];
+    
+    for (const payload of sqlPayloads) {
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+      await page.fill('[data-testid="auth-password-input"]', payload);
+      await page.click('[data-testid="auth-login-btn"]');
+      await page.waitForTimeout(500);
+      
+      const errorMsg = page.locator('[data-testid="auth-error-message"]');
+      const isErrorShown = await errorMsg.isVisible({ timeout: 2000 }).catch(() => false);
+      
+      expect(isErrorShown).toBe(true);
+      expect(await page.url()).toContain('/login');
+    }
+    console.log('✅ AUTH-010: SQL injection in password blocked - PASSED');
+  });
+
+  test('AUTH-010: SQL injection in email field is blocked', async ({ page }) => {
+    const sqlPayloads = [
+      "' OR '1'='1",
+      "admin'--",
+      "' OR 1=1--",
+      "' UNION SELECT * FROM users--",
+    ];
+    
+    for (const payload of sqlPayloads) {
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', payload);
+      await page.fill('[data-testid="auth-password-input"]', 'anypassword');
+      await page.click('[data-testid="auth-login-btn"]');
+      await page.waitForTimeout(1000);
+      
+      expect(await page.url()).toContain('/login');
+    }
+    console.log('✅ AUTH-010: SQL injection in email blocked - PASSED');
+  });
+
+  test('AUTH-010: XSS in fields is blocked', async ({ page }) => {
+    const xssPayloads = [
+      '<script>alert("XSS")</script>',
+      '"><img src=x onerror=alert(1)>',
+      "javascript:alert('XSS')",
+    ];
+    
+    for (const payload of xssPayloads) {
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', payload);
+      await page.fill('[data-testid="auth-password-input"]', 'test123');
+      await page.click('[data-testid="auth-login-btn"]');
+      await page.waitForTimeout(500);
+      
+      const pageContent = await page.content();
+      expect(pageContent).not.toContain('<script>alert');
+    }
+    console.log('✅ AUTH-010: XSS in fields blocked - PASSED');
+  });
+
   test('AUTH-009: login with wrong email shows error', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     await page.fill('[data-testid="auth-email-input"]', 'wrong@buzzhive.com');

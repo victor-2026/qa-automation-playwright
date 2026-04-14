@@ -154,6 +154,39 @@
 
 ---
 
+### TC-AUTH-010: SQL injection in login fields is blocked
+**Priority:** critical | **Type:** Security
+
+**Preconditions:** On /login page.
+
+**Test Data (SQL Injection Payloads):**
+- `' OR '1'='1`
+- `admin'--`
+- `' OR 1=1--`
+- `'; DROP TABLE users;--`
+
+**Test Data (XSS Payloads):**
+- `<script>alert("XSS")</script>`
+- `"><img src=x onerror=alert(1)>`
+- `javascript:alert('XSS')`
+
+**Steps:**
+1. Enter SQL injection payload in email field
+2. Enter any password
+3. Click "Sign in"
+4. Repeat for password field
+5. Repeat for XSS payloads
+
+**Expected:** 
+- Error shown "Invalid email or password"
+- No successful login
+- No script execution
+- Stay on /login page
+
+**Security Check:** No SQL error messages exposed to user.
+
+---
+
 ## Posts
 
 ### TC-POST-001: Create a new post

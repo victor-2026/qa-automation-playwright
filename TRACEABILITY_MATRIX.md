@@ -28,6 +28,9 @@
 | AUTH-006 | Token refresh | TC-AUTH-006 | Token refresh flow | ⏳ Pending |
 | AUTH-007 | Quick login buttons | TC-AUTH-007 | Quick login buttons fill form | ⏳ Pending |
 | AUTH-009 | Wrong email error | TC-AUTH-009 | Login with wrong email shows error | ✅ Pass |
+| AUTH-010 | SQL injection blocked | TC-AUTH-010 | SQL injection in password field blocked | ✅ Pass |
+| AUTH-010 | SQL injection email | TC-AUTH-010 | SQL injection in email field blocked | ✅ Pass |
+| AUTH-010 | XSS blocked | TC-AUTH-010 | XSS in fields blocked | ✅ Pass |
 
 ---
 
@@ -49,8 +52,10 @@
 
 | Requirement ID | Requirement | Test Case ID | Test Name | Status |
 |---------------|-------------|--------------|-----------|--------|
-| SEC-001 | XSS Prevention | TC-EDGE-002 | XSS attempt in content | ⏳ Pending |
-| SEC-002 | SQL Injection Prevention | TC-EDGE-001 | SQL injection in content is safe | ⏳ Pending |
+| SEC-001 | XSS Prevention in Login | TC-AUTH-010 | XSS in fields blocked | ✅ Pass |
+| SEC-001 | XSS Prevention in Posts | TC-EDGE-002 | XSS attempt in content | ⏳ Pending |
+| SEC-002 | SQL Injection in Login | TC-AUTH-010 | SQL injection in login blocked | ✅ Pass |
+| SEC-002 | SQL Injection in Posts | TC-EDGE-001 | SQL injection in content is safe | ⏳ Pending |
 | SEC-003 | Admin access blocked | TC-ADM-004 | Regular user blocked from admin | ✅ Pass |
 | SEC-004 | Token expiration | TC-AUTH-006 | Token expiration handling | ⏳ Pending |
 
