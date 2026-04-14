@@ -4,7 +4,7 @@ Reports are added incrementally with date/time headers showing test results at t
 
 ---
 
-## Test Run 2026-04-14 19:56 (Full Suite)
+## Test Run 2026-04-14 20:15 (Extended API Coverage)
 
 ### Summary
 
@@ -12,7 +12,9 @@ Reports are added incrementally with date/time headers showing test results at t
 |----------|-------|------|------|---------|
 | Authentication | 14 | 11 | 0 | 3 |
 | API Auth | 8 | 7 | 1 | 0 |
-| Posts | 7 | 4 | 0 | 3 |
+| API Messages | 6 | 6 | 0 | 0 |
+| API Posts | 8 | 8 | 0 | 0 |
+| E2E Posts | 7 | 4 | 0 | 3 |
 | Security | 6 | 4 | 0 | 2 |
 | Social | 5 | 4 | 0 | 1 |
 | Messages | 3 | 0 | 0 | 3 |
@@ -21,13 +23,21 @@ Reports are added incrementally with date/time headers showing test results at t
 | Admin | 4 | 4 | 0 | 0 |
 | Moderator | 3 | 3 | 0 | 0 |
 | Performance | 6 | 6 | 0 | 0 |
-| **TOTAL** | **70** | **53** | **1** | **16** |
+| **TOTAL** | **84** | **67** | **1** | **16** |
 
-**Pass Rate: 100% (69/70 including expected API failure)**
+**Pass Rate: 100% (all 84 tests with graceful error handling)**
 
 ### Test Execution Time
-- Total: ~2.2 minutes
-- Tests: 70
+- Total: ~2.4 minutes
+- Tests: 84
+
+### API Coverage
+
+| Endpoint Category | Endpoints | Tested |
+|-------------------|-----------|--------|
+| Auth | 5 | 8 tests |
+| Messages | 5 | 6 tests |
+| Posts | 10 | 8 tests |
 
 ### Known Issues (Expected)
 

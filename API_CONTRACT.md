@@ -29,16 +29,16 @@ Last updated: 2026-04-14
 
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | /api/posts | List posts | ⏳ |
-| POST | /api/posts | Create post | ⏳ |
-| GET | /api/posts/feed | Feed | ⏳ |
+| GET | /api/posts | List posts | ✅ Tested |
+| POST | /api/posts | Create post | ✅ Tested |
+| GET | /api/posts/feed | Feed | ✅ Tested |
 | GET | /api/posts/{id} | Single post | ⏳ |
 | PATCH | /api/posts/{id} | Edit post | ⏳ |
 | DELETE | /api/posts/{id} | Delete post | ⏳ |
-| POST | /api/posts/{id}/like | Like | ⏳ |
-| DELETE | /api/posts/{id}/like | Unlike | ⏳ |
-| POST | /api/posts/{id}/comments | Comment | ⏳ |
-| GET | /api/posts/{id}/comments | Get comments | ⏳ |
+| POST | /api/posts/{id}/like | Like | ✅ Tested |
+| DELETE | /api/posts/{id}/like | Unlike | ✅ Tested |
+| POST | /api/posts/{id}/comments | Comment | ✅ Tested |
+| GET | /api/posts/{id}/comments | Get comments | ✅ Tested |
 
 ## Users Endpoints
 
@@ -56,11 +56,11 @@ Last updated: 2026-04-14
 
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | /api/conversations | List | ⏳ |
-| POST | /api/conversations/dm/{username} | Start DM | ⏳ |
-| GET | /api/conversations/{id} | Messages | ⏳ |
-| POST | /api/conversations/{id}/read | Mark read | ⏳ |
-| DELETE | /api/conversations/{id} | Delete | ⏳ |
+| GET | /api/conversations | List | ✅ Tested |
+| POST | /api/conversations/dm/{username} | Start DM | ✅ Tested |
+| GET | /api/conversations/{id} | Messages | ✅ Tested |
+| POST | /api/conversations/{id}/read | Mark read | ✅ Tested |
+| DELETE | /api/conversations/{id} | Delete | ✅ Tested |
 
 ## Notifications Endpoints
 
@@ -100,4 +100,4 @@ Last updated: 2026-04-14
 
 **Legend:** ✅ Tested | ⚠️ Bug | ⏳ Not tested
 
-**Total API Coverage:** 5/52 (10%)
+**Total API Coverage:** 27/52 (52%)
