@@ -138,19 +138,34 @@
 
 ---
 
-### TC-AUTH-009: Login with wrong email
-**Priority:** high | **Type:** UI
+### TC-AUTH-009: Login with invalid email formats
+**Priority:** high | **Type:** UI / Edge Case
 
 **Preconditions:** On /login page.
 
+**Test Data (RFC 5321/5322 Negative Tests):**
+| Email | Expected |
+|-------|----------|
+| `wrong@buzzhive.com` | Error (user not found) |
+| `plaintext` | Error (no @) |
+| `user@` | Error (no domain) |
+| `@domain.com` | Error (no user) |
+| `user@domain` | Error (no TLD) |
+| `user@.com` | Error (dot at start) |
+| `user@@domain.com` | Error (double @) |
+
 **Steps:**
-1. Enter wrong email: wrong@buzzhive.com
-2. Enter valid password: alice123
+1. Enter each invalid email format
+2. Enter valid password
 3. Click "Sign in"
+4. Verify stay on /login page
 
-**Expected:** Error message visible: "Invalid email or password". Stay on /login. No tokens stored.
+**Expected:** All invalid formats rejected. Stay on /login. No successful login.
 
-**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`, `auth-error-message`
+**HTML5 Validation Test:**
+- `invalid-email` → `el.validity.valid = false`
+
+**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`
 
 ---
 

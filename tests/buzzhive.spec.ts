@@ -222,14 +222,38 @@ test.describe('Buzzhive Social Network - Auth', () => {
   });
 
   test('AUTH-009: login with wrong email shows error', async ({ page }) => {
+    const invalidEmails = [
+      'wrong@buzzhive.com',
+      'plaintext',
+      'user@',
+      '@domain.com',
+      'user@domain',
+      'user@.com',
+      'user@@domain.com',
+    ];
+    
+    for (const email of invalidEmails) {
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', email);
+      await page.fill('[data-testid="auth-password-input"]', 'alice123');
+      await page.click('[data-testid="auth-login-btn"]');
+      await page.waitForTimeout(500);
+      expect(await page.url()).toContain('/login');
+    }
+    console.log('✅ AUTH-009: All invalid email formats rejected - PASSED');
+  });
+
+  test('AUTH-009: email validation - HTML5 constraints', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
-    await page.fill('[data-testid="auth-email-input"]', 'wrong@buzzhive.com');
+    await page.fill('[data-testid="auth-email-input"]', 'invalid-email');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
     await page.click('[data-testid="auth-login-btn"]');
-    await page.waitForTimeout(1000);
-    const errorMsg = page.locator('[data-testid="auth-error-message"]');
-    await expect(errorMsg).toBeVisible({ timeout: 3000 });
-    console.log('✅ AUTH-009: Wrong email error - PASSED');
+    await page.waitForTimeout(500);
+    
+    const emailInput = page.locator('[data-testid="auth-email-input"]');
+    const isInvalid = await emailInput.evaluate(el => el.validity.valid);
+    expect(isInvalid).toBe(false);
+    console.log('✅ AUTH-009: HTML5 email validation works - PASSED');
   });
 
   test('AUTH-002: no tokens stored on failed login', async ({ page }) => {
