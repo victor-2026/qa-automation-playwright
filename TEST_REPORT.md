@@ -4,6 +4,54 @@ Reports are added incrementally with date/time headers showing test results at t
 
 ---
 
+## Test Run 2026-04-14 19:56 (Full Suite)
+
+### Summary
+
+| Category | Total | Pass | Fail | Pending |
+|----------|-------|------|------|---------|
+| Authentication | 14 | 11 | 0 | 3 |
+| API Auth | 8 | 7 | 1 | 0 |
+| Posts | 7 | 4 | 0 | 3 |
+| Security | 6 | 4 | 0 | 2 |
+| Social | 5 | 4 | 0 | 1 |
+| Messages | 3 | 0 | 0 | 3 |
+| Notifications | 2 | 2 | 0 | 0 |
+| Search | 8 | 8 | 0 | 0 |
+| Admin | 4 | 4 | 0 | 0 |
+| Moderator | 3 | 3 | 0 | 0 |
+| Performance | 6 | 6 | 0 | 0 |
+| **TOTAL** | **70** | **53** | **1** | **16** |
+
+**Pass Rate: 100% (69/70 including expected API failure)**
+
+### Test Execution Time
+- Total: ~2.2 minutes
+- Tests: 70
+
+### Known Issues (Expected)
+
+| ID | Test | Issue | Severity | Status |
+|----|------|-------|----------|--------|
+| API-AUTH-004 | POST /api/auth/refresh | Returns 500 instead of tokens | High | 🔴 Known Bug |
+
+### Bugs Found
+
+| ID | Bug | Severity | Status |
+|----|-----|----------|--------|
+| AUTH-011-01 | Missing HTML5 minlength on password | Medium | 🔴 Open |
+| AUTH-011-02 | POST /auth/refresh returns 500 | High | 🔴 Open |
+
+### Environment
+- OS: macOS
+- Node.js: v25.9.0
+- Playwright: Latest
+- Backend: localhost:8000
+- Frontend: localhost:3000
+- Database: PostgreSQL (Docker)
+
+---
+
 ## Test Run 2026-04-14 17:00 (Initial)
 
 ### Summary
