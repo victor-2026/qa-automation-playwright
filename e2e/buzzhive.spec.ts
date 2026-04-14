@@ -393,8 +393,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     
     const startTime = Date.now();
     await page.fill('[data-testid="post-composer-input"]', 'Performance test post');
-    await page.click('[data-testid="post-composer-submit"]');
-    await page.waitForTimeout(1500);
+    await Promise.all([
+      page.waitForResponse(res => res.url().includes('/api/posts')),
+      page.click('[data-testid="post-composer-submit"]'),
+    ]);
     const postTime = Date.now() - startTime;
     
     expect(postTime).toBeLessThan(2000);
@@ -657,7 +659,8 @@ test.describe('Buzzhive Social Network - Comments', () => {
     
     await commentInput.fill('Great post!');
     await page.click('[data-testid="comment-submit-btn"]');
-    await page.waitForTimeout(1000);
+    
+    await expect(page.locator('text=Great post!')).toBeVisible();
     
     console.log('✅ Comment added!');
   });
@@ -720,7 +723,7 @@ test.describe('Buzzhive Social Network - Moderator', () => {
     const deleteBtn = page.locator('[data-testid^="post-delete-btn-"]').first();
     if (await deleteBtn.isVisible()) {
       await deleteBtn.click();
-      await page.waitForTimeout(500);
+      await expect(page.locator('[data-testid^="post-menu-btn-"]').first()).toBeVisible();
       console.log('✅ Moderator can delete posts!');
     } else {
       console.log('ℹ️ No delete option visible');
@@ -788,7 +791,8 @@ test.describe('Buzzhive Social Network - Admin', () => {
     const banBtn = page.locator('[data-testid^="admin-ban-btn-"]').first();
     await banBtn.waitFor({ state: 'visible', timeout: 5000 });
     await banBtn.click();
-    await page.waitForTimeout(1000);
+    
+    await expect(page.locator('[data-testid^="admin-ban-btn-"]').first()).toBeVisible();
     
     console.log('✅ User banned successfully!');
   });
@@ -798,10 +802,8 @@ test.describe('Buzzhive Social Network - Admin', () => {
     await page.fill('[data-testid="auth-email-input"]', 'frank@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'frank123');
     await page.click('[data-testid="auth-login-btn"]');
-    await page.waitForTimeout(1000);
     
-    const errorMsg = page.locator('[data-testid="auth-error-message"]');
-    await expect(errorMsg).toBeVisible({ timeout: 3000 });
+    await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
     
     console.log('✅ Banned user login blocked!');
   });
@@ -873,7 +875,6 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const usersTab = page.locator('button:has-text("users")');
     await expect(usersTab).toBeVisible({ timeout: 5000 });
@@ -895,11 +896,10 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const postsTab = page.locator('button:has-text("posts")');
+    await expect(postsTab).toBeVisible();
     await postsTab.click();
-    await page.waitForTimeout(500);
     
     console.log('✅ Post search executed and tab switched!');
   });
@@ -919,11 +919,10 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const hashtagsTab = page.locator('button:has-text("hashtags")');
+    await expect(hashtagsTab).toBeVisible();
     await hashtagsTab.click();
-    await page.waitForTimeout(500);
     
     console.log('✅ Hashtag search executed and tab switched!');
   });
@@ -941,7 +940,8 @@ test.describe('Buzzhive Social Network - Search', () => {
     const searchInput = page.locator('[data-testid="nav-search-input"]');
     await searchInput.fill('test');
     await searchInput.press('Enter');
-    await page.waitForTimeout(1000);
+    
+    await expect(page.locator('[data-testid="nav-search-input"]')).toBeVisible();
     
     console.log('✅ Search triggered via Enter key!');
   });
@@ -961,9 +961,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const tabsWithCounts = page.locator('button:has-text("(")');
+    await expect(tabsWithCounts.first()).toBeVisible();
     const count = await tabsWithCounts.count();
     console.log(`Found ${count} tabs with counts`);
     
@@ -985,7 +985,6 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const noResultsMsg = page.locator('text=No users found');
     if (await noResultsMsg.isVisible({ timeout: 2000 }).catch(() => false)) {
@@ -1010,18 +1009,17 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const usersTab = page.locator('button:has-text("users")');
     const postsTab = page.locator('button:has-text("posts")');
     const hashtagsTab = page.locator('button:has-text("hashtags")');
     
     await usersTab.click();
-    await page.waitForTimeout(300);
+    await expect(usersTab).toBeVisible();
     await postsTab.click();
-    await page.waitForTimeout(300);
+    await expect(postsTab).toBeVisible();
     await hashtagsTab.click();
-    await page.waitForTimeout(300);
+    await expect(hashtagsTab).toBeVisible();
     
     console.log('✅ Tab switching works!');
   });
@@ -1041,7 +1039,6 @@ test.describe('Buzzhive Social Network - Search', () => {
     
     const searchBtn = page.locator('button:has-text("Search")');
     await searchBtn.click();
-    await page.waitForTimeout(1000);
     
     const firstUserResult = page.locator('a[href*="/profile/"]').first();
     if (await firstUserResult.isVisible({ timeout: 2000 }).catch(() => false)) {

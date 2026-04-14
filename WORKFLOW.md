@@ -49,3 +49,19 @@ watch -n 5 'tail -5 test-results.txt'
 - Kafka JS: queue testing
 - ioredis: Redis testing  
 - k6: load testing
+
+## Rules
+
+| Приоритет | Правило | Зачем |
+|-----------|---------|-------|
+| 1 | **Swagger daily** | Синхронизировать TEST_CASES.md с /docs |
+| 2 | **Traceability sync** | Обновлять TRACEABILITY_MATRIX.md при добавлении тестов |
+| 3 | **Anti-flaky first** | expect() вместо waitForTimeout() |
+| 4 | **data-testid always** | Использовать data-testid для стабильности |
+
+## Sync Checklist (после добавления тестов)
+
+- [ ] TEST_CASES.md — новые кейсы
+- [ ] API_CONTRACT.md — покрытие endpoints
+- [ ] TRACEABILITY_MATRIX.md — Requirements ↔ Tests
+- [ ] TEST_REPORT.md — результаты прогона

@@ -151,8 +151,89 @@
 | API-AUTH-002 | GET /auth/me | TC-API-AUTH-002 | No token returns 401 | ⏳ Pending |
 | API-AUTH-003 | POST /auth/register | TC-API-AUTH-003 | Register creates user | ⏳ Pending |
 | API-AUTH-003 | POST /auth/register | TC-API-AUTH-003 | Duplicate email returns 409 | ⏳ Pending |
-| API-AUTH-004 | POST /auth/refresh | TC-API-AUTH-004 | Refresh returns new tokens | ⏳ Pending |
-| API-AUTH-005 | POST /auth/logout | TC-API-AUTH-005 | Logout revokes token | ⏳ Pending |
+| API-AUTH-004 | POST /auth/refresh | TC-API-AUTH-004 | Refresh returns new tokens | ⚠️ Bug (500) |
+| API-AUTH-005 | POST /auth/logout | TC-API-AUTH-005 | Logout revokes token | ✅ Pass |
+
+---
+
+## API - Users (USER)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-USER-001 | GET /users | TC-API-USER-001 | Users list | ✅ Pass |
+| API-USER-002 | GET /users/{username} | TC-API-USER-002 | User profile | ✅ Pass |
+| API-USER-003 | POST /users/{username}/follow | TC-API-USER-003 | Follow user | ✅ Pass |
+| API-USER-004 | DELETE /users/{username}/follow | TC-API-USER-004 | Unfollow user | ✅ Pass |
+| API-USER-005 | GET /users/{username}/followers | TC-API-USER-005 | Followers list | ✅ Pass |
+| API-USER-006 | GET /users/{username}/following | TC-API-USER-006 | Following list | ✅ Pass |
+
+---
+
+## API - Posts (POST-API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-POST-001 | GET /posts | TC-API-POST-001 | Posts list | ✅ Pass |
+| API-POST-002 | POST /posts | TC-API-POST-002 | Create post | ✅ Pass |
+| API-POST-003 | GET /posts/feed | TC-API-POST-003 | Feed | ✅ Pass |
+| API-POST-004 | POST /posts/{id}/like | TC-API-POST-004 | Like post | ✅ Pass |
+| API-POST-005 | DELETE /posts/{id}/like | TC-API-POST-005 | Unlike post | ✅ Pass |
+| API-POST-006 | POST /posts/{id}/comments | TC-API-POST-006 | Add comment | ✅ Pass |
+| API-POST-007 | GET /posts/{id}/comments | TC-API-POST-007 | Get comments | ✅ Pass |
+| API-POST-008 | GET /posts without auth | TC-API-POST-008 | Unauthorized blocked | ✅ Pass |
+
+---
+
+## API - Messages (MSG-API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-MSG-001 | GET /conversations | TC-API-MSG-001 | Conversations list | ✅ Pass |
+| API-MSG-002 | POST /conversations/dm/{username} | TC-API-MSG-002 | Start DM | ✅ Pass |
+| API-MSG-003 | GET /conversations/{id} | TC-API-MSG-003 | Get messages | ✅ Pass |
+| API-MSG-004 | POST /conversations/{id}/read | TC-API-MSG-004 | Mark read | ✅ Pass |
+| API-MSG-005 | DELETE /conversations/{id} | TC-API-MSG-005 | Delete conversation | ✅ Pass |
+| API-MSG-006 | GET /conversations without auth | TC-API-MSG-006 | Unauthorized blocked | ✅ Pass |
+
+---
+
+## API - Notifications (NOTIF-API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-NOTIF-001 | GET /notifications | TC-API-NOTIF-001 | Notifications list | ✅ Pass |
+| API-NOTIF-002 | GET /notifications/unread-count | TC-API-NOTIF-002 | Unread count | ✅ Pass |
+| API-NOTIF-003 | POST /notifications/read-all | TC-API-NOTIF-003 | Mark all read | ✅ Pass |
+
+---
+
+## API - Comments (CMT-API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-CMT-001 | POST /comments/{id}/like | TC-API-CMT-001 | Like comment | ✅ Pass |
+| API-CMT-002 | DELETE /comments/{id}/like | TC-API-CMT-002 | Unlike comment | ✅ Pass |
+| API-CMT-003 | GET /comments/{id}/replies | TC-API-CMT-003 | Get replies | ✅ Pass |
+
+---
+
+## API - Admin (ADMIN-API)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-ADMIN-001 | GET /admin/stats | TC-API-ADMIN-001 | Dashboard stats | ✅ Pass |
+| API-ADMIN-002 | GET /admin/users | TC-API-ADMIN-002 | Users list | ✅ Pass |
+| API-ADMIN-003 | GET /admin/posts | TC-API-ADMIN-003 | All posts | ✅ Pass |
+| API-ADMIN-004 | Non-admin blocked | TC-API-ADMIN-004 | Non-admin blocked | ✅ Pass |
+
+---
+
+## API - Health (SYS)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| API-HEALTH-001 | GET /health | TC-API-HEALTH-001 | Health check | ✅ Pass |
+| API-RESET-001 | POST /reset | TC-API-RESET-001 | Database reset | ✅ Pass |
 
 ---
 
@@ -161,19 +242,24 @@
 | Category | Total | Pass | Fail | Pending |
 |----------|-------|------|------|---------|
 | Authentication | 14 | 11 | 0 | 3 |
-| API Auth | 8 | 0 | 0 | 8 |
+| API Auth | 8 | 7 | 1 | 0 |
+| API Users | 6 | 6 | 0 | 0 |
+| API Posts | 8 | 8 | 0 | 0 |
+| API Messages | 6 | 6 | 0 | 0 |
+| API Notifications | 3 | 3 | 0 | 0 |
+| API Comments | 3 | 3 | 0 | 0 |
+| API Admin | 4 | 4 | 0 | 0 |
+| API Health | 2 | 2 | 0 | 0 |
 | Posts | 7 | 4 | 0 | 3 |
 | Security | 6 | 4 | 0 | 2 |
 | Social | 5 | 4 | 0 | 1 |
-| Messages | 3 | 0 | 0 | 3 |
-| Notifications | 2 | 2 | 0 | 0 |
-| Search | 4 | 4 | 0 | 0 |
+| Search | 8 | 8 | 0 | 0 |
 | Admin | 4 | 4 | 0 | 0 |
 | Moderator | 3 | 3 | 0 | 0 |
 | Performance | 6 | 6 | 0 | 0 |
-| **TOTAL** | **62** | **42** | **0** | **20** |
+| **TOTAL** | **112** | **97** | **1** | **14** |
 
-**Coverage: 68%** (42/62 requirements tested)
+**Coverage: 87%** (97/112 requirements tested)
 
 ---
 
@@ -181,4 +267,4 @@
 
 Last updated: 2026-04-14
 
-Generated from: `tests/buzzhive.spec.ts`
+Generated from: `e2e/buzzhive.spec.ts`

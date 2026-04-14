@@ -968,6 +968,328 @@
 
 ---
 
+## API - Comments
+
+### TC-API-CMT-001: POST /api/comments/{id}/like
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/comments/1/like
+
+**Expected:** 200/201 response.
+
+---
+
+### TC-API-CMT-002: DELETE /api/comments/{id}/like
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. DELETE /api/comments/1/like
+
+**Expected:** 200/204 response.
+
+---
+
+### TC-API-CMT-003: GET /api/comments/{id}/replies
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/comments/1/replies
+
+**Expected:** 200 response with replies array.
+
+---
+
+## API - Bookmarks
+
+### TC-API-BOOK-001: GET /api/bookmarks
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/bookmarks
+
+**Expected:** 200 response with bookmarks array.
+
+---
+
+## API - Follow Requests
+
+### TC-API-FOLLOW-001: GET /api/follows/requests
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/follows/requests
+
+**Expected:** 200 response.
+
+---
+
+### TC-API-FOLLOW-002: POST /api/follows/requests/{id}/accept
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user with pending request.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/follows/requests/1/accept
+
+**Expected:** 200/201 response.
+
+---
+
+### TC-API-FOLLOW-003: POST /api/follows/requests/{id}/reject
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user with pending request.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/follows/requests/1/reject
+
+**Expected:** 200/204 response.
+
+---
+
+## API - Posts Extended
+
+### TC-API-POST-EXT-001: GET /api/posts/{id}
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/posts/1
+
+**Expected:** 200 response with single post.
+
+---
+
+### TC-API-POST-EXT-002: PATCH /api/posts/{id}
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user owns post.
+
+**Steps:**
+1. GET /api/auth/login
+2. PATCH /api/posts/1 with content update
+
+**Expected:** 200 response.
+
+---
+
+### TC-API-POST-EXT-003: DELETE /api/posts/{id}
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user owns post.
+
+**Steps:**
+1. GET /api/auth/login
+2. DELETE /api/posts/1
+
+**Expected:** 200/204 response.
+
+---
+
+### TC-API-POST-EXT-004: GET /api/users/{username}/posts
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/users/alice/posts
+
+**Expected:** 200 response with posts array.
+
+---
+
+## API - Admin Extended
+
+### TC-API-ADMIN-EXT-001: PATCH /api/admin/users/{id}
+**Priority:** critical | **Type:** API
+
+**Preconditions:** Admin role.
+
+**Steps:**
+1. GET /api/auth/login (admin)
+2. PATCH /api/admin/users/1 with role update
+
+**Expected:** 200 response.
+
+---
+
+### TC-API-ADMIN-EXT-002: DELETE /api/admin/posts/{id}
+**Priority:** critical | **Type:** API
+
+**Preconditions:** Admin role.
+
+**Steps:**
+1. GET /api/auth/login (admin)
+2. DELETE /api/admin/posts/1
+
+**Expected:** 200/204 response.
+
+---
+
+## API - Health
+
+### TC-API-HEALTH-001: GET /api/health
+**Priority:** critical | **Type:** API
+
+**Steps:**
+1. GET /api/health
+
+**Expected:** 200 response with status healthy.
+
+---
+
+### TC-API-RESET-001: POST /api/reset
+**Priority:** critical | **Type:** API
+
+**Steps:**
+1. POST /api/reset
+
+**Expected:** 200 response, database reset.
+
+---
+
+## API - Users Extended
+
+### TC-API-USER-001: GET /api/users
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/users
+
+**Expected:** 200 response with users array.
+
+---
+
+### TC-API-USER-002: GET /api/users/{username}
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/users/alice
+
+**Expected:** 200 response with user profile.
+
+---
+
+### TC-API-USER-003: POST /api/users/{username}/follow
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/users/bob/follow
+
+**Expected:** 200/201 response.
+
+---
+
+### TC-API-USER-004: DELETE /api/users/{username}/follow
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user following target.
+
+**Steps:**
+1. GET /api/auth/login
+2. DELETE /api/users/bob/follow
+
+**Expected:** 200/204 response.
+
+---
+
+### TC-API-USER-005: GET /api/users/{username}/followers
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/users/alice/followers
+
+**Expected:** 200 response with followers array.
+
+---
+
+### TC-API-USER-006: GET /api/users/{username}/following
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/users/alice/following
+
+**Expected:** 200 response with following array.
+
+---
+
+## API - Notifications Extended
+
+### TC-API-NOTIF-001: GET /api/notifications
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/notifications
+
+**Expected:** 200 response with notifications array.
+
+---
+
+### TC-API-NOTIF-002: GET /api/notifications/unread-count
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. GET /api/notifications/unread-count
+
+**Expected:** 200 response with count.
+
+---
+
+### TC-API-NOTIF-003: POST /api/notifications/read-all
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Authenticated user with unread notifications.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/notifications/read-all
+
+**Expected:** 200/204 response.
+
+---
+
 ## Test Data Reference
 
 | User | Email | Password | Role |
