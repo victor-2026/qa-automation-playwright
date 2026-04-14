@@ -1,0 +1,25 @@
+{
+  "name": "qa-automation-sandbox",
+  "version": "1.0.0",
+  "description": "**A free, open-source, full-stack social network designed specifically as a practice environment for QA automation engineers.**",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manikosto/qa-automation-sandbox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/manikosto/qa-automation-sandbox/issues"
+  },
+  "homepage": "https://github.com/manikosto/qa-automation-sandbox#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}

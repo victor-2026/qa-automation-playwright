@@ -23,3 +23,10 @@ allure-results/
 coverage/
 htmlcov/
 .coverage
+
+# Playwright
+node_modules/
+test-results/
+playwright-report/
+*.png
+*.webm
