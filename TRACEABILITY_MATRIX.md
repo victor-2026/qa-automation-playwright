@@ -27,6 +27,7 @@
 | AUTH-005 | Registration validation | TC-AUTH-008 | Username validation rejects spaces | ✅ Pass |
 | AUTH-006 | Token refresh | TC-AUTH-006 | Token refresh flow | ⏳ Pending |
 | AUTH-007 | Quick login buttons | TC-AUTH-007 | Quick login buttons fill form | ⏳ Pending |
+| AUTH-009 | Wrong email error | TC-AUTH-009 | Login with wrong email shows error | ✅ Pass |
 
 ---
 

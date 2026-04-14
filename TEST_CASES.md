@@ -138,6 +138,22 @@
 
 ---
 
+### TC-AUTH-009: Login with wrong email
+**Priority:** high | **Type:** UI
+
+**Preconditions:** On /login page.
+
+**Steps:**
+1. Enter wrong email: wrong@buzzhive.com
+2. Enter valid password: alice123
+3. Click "Sign in"
+
+**Expected:** Error message visible: "Invalid email or password". Stay on /login. No tokens stored.
+
+**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`, `auth-error-message`
+
+---
+
 ## Posts
 
 ### TC-POST-001: Create a new post

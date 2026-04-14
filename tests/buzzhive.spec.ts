@@ -106,7 +106,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-002: Wrong password error - PASSED');
   });
 
-  test('AUTH-007: login with wrong email shows error', async ({ page }) => {
+  test('AUTH-009: login with wrong email shows error', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     await page.fill('[data-testid="auth-email-input"]', 'wrong@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -114,7 +114,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     await page.waitForTimeout(1000);
     const errorMsg = page.locator('[data-testid="auth-error-message"]');
     await expect(errorMsg).toBeVisible({ timeout: 3000 });
-    console.log('✅ AUTH-007: Wrong email error - PASSED');
+    console.log('✅ AUTH-009: Wrong email error - PASSED');
   });
 
   test('AUTH-002: no tokens stored on failed login', async ({ page }) => {

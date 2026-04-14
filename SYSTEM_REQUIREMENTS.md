@@ -114,7 +114,7 @@ WHEN: User attempts login
 THEN: Error "Invalid email or password" shown, stay on /login
 ```
 
-#### Wrong Email (TC-AUTH-007)
+#### Wrong Email (TC-AUTH-009)
 ```
 GIVEN: Wrong email, valid password
 WHEN: User attempts login
