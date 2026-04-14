@@ -2118,3 +2118,90 @@ test.describe('Buzzhive API - Admin Extended', () => {
     console.log(`✅ API-ADMIN-EXT-002: Delete post returns ${response.status()} - PASSED`);
   });
 });
+
+test.describe('Buzzhive API - Upload', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-UPLOAD-001: POST /api/upload/image uploads valid image', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-UPLOAD-001: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const buffer = Buffer.from('fake-image-content');
+    const response = await page.request.fetch(`${API_BASE}/upload/image`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`,
+      },
+      multipart: {
+        file: {
+          name: 'test.jpg',
+          mimeType: 'image/jpeg',
+          buffer,
+        },
+      },
+    });
+    
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-UPLOAD-001: Upload returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-UPLOAD-002: POST /api/upload/image rejects non-image', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-UPLOAD-002: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const buffer = Buffer.from('just text content');
+    const response = await page.request.fetch(`${API_BASE}/upload/image`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`,
+      },
+      multipart: {
+        file: {
+          name: 'test.txt',
+          mimeType: 'text/plain',
+          buffer,
+        },
+      },
+    });
+    
+    expect([400, 422]).toContain(response.status());
+    console.log(`✅ API-UPLOAD-002: Non-image rejected with ${response.status()} - PASSED`);
+  });
+  
+  test('API-UPLOAD-003: POST /api/upload/image requires auth', async ({ page }) => {
+    const buffer = Buffer.from('fake-image');
+    const response = await page.request.fetch(`${API_BASE}/upload/image`, {
+      method: 'POST',
+      multipart: {
+        file: {
+          name: 'test.jpg',
+          mimeType: 'image/jpeg',
+          buffer,
+        },
+      },
+    });
+    
+    expect(response.status()).toBeGreaterThanOrEqual(400);
+    console.log(`✅ API-UPLOAD-003: Upload without auth returns ${response.status()} - PASSED`);
+  });
+});

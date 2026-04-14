@@ -1147,6 +1147,57 @@
 
 ---
 
+## API - Upload
+
+### TC-API-UPLOAD-001: POST /api/upload/image
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/upload/image with valid JPEG image
+
+**Expected:** 200 response with {url: "/uploads/..."}
+
+---
+
+### TC-API-UPLOAD-002: POST /api/upload/image rejects non-image
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/upload/image with .txt file
+
+**Expected:** 400 response: "Only JPEG, PNG, GIF, WebP images are allowed"
+
+---
+
+### TC-API-UPLOAD-003: POST /api/upload/image requires auth
+**Priority:** critical | **Type:** API
+
+**Steps:**
+1. POST /api/upload/image without token
+
+**Expected:** 401/403 response.
+
+---
+
+### TC-API-UPLOAD-004: POST /api/upload/image rejects >5MB
+**Priority:** high | **Type:** API
+
+**Preconditions:** Authenticated user.
+
+**Steps:**
+1. GET /api/auth/login
+2. POST /api/upload/image with file > 5MB
+
+**Expected:** 400 response: "File size exceeds 5MB limit"
+
+---
+
 ## API - Health
 
 ### TC-API-HEALTH-001: GET /api/health

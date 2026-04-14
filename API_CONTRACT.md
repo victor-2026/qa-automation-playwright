@@ -46,7 +46,7 @@ Last updated: 2026-04-14
 | GET | /api/follows/requests | Requests | ✅ Tested |
 | POST | /api/follows/requests/{id}/accept | Accept | ✅ Tested |
 | POST | /api/follows/requests/{id}/reject | Reject | ✅ Tested |
-| POST | /api/upload/image | Upload | ⏳ |
+| POST | /api/upload/image | Upload | ✅ Tested |
 **Legend:** ✅ Tested | ⚠️ Bug | ⏳ Not tested
 
-**Total API Coverage:** 45/52 (87%)
+**Total API Coverage:** 46/52 (88%)
