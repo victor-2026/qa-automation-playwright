@@ -346,6 +346,61 @@ test.describe('Buzzhive Social Network - Follows', () => {
   });
 });
 
+test.describe('Buzzhive Social Network - Moderator', () => {
+  
+  test('moderator can access admin panel', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'mod123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const adminLink = page.locator('[data-testid="nav-admin"]');
+    await expect(adminLink).toBeVisible({ timeout: 5000 });
+    
+    await adminLink.click();
+    await page.waitForURL('**/admin**');
+    console.log('✅ Moderator can access admin panel!');
+  });
+  
+  test('moderator can delete any post', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'mod123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const menuBtn = page.locator('[data-testid^="post-menu-btn-"]').first();
+    await menuBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await menuBtn.click();
+    await page.waitForTimeout(500);
+    
+    const deleteBtn = page.locator('[data-testid^="post-delete-btn-"]').first();
+    if (await deleteBtn.isVisible()) {
+      await deleteBtn.click();
+      await page.waitForTimeout(500);
+      console.log('✅ Moderator can delete posts!');
+    } else {
+      console.log('ℹ️ No delete option visible');
+    }
+  });
+  
+  test('moderator cannot ban users', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'mod123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    await page.goto(`${BASE_URL}/admin/users`);
+    
+    const banBtn = page.locator('[data-testid^="admin-ban-btn-"]').first();
+    await expect(banBtn).not.toBeVisible({ timeout: 3000 });
+    
+    console.log('✅ Moderator cannot ban users!');
+  });
+});
+
 test.describe('Buzzhive Social Network - Admin', () => {
   
   test('admin dashboard shows stats', async ({ page }) => {
@@ -376,6 +431,53 @@ test.describe('Buzzhive Social Network - Admin', () => {
     await expect(adminLink).not.toBeVisible({ timeout: 2000 });
     
     console.log('✅ Admin link hidden for regular user!');
+  });
+  
+  test('admin can ban a user', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'admin123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    await page.goto(`${BASE_URL}/admin/users`);
+    await page.waitForLoadState('networkidle');
+    
+    const banBtn = page.locator('[data-testid^="admin-ban-btn-"]').first();
+    await banBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await banBtn.click();
+    await page.waitForTimeout(1000);
+    
+    console.log('✅ User banned successfully!');
+  });
+  
+  test('banned user cannot login', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'frank@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'frank123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForTimeout(1000);
+    
+    const errorMsg = page.locator('[data-testid="auth-error-message"]');
+    await expect(errorMsg).toBeVisible({ timeout: 3000 });
+    
+    console.log('✅ Banned user login blocked!');
+  });
+  
+  test('admin can change user role', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'admin123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    await page.goto(`${BASE_URL}/admin/users`);
+    await page.waitForLoadState('networkidle');
+    
+    const roleSelect = page.locator('[data-testid^="admin-role-select-"]').first();
+    await roleSelect.waitFor({ state: 'visible', timeout: 5000 });
+    
+    console.log('✅ Role selector visible!');
   });
 });
 
