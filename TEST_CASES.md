@@ -1,326 +1,720 @@
-  { id: 'TC-AUTH-001', module: 'Auth', title: 'Successful login', priority: 'critical', type: 'UI',
-    preconditions: 'DB in default state. User alice_dev exists and is active.',
-    steps: ['Open /login', 'Enter email: alice@buzzhive.com', 'Enter password: alice123', 'Click "Sign in"'],
-    expected: 'Redirect to /. Sidebar shows "Alice Developer". Feed loads.',
-    selectors: ['auth-email-input', 'auth-password-input', 'auth-login-btn'] },
-  { id: 'TC-AUTH-002', module: 'Auth', title: 'Login with wrong password', priority: 'critical', type: 'UI',
-    preconditions: 'DB in default state.',
-    steps: ['Open /login', 'Enter email: alice@buzzhive.com', 'Enter password: wrongpass', 'Click "Sign in"'],
-    expected: 'Error message visible: "Invalid email or password". Stay on /login.',
-    selectors: ['auth-email-input', 'auth-password-input', 'auth-login-btn', 'auth-error-message'] },
-  { id: 'TC-AUTH-003', module: 'Auth', title: 'Login with banned account', priority: 'high', type: 'Integration',
-    preconditions: 'User frank_banned exists with is_active=false. Verify via DB: SELECT is_active FROM users WHERE username=\'frank_banned\';',
-    steps: ['Open /login', 'Enter email: frank@buzzhive.com', 'Enter password: frank123', 'Click "Sign in"'],
-    expected: 'Error: "Account is deactivated". No redirect. No token stored.',
-    selectors: ['auth-login-btn', 'auth-error-message'], apiEndpoints: ['POST /api/auth/login'] },
-  { id: 'TC-AUTH-004', module: 'Auth', title: 'Register new account', priority: 'critical', type: 'UI',
-    preconditions: 'Email and username must not already exist in DB.',
-    steps: ['Open /register', 'Enter display name: "Test User"', 'Enter username: testuser_123', 'Enter email: testuser@example.com', 'Enter password: test123', 'Click "Create account"'],
-    expected: 'Redirect to /login with success toast. Login with new credentials works.',
-    selectors: ['auth-display-name-input', 'auth-username-input', 'auth-email-input', 'auth-password-input', 'auth-register-btn'] },
-  { id: 'TC-AUTH-005', module: 'Auth', title: 'Register with duplicate email', priority: 'high', type: 'API',
-    preconditions: 'User alice_dev already exists.',
-    steps: ['POST /api/auth/register with body: {"email":"alice@buzzhive.com","username":"newuser","password":"pass123","display_name":"New"}'],
-    expected: '409 Conflict: {"detail":"User with this email or username already exists","error_code":"CONFLICT","status_code":409}',
-    apiEndpoints: ['POST /api/auth/register'] },
-  { id: 'TC-AUTH-006', module: 'Auth', title: 'Token refresh flow', priority: 'high', type: 'API',
-    preconditions: 'Valid refresh_token obtained from login.',
-    steps: ['POST /api/auth/login to get access_token + refresh_token', 'Wait for access_token to expire (or manually use expired one)', 'GET /api/auth/me with expired token → 401', 'POST /api/auth/refresh with refresh_token', 'GET /api/auth/me with new access_token → 200'],
-    expected: 'Expired token returns 401. Refresh returns new token pair. New token works.',
-    apiEndpoints: ['POST /api/auth/login', 'POST /api/auth/refresh', 'GET /api/auth/me'] },
-  { id: 'TC-AUTH-007', module: 'Auth', title: 'Quick login buttons fill form', priority: 'medium', type: 'UI',
-    preconditions: 'On /login page.',
-    steps: ['Click "Admin" quick login button', 'Check email and password fields'],
-    expected: 'Email = admin@buzzhive.com, Password = admin123.',
-    selectors: ['auth-email-input', 'auth-password-input'] },
-  { id: 'TC-AUTH-008', module: 'Auth', title: 'Username validation rejects spaces', priority: 'medium', type: 'UI',
-    preconditions: 'On /register page.',
-    steps: ['Enter username: "bad user" (with space)', 'Submit form'],
-    expected: 'Validation error. Username must match ^[a-zA-Z0-9_]+$.',
-    selectors: ['auth-username-input', 'auth-register-btn'] },
+# Test Cases - Buzzhive Social Network
 
-  // POSTS
-  { id: 'TC-POST-001', module: 'Posts', title: 'Create a new post', priority: 'critical', type: 'UI',
-    preconditions: 'Logged in as any active user.',
-    steps: ['Navigate to / (Feed)', 'Type "Hello from automation!" in composer', 'Click "Post" button'],
-    expected: 'Post appears at top of feed. Toast: "Post created!". Counter resets.',
-    selectors: ['post-composer-input', 'post-composer-submit'] },
-  { id: 'TC-POST-002', module: 'Posts', title: 'Post with hashtags auto-links', priority: 'high', type: 'Integration',
-    preconditions: 'Logged in as any user.',
-    steps: ['Create post: "Testing #automation today"', 'Check that #automation is rendered as a link', 'Click the hashtag link', 'Verify Explore page opens with hashtag filter'],
-    expected: 'Hashtag rendered as clickable link. Explore shows posts tagged #automation.',
-    selectors: ['post-composer-input', 'post-composer-submit'], apiEndpoints: ['POST /api/posts', 'GET /api/posts?hashtag=automation'] },
-  { id: 'TC-POST-003', module: 'Posts', title: 'Like and unlike a post', priority: 'critical', type: 'UI',
-    preconditions: 'Logged in. At least one post visible. Post is NOT already liked.',
-    steps: ['Note current like count on a post', 'Click like button (heart icon)', 'Verify count +1 and heart is filled red', 'Click like button again', 'Verify count -1 and heart is outline'],
-    expected: 'Like toggles. Count increments/decrements. Heart state changes. State persists on page reload.',
-    selectors: ['post-like-btn-{id}', 'post-likes-count-{id}'] },
-  { id: 'TC-POST-004', module: 'Posts', title: 'Bookmark and view bookmarks', priority: 'high', type: 'UI',
-    preconditions: 'Logged in. Post is not bookmarked.',
-    steps: ['Click bookmark icon on a post', 'Verify icon becomes filled', 'Navigate to /bookmarks', 'Verify the post appears in bookmarks list'],
-    expected: 'Bookmark icon toggles. Post appears in /bookmarks.',
-    selectors: ['post-bookmark-btn-{id}', 'nav-bookmarks'] },
-  { id: 'TC-POST-005', module: 'Posts', title: 'Delete own post', priority: 'high', type: 'UI',
-    preconditions: 'Logged in as alice_dev. At least one own post exists.',
-    steps: ['Click (...) menu on own post', 'Click "Delete"', 'Confirm in dialog'],
-    expected: 'Post disappears from feed immediately.',
-    selectors: ['post-menu-btn-{id}', 'post-delete-btn-{id}'] },
-  { id: 'TC-POST-006', module: 'Posts', title: 'Moderator soft-deletes post', priority: 'high', type: 'Integration',
-    preconditions: 'Logged in as moderator. Target post exists. Note post ID.',
-    steps: ['Find any user post in feed', 'Click (...) menu → Delete', 'Login as admin → /admin/content', 'Verify post shows as [DELETED]'],
-    expected: 'Post removed from public feed. Visible in admin with [DELETED] tag. deleted_by = moderator ID in DB.',
-    selectors: ['post-menu-btn-{id}', 'post-delete-btn-{id}', 'admin-posts-table'],
-    apiEndpoints: ['DELETE /api/posts/{id}', 'GET /api/admin/posts?is_deleted=true'] },
-  { id: 'TC-POST-007', module: 'Posts', title: 'Post at max length (2000 chars)', priority: 'medium', type: 'Edge Case',
-    preconditions: 'Logged in. Seed post with 2000 "A" characters exists (post_24).',
-    steps: ['Open composer', 'Enter exactly 2000 characters', 'Verify counter shows 2000/2000', 'Submit', 'Verify post created', 'Also: check seed post_24 renders without breaking layout'],
-    expected: 'Post created. Counter accurate. Long post renders with proper word-wrap.',
-    selectors: ['post-composer-input', 'post-composer-submit'] },
-  { id: 'TC-POST-008', module: 'Posts', title: 'XSS attempt in post content', priority: 'critical', type: 'Security',
-    preconditions: 'Seed data loaded. Post with <script>alert("xss")</script> exists (post_25).',
-    steps: ['Navigate to feed or explore', 'Find the seed post with script tag content', 'Inspect DOM to verify no <script> element exists', 'Verify content displayed as plain text'],
-    expected: 'Script tag rendered as text. No JavaScript execution. Check DevTools console for no errors.',
-    selectors: ['post-content-{id}'] },
-  { id: 'TC-POST-009', module: 'Posts', title: 'Feed only shows followed users', priority: 'high', type: 'Integration',
-    preconditions: 'Logged in as alice_dev. alice follows: bob, carol, dave, admin. Does NOT follow: eve.',
-    steps: ['GET /api/posts/feed', 'Verify posts from bob_photo, carol_writes, admin, alice_dev appear', 'Verify NO posts from eve_new appear'],
-    expected: 'Feed contains only own posts + posts from followed users.',
-    apiEndpoints: ['GET /api/posts/feed'] },
-  { id: 'TC-POST-010', module: 'Posts', title: 'Edit post within 15-min window', priority: 'medium', type: 'API',
-    preconditions: 'Create a fresh post via API and note its ID.',
-    steps: ['POST /api/posts with content "Original"', 'PATCH /api/posts/{id} with content "Updated" → 200', 'Verify content changed', 'Note: after 15 min the same PATCH returns 400'],
-    expected: 'Edit succeeds within window. After 15 min: 400 "Posts can only be edited within 15 minutes".',
-    apiEndpoints: ['POST /api/posts', 'PATCH /api/posts/{id}'] },
-  { id: 'TC-POST-011', module: 'Posts', title: 'Upload image and attach to post', priority: 'high', type: 'UI',
-    preconditions: 'Logged in. Have a JPEG/PNG file < 5MB.',
-    steps: ['Click image button in composer', 'Select image file', 'Verify preview appears', 'Type post content', 'Click Post', 'Verify post shows with image'],
-    expected: 'Image uploaded, preview shown, post created with image visible.',
-    selectors: ['post-composer-image-btn', 'post-composer-file-input', 'post-composer-image-preview', 'post-composer-submit'] },
-  { id: 'TC-POST-012', module: 'Posts', title: 'Empty feed for new user', priority: 'medium', type: 'UI',
-    preconditions: 'Logged in as eve_new (follows only alice, has 0 own posts).',
-    steps: ['Navigate to / (Feed)'],
-    expected: 'Shows posts from alice (followed). If eve follows nobody: empty state message.',
-    selectors: ['nav-feed'] },
+55+ test cases for QA automation practice.
 
-  // COMMENTS
-  { id: 'TC-COM-001', module: 'Comments', title: 'Add comment to post', priority: 'critical', type: 'UI',
-    preconditions: 'Logged in. On a post detail page (/post/{id}).',
-    steps: ['Type "Great post!" in comment input', 'Click send button', 'Verify comment appears in list'],
-    expected: 'Comment appears. Post comments_count increments. Toast shown.',
-    selectors: ['comment-input', 'comment-submit-btn'] },
-  { id: 'TC-COM-002', module: 'Comments', title: 'Reply to a comment (nested)', priority: 'high', type: 'UI',
-    preconditions: 'Post has at least one comment.',
-    steps: ['Click "Reply" on a comment', 'Verify "Replying to @username" label appears', 'Type reply text', 'Click submit'],
-    expected: 'Reply appears indented under parent comment.',
-    selectors: ['comment-reply-btn-{id}', 'comment-input', 'comment-submit-btn'] },
-  { id: 'TC-COM-003', module: 'Comments', title: 'Expand nested replies', priority: 'medium', type: 'UI',
-    preconditions: 'Post has comment with replies. Seed: post about "tabs vs spaces" (post_4) has nested chain.',
-    steps: ['Open post_4 detail', 'Find comment with "N replies" indicator', 'Click to expand'],
-    expected: 'Nested replies load with visual indentation (border-left).',
-    selectors: ['comment-{id}'] },
-  { id: 'TC-COM-004', module: 'Comments', title: 'Like a comment', priority: 'medium', type: 'UI',
-    preconditions: 'On post detail page with comments.',
-    steps: ['Click heart icon on a comment', 'Verify count +1, heart turns red'],
-    expected: 'Comment like toggles correctly.',
-    selectors: ['comment-like-btn-{id}'] },
+---
 
-  // FOLLOWS
-  { id: 'TC-FOL-001', module: 'Follows', title: 'Follow a public user', priority: 'critical', type: 'UI',
-    preconditions: 'Logged in as eve_new. eve does NOT follow bob_photo.',
-    steps: ['Navigate to /profile/bob_photo', 'Click "Follow" button', 'Verify button changes to "Unfollow"', 'Verify followers count incremented'],
-    expected: 'Follow created. Button state changes. bob_photo receives "follow" notification.',
-    selectors: ['profile-follow-btn', 'profile-followers-count'],
-    apiEndpoints: ['POST /api/users/bob_photo/follow'] },
-  { id: 'TC-FOL-002', module: 'Follows', title: 'Follow request for private account', priority: 'high', type: 'Integration',
-    preconditions: 'Logged in as eve_new. dave_quiet is a private account (is_private=true). Verify via DB: SELECT is_private FROM users WHERE username=\'dave_quiet\';',
-    steps: ['Navigate to /profile/dave_quiet', 'Verify button says "Request to Follow"', 'Click button', 'Login as dave_quiet → check notifications'],
-    expected: 'Follow status = "pending". dave sees follow_request notification. Followers count unchanged until accepted.',
-    selectors: ['profile-follow-btn'],
-    apiEndpoints: ['POST /api/users/dave_quiet/follow', 'GET /api/follows/requests'] },
-  { id: 'TC-FOL-003', module: 'Follows', title: 'Unfollow a user', priority: 'high', type: 'UI',
-    preconditions: 'Logged in as alice_dev who follows bob_photo.',
-    steps: ['Navigate to /profile/bob_photo', 'Verify button shows "Unfollow"', 'Click "Unfollow"', 'Verify button changes to "Follow"', 'Check feed no longer shows bob posts'],
-    expected: 'Follow removed. Button reverts. Feed updates.',
-    selectors: ['profile-follow-btn', 'profile-followers-count'] },
-  { id: 'TC-FOL-004', module: 'Follows', title: '"Follows you" indicator', priority: 'medium', type: 'UI',
-    preconditions: 'Logged in as alice_dev. bob_photo follows alice.',
-    steps: ['Navigate to /profile/bob_photo', 'Check for "Follows you" badge near username'],
-    expected: 'Badge visible.',
-    selectors: ['profile-display-name'] },
-  { id: 'TC-FOL-005', module: 'Follows', title: 'Followers and following lists', priority: 'medium', type: 'UI',
-    preconditions: 'User alice_dev has followers and follows others.',
-    steps: ['Navigate to /profile/alice_dev', 'Click Followers count → /profile/alice_dev/followers', 'Verify list shows users', 'Go back, click Following count → /profile/alice_dev/following'],
-    expected: 'Both lists render with user avatars, names, and @usernames.',
-    selectors: ['profile-followers-count', 'profile-following-count'] },
-  { id: 'TC-FOL-006', module: 'Follows', title: 'Cannot follow yourself', priority: 'low', type: 'API',
-    preconditions: 'Have alice_dev access token.',
-    steps: ['POST /api/users/alice_dev/follow with alice_dev token'],
-    expected: '400: "Cannot follow yourself".',
-    apiEndpoints: ['POST /api/users/{username}/follow'] },
+## Auth
 
-  // MESSAGES
-  { id: 'TC-MSG-001', module: 'Messages', title: 'Start new DM conversation', priority: 'critical', type: 'UI',
-    preconditions: 'Logged in. No existing DM with target user (or first DM reuses existing).',
-    steps: ['Navigate to /messages', 'Click "New message"', 'Type "bob" in search field', 'Click on Bob in results'],
-    expected: 'Conversation page opens. Can type and send messages.',
-    selectors: ['new-conversation-btn', 'new-conversation-search', 'new-conversation-modal'] },
-  { id: 'TC-MSG-002', module: 'Messages', title: 'Send a message', priority: 'critical', type: 'UI',
-    preconditions: 'Inside a conversation page.',
-    steps: ['Type "Hello!" in message input', 'Press Enter (or click Send)', 'Verify message appears as right-aligned blue bubble', 'Verify input clears'],
-    expected: 'Message sent and displayed. Right-aligned with timestamp.',
-    selectors: ['message-input', 'message-send-btn', 'message-{id}'] },
-  { id: 'TC-MSG-003', module: 'Messages', title: 'Unread messages badge', priority: 'high', type: 'UI',
-    preconditions: 'Login as bob_photo. alice has sent unread messages to bob (seed data).',
-    steps: ['Check sidebar Messages nav item'],
-    expected: 'Red badge with unread count visible on Messages icon.',
-    selectors: ['nav-messages', 'nav-messages-badge'] },
-  { id: 'TC-MSG-004', module: 'Messages', title: 'Opening conversation marks as read', priority: 'medium', type: 'Integration',
-    preconditions: 'Conversation has unread messages.',
-    steps: ['Note unread count badge on Messages', 'Open the conversation with unread messages', 'Go back to /messages', 'Verify unread count decreased'],
-    expected: 'Unread count for that conversation → 0. Badge updates.',
-    apiEndpoints: ['POST /api/conversations/{id}/read'] },
-  { id: 'TC-MSG-005', module: 'Messages', title: 'Group conversation display', priority: 'medium', type: 'Integration',
-    preconditions: 'Seed data includes "Tech Squad" group (alice + bob + carol).',
-    steps: ['Login as alice', 'Open /messages', 'Find "Tech Squad" conversation', 'Open it'],
-    expected: 'Group icon visible. Group name shown. Messages from different senders show sender name.',
-    selectors: ['conversation-{id}', 'message-{id}'] },
-  { id: 'TC-MSG-006', module: 'Messages', title: 'Start DM from user profile', priority: 'high', type: 'UI',
-    preconditions: 'Logged in. Viewing another user\'s profile.',
-    steps: ['Navigate to /profile/carol_writes', 'Click "Message" button'],
-    expected: 'Redirected to DM conversation with carol. If DM existed, opens existing one.',
-    selectors: ['profile-message-btn'],
-    apiEndpoints: ['POST /api/conversations/dm/carol_writes'] },
+### TC-AUTH-001: Successful login
+**Priority:** critical | **Type:** UI
 
-  // NOTIFICATIONS
-  { id: 'TC-NOT-001', module: 'Notifications', title: 'Unread badge in sidebar', priority: 'critical', type: 'UI',
-    preconditions: 'Login as alice_dev who has unread notifications (seed data).',
-    steps: ['Check sidebar Notifications icon'],
-    expected: 'Red badge with number appears on icon.',
-    selectors: ['nav-notifications', 'nav-notifications-badge'] },
-  { id: 'TC-NOT-002', module: 'Notifications', title: 'Mark all as read', priority: 'high', type: 'UI',
-    preconditions: 'User has unread notifications.',
-    steps: ['Open /notifications', 'Click "Mark all read" button', 'Verify all notification highlights removed', 'Verify sidebar badge disappears'],
-    expected: 'All marked read. Badge removed from sidebar.',
-    selectors: ['notifications-mark-all-btn', 'nav-notifications-badge'] },
-  { id: 'TC-NOT-003', module: 'Notifications', title: 'Filter unread only', priority: 'medium', type: 'UI',
-    preconditions: 'Mix of read and unread notifications exist.',
-    steps: ['Open /notifications', 'Click "Unread" filter tab', 'Verify only unread notifications shown', 'Click "All" tab', 'Verify all notifications shown'],
-    expected: 'Filter toggles correctly between all and unread.',
-    selectors: ['notifications-filter-all', 'notifications-filter-unread'] },
-  { id: 'TC-NOT-004', module: 'Notifications', title: 'Click notification navigates', priority: 'high', type: 'UI',
-    preconditions: 'User has a "liked your post" notification.',
-    steps: ['Open /notifications', 'Click a "liked your post" notification'],
-    expected: 'Navigates to the post detail page. Notification marked as read.',
-    selectors: ['notification-{id}'] },
-  { id: 'TC-NOT-005', module: 'Notifications', title: 'Like generates notification', priority: 'high', type: 'Integration',
-    preconditions: 'Two active users exist. User A has a post.',
-    steps: ['Login as eve_new', 'Like a post by alice_dev', 'Logout', 'Login as alice_dev', 'Open /notifications'],
-    expected: '"Eve Newbie liked your post" notification appears.',
-    apiEndpoints: ['POST /api/posts/{id}/like', 'GET /api/notifications'] },
+**Preconditions:** DB in default state. User alice_dev exists and is active.
 
-  // SEARCH
-  { id: 'TC-SRC-001', module: 'Search', title: 'Search users by name', priority: 'high', type: 'UI',
-    preconditions: 'Seed data loaded. On /search page.',
-    steps: ['Type "alice" in search input', 'Press Enter', 'Check Users tab'],
-    expected: 'alice_dev appears in results. Click navigates to profile.',
-    selectors: ['nav-search-input'] },
-  { id: 'TC-SRC-002', module: 'Search', title: 'Search posts by content', priority: 'high', type: 'UI',
-    preconditions: 'Seed data loaded.',
-    steps: ['Search "debugging"', 'Check Posts tab'],
-    expected: 'Alice\'s "debugging at 2am" post appears.',
-    selectors: ['nav-search-input'] },
-  { id: 'TC-SRC-003', module: 'Search', title: 'Search hashtags', priority: 'medium', type: 'UI',
-    preconditions: 'Seed data loaded.',
-    steps: ['Search "coding"', 'Check Hashtags tab'],
-    expected: '#coding shown with correct post count.',
-    selectors: ['nav-search-input'] },
-  { id: 'TC-SRC-004', module: 'Search', title: 'Empty search results', priority: 'low', type: 'UI',
-    preconditions: 'On /search page.',
-    steps: ['Search "zzzznonexistent"'],
-    expected: 'All tabs show 0 results with "No X found" messages.',
-    selectors: ['nav-search-input'] },
+**Steps:**
+1. Open /login
+2. Enter email: alice@buzzhive.com
+3. Enter password: alice123
+4. Click "Sign in"
 
-  // ADMIN
-  { id: 'TC-ADM-001', module: 'Admin', title: 'Dashboard shows stats', priority: 'high', type: 'UI',
-    preconditions: 'Logged in as admin.',
-    steps: ['Navigate to /admin', 'Check stats cards'],
-    expected: 'Cards show total users, active users, total posts, comments, messages.',
-    selectors: ['admin-stats-users-count', 'admin-stats-posts-count', 'nav-admin'] },
-  { id: 'TC-ADM-002', module: 'Admin', title: 'Ban a user', priority: 'critical', type: 'Integration',
-    preconditions: 'Logged in as admin. Target user is active.',
-    steps: ['Go to /admin/users', 'Find alice_dev row', 'Click "Ban" button', 'Logout', 'Try to login as alice_dev'],
-    expected: 'User banned (is_active=false). alice_dev login fails with "Account is deactivated". Verify in DB: SELECT is_active FROM users WHERE username=\'alice_dev\';',
-    selectors: ['admin-ban-btn-{id}', 'admin-user-row-{id}'],
-    apiEndpoints: ['PATCH /api/admin/users/{id}'] },
-  { id: 'TC-ADM-003', module: 'Admin', title: 'Change user role', priority: 'high', type: 'UI',
-    preconditions: 'Logged in as admin.',
-    steps: ['Go to /admin/users', 'Find eve_new', 'Change role dropdown to "moderator"', 'Logout, login as eve_new'],
-    expected: 'eve_new now sees Admin nav link in sidebar.',
-    selectors: ['admin-role-select-{id}', 'nav-admin'] },
-  { id: 'TC-ADM-004', module: 'Admin', title: 'Regular user blocked from admin', priority: 'critical', type: 'Security',
-    preconditions: 'Logged in as alice_dev (role=user).',
-    steps: ['Verify no Admin link in sidebar', 'Manually navigate to /admin', 'Try GET /api/admin/stats with alice token'],
-    expected: 'No admin link visible. API returns 403 Forbidden.',
-    selectors: ['nav-admin'],
-    apiEndpoints: ['GET /api/admin/stats'] },
-  { id: 'TC-ADM-005', module: 'Admin', title: 'Moderate-delete post with reason', priority: 'high', type: 'Integration',
-    preconditions: 'Logged in as moderator. Note a post ID to delete.',
-    steps: ['Go to /admin/content', 'Click Delete on a post', 'Enter reason in prompt', 'Verify post marked [DELETED]', 'Check DB: SELECT deleted_by, deleted_reason FROM posts WHERE id=\'...\';'],
-    expected: 'Post soft-deleted. Reason stored. deleted_by = moderator UUID.',
-    apiEndpoints: ['DELETE /api/admin/posts/{id}'] },
+**Expected:** Redirect to /. Sidebar shows "Alice Developer". Feed loads.
 
-  // EDGE CASES
-  { id: 'TC-EDGE-001', module: 'System', title: 'SQL injection in content is safe', priority: 'critical', type: 'Security',
-    preconditions: 'Seed data loaded. Post with SQL injection exists (post_25).',
-    steps: ['Find seed post containing: \'; DROP TABLE posts; --', 'Verify it renders as plain text', 'Run SQL: SELECT COUNT(*) FROM posts; — verify tables exist'],
-    expected: 'Content is plain text. Database intact. No tables dropped.',
-    apiEndpoints: ['GET /api/posts'] },
-  { id: 'TC-EDGE-002', module: 'System', title: 'XSS attempt in content', priority: 'critical', type: 'Security',
-    preconditions: 'Seed data loaded. Post with <script> tag exists (post_25).',
-    steps: ['Find seed post with script tag', 'Open browser DevTools Console', 'Verify no JS executed', 'Inspect DOM — no <script> element'],
-    expected: 'Content escaped. No script execution.',
-    selectors: ['post-content-{id}'] },
-  { id: 'TC-EDGE-003', module: 'System', title: 'Unicode and multilingual content', priority: 'medium', type: 'Edge Case',
-    preconditions: 'Seed post_25 contains Chinese, Arabic, Russian, emoji.',
-    steps: ['Find the unicode post in feed', 'Verify all characters render correctly', 'Verify no encoding artifacts'],
-    expected: 'All scripts display correctly: Chinese, Arabic, Russian, emoji flags.',
-    selectors: ['post-content-{id}'] },
-  { id: 'TC-EDGE-004', module: 'System', title: 'Duplicate like returns 409', priority: 'medium', type: 'API',
-    preconditions: 'Logged in. Have access token.',
-    steps: ['POST /api/posts/{id}/like → 201', 'POST /api/posts/{id}/like again'],
-    expected: '409: {"detail":"Already liked this post","error_code":"CONFLICT","status_code":409}',
-    apiEndpoints: ['POST /api/posts/{id}/like'] },
-  { id: 'TC-EDGE-005', module: 'System', title: 'Duplicate follow returns 409', priority: 'medium', type: 'API',
-    preconditions: 'Already following target user.',
-    steps: ['POST /api/users/{username}/follow again'],
-    expected: '409: "Already following or request pending".',
-    apiEndpoints: ['POST /api/users/{username}/follow'] },
-  { id: 'TC-EDGE-006', module: 'System', title: '404 on non-existent resource', priority: 'medium', type: 'API',
-    preconditions: 'Have access token.',
-    steps: ['GET /api/posts/00000000-0000-0000-0000-000000000999'],
-    expected: '404: {"detail":"Post not found","error_code":"NOT_FOUND","status_code":404}',
-    apiEndpoints: ['GET /api/posts/{id}'] },
-  { id: 'TC-EDGE-007', module: 'System', title: 'Upload oversized image (>5MB)', priority: 'medium', type: 'API',
-    preconditions: 'Have a file > 5MB.',
-    steps: ['POST /api/upload/image with file > 5MB'],
-    expected: '400: "File size exceeds 5MB limit".',
-    apiEndpoints: ['POST /api/upload/image'] },
-  { id: 'TC-EDGE-008', module: 'System', title: 'Upload non-image file', priority: 'medium', type: 'API',
-    preconditions: 'Have a .txt or .pdf file.',
-    steps: ['POST /api/upload/image with .txt file'],
-    expected: '400: "Only JPEG, PNG, GIF, WebP images are allowed".',
-    apiEndpoints: ['POST /api/upload/image'] },
-  { id: 'TC-EDGE-009', module: 'System', title: 'Database reset re-seeds data', priority: 'high', type: 'Integration',
-    preconditions: 'Some custom data created (posts, users, etc.).',
-    steps: ['Create a post via API', 'POST /api/reset', 'GET /api/posts — check custom post is gone', 'Verify seed users exist: GET /api/users'],
-    expected: 'All custom data deleted. 8 seed users, 25+ posts restored.',
-    apiEndpoints: ['POST /api/reset', 'GET /api/posts', 'GET /api/users'] },
-  { id: 'TC-EDGE-010', module: 'System', title: 'Private account post visibility', priority: 'high', type: 'Integration',
-    preconditions: 'dave_quiet is private. carol_writes has pending (not accepted) follow to dave.',
-    steps: ['Login as carol_writes', 'GET /api/users/dave_quiet/posts', 'Verify followers_only posts are not returned', 'Login as alice_dev (accepted follower)', 'GET /api/users/dave_quiet/posts'],
-    expected: 'Non-follower cannot see followers_only posts. Accepted follower can.',
-    apiEndpoints: ['GET /api/users/{username}/posts'] },
-]
+**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`
 
-const MODULES: Module[] = ['Auth', 'Posts', 'Comments', 'Follows', 'Messages', 'Notifications', 'Search', 'Admin', 'System']
-const PRIORITIES: Priority[] = ['critical', 'high', 'medium', 'low']
+---
+
+### TC-AUTH-002: Login with wrong password
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** DB in default state.
+
+**Steps:**
+1. Open /login
+2. Enter email: alice@buzzhive.com
+3. Enter password: wrongpass
+4. Click "Sign in"
+
+**Expected:** Error message visible: "Invalid email or password". Stay on /login.
+
+**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`, `auth-error-message`
+
+---
+
+### TC-AUTH-003: Login with banned account
+**Priority:** high | **Type:** Integration
+
+**Preconditions:** User frank_banned exists with is_active=false.
+
+**Steps:**
+1. Open /login
+2. Enter email: frank@buzzhive.com
+3. Enter password: frank123
+4. Click "Sign in"
+
+**Expected:** Error: "Account is deactivated". No redirect. No token stored.
+
+**API:** `POST /api/auth/login`
+
+---
+
+### TC-AUTH-004: Register new account
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Email and username must not already exist in DB.
+
+**Steps:**
+1. Open /register
+2. Enter display name: "Test User"
+3. Enter username: testuser_123
+4. Enter email: testuser@example.com
+5. Enter password: test123
+6. Click "Create account"
+
+**Expected:** Redirect to /login with success toast. Login with new credentials works.
+
+**Selectors:** `auth-display-name-input`, `auth-username-input`, `auth-email-input`, `auth-password-input`, `auth-register-btn`
+
+---
+
+### TC-AUTH-005: Register with duplicate email
+**Priority:** high | **Type:** API
+
+**Preconditions:** User alice_dev already exists.
+
+**Steps:**
+1. POST /api/auth/register with body: `{"email":"alice@buzzhive.com","username":"newuser","password":"pass123","display_name":"New"}`
+
+**Expected:** 409 Conflict: `{"detail":"User with this email or username already exists"}`
+
+**API:** `POST /api/auth/register`
+
+---
+
+### TC-AUTH-006: Token refresh flow
+**Priority:** high | **Type:** API
+
+**Preconditions:** Valid refresh_token obtained from login.
+
+**Steps:**
+1. POST /api/auth/login to get access_token + refresh_token
+2. Wait for access_token to expire (or manually use expired one)
+3. GET /api/auth/me with expired token → 401
+4. POST /api/auth/refresh with refresh_token
+5. GET /api/auth/me with new access_token → 200
+
+**Expected:** Expired token returns 401. Refresh returns new token pair. New token works.
+
+**API:** `POST /api/auth/login`, `POST /api/auth/refresh`, `GET /api/auth/me`
+
+---
+
+### TC-AUTH-007: Quick login buttons fill form
+**Priority:** medium | **Type:** UI
+
+**Preconditions:** On /login page.
+
+**Steps:**
+1. Click "Admin" quick login button
+2. Check email and password fields
+
+**Expected:** Email = admin@buzzhive.com, Password = admin123.
+
+**Selectors:** `auth-email-input`, `auth-password-input`
+
+---
+
+### TC-AUTH-008: Username validation rejects spaces
+**Priority:** medium | **Type:** UI
+
+**Preconditions:** On /register page.
+
+**Steps:**
+1. Enter username: "bad user" (with space)
+2. Submit form
+
+**Expected:** Validation error. Username must match `^[a-zA-Z0-9_]+$`.
+
+**Selectors:** `auth-username-input`, `auth-register-btn`
+
+---
+
+## Posts
+
+### TC-POST-001: Create a new post
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Logged in as any active user.
+
+**Steps:**
+1. Navigate to / (Feed)
+2. Type "Hello from automation!" in composer
+3. Click "Post" button
+
+**Expected:** Post appears at top of feed. Toast: "Post created!". Counter resets.
+
+**Selectors:** `post-composer-input`, `post-composer-submit`
+
+---
+
+### TC-POST-002: Post with hashtags auto-links
+**Priority:** high | **Type:** Integration
+
+**Preconditions:** Logged in as any user.
+
+**Steps:**
+1. Create post: "Testing #automation today"
+2. Check that #automation is rendered as a link
+3. Click the hashtag link
+4. Verify Explore page opens with hashtag filter
+
+**Expected:** Hashtag rendered as clickable link. Explore shows posts tagged #automation.
+
+**API:** `POST /api/posts`, `GET /api/posts?hashtag=automation`
+
+---
+
+### TC-POST-003: Like and unlike a post
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Logged in. At least one post visible. Post is NOT already liked.
+
+**Steps:**
+1. Note current like count on a post
+2. Click like button (heart icon)
+3. Verify count +1 and heart is filled red
+4. Click like button again
+5. Verify count -1 and heart is outline
+
+**Expected:** Like toggles. Count increments/decrements. Heart state changes. State persists on page reload.
+
+**Selectors:** `post-like-btn-{id}`, `post-likes-count-{id}`
+
+---
+
+### TC-POST-004: Bookmark and view bookmarks
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Logged in. Post is not bookmarked.
+
+**Steps:**
+1. Click bookmark icon on a post
+2. Verify icon becomes filled
+3. Navigate to /bookmarks
+4. Verify the post appears in bookmarks list
+
+**Expected:** Bookmark icon toggles. Post appears in /bookmarks.
+
+**Selectors:** `post-bookmark-btn-{id}`, `nav-bookmarks`
+
+---
+
+### TC-POST-005: Delete own post
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Logged in as alice_dev. At least one own post exists.
+
+**Steps:**
+1. Click (...) menu on own post
+2. Click "Delete"
+3. Confirm in dialog
+
+**Expected:** Post disappears from feed immediately.
+
+**Selectors:** `post-menu-btn-{id}`, `post-delete-btn-{id}`
+
+---
+
+### TC-POST-006: Moderator soft-deletes post
+**Priority:** high | **Type:** Integration
+
+**Preconditions:** Logged in as moderator. Target post exists.
+
+**Steps:**
+1. Find any user post in feed
+2. Click (...) menu → Delete
+3. Login as admin → /admin/content
+4. Verify post shows as [DELETED]
+
+**Expected:** Post removed from public feed. Visible in admin with [DELETED] tag.
+
+**API:** `DELETE /api/posts/{id}`, `GET /api/admin/posts?is_deleted=true`
+
+---
+
+### TC-POST-007: Post at max length (2000 chars)
+**Priority:** medium | **Type:** Edge Case
+
+**Preconditions:** Logged in. Seed post with 2000 characters exists (post_24).
+
+**Steps:**
+1. Open composer
+2. Enter exactly 2000 characters
+3. Verify counter shows 2000/2000
+4. Submit
+
+**Expected:** Post created. Counter accurate. Long post renders with proper word-wrap.
+
+**Selectors:** `post-composer-input`, `post-composer-submit`
+
+---
+
+### TC-POST-008: XSS attempt in post content
+**Priority:** critical | **Type:** Security
+
+**Preconditions:** Seed data loaded. Post with `<script>alert("xss")</script>` exists (post_25).
+
+**Steps:**
+1. Navigate to feed or explore
+2. Find the seed post with script tag content
+3. Inspect DOM - verify no `<script>` element exists
+4. Verify content displayed as plain text
+
+**Expected:** Script tag rendered as text. No JavaScript execution. No console errors.
+
+**Selectors:** `post-content-{id}`
+
+---
+
+## Comments
+
+### TC-COM-001: Add comment to post
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Logged in. On a post detail page (/post/{id}).
+
+**Steps:**
+1. Type "Great post!" in comment input
+2. Click send button
+3. Verify comment appears in list
+
+**Expected:** Comment appears. Post comments_count increments. Toast shown.
+
+**Selectors:** `comment-input`, `comment-submit-btn`
+
+---
+
+### TC-COM-002: Reply to a comment (nested)
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Post has at least one comment.
+
+**Steps:**
+1. Click "Reply" on a comment
+2. Verify "Replying to @username" label appears
+3. Type reply text
+4. Click submit
+
+**Expected:** Reply appears indented under parent comment.
+
+**Selectors:** `comment-reply-btn-{id}`, `comment-input`, `comment-submit-btn`
+
+---
+
+### TC-COM-003: Like a comment
+**Priority:** medium | **Type:** UI
+
+**Preconditions:** On post detail page with comments.
+
+**Steps:**
+1. Click heart icon on a comment
+2. Verify count +1, heart turns red
+
+**Expected:** Comment like toggles correctly.
+
+**Selectors:** `comment-like-btn-{id}`
+
+---
+
+## Follows
+
+### TC-FOL-001: Follow a public user
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Logged in as eve_new. eve does NOT follow bob_photo.
+
+**Steps:**
+1. Navigate to /profile/bob_photo
+2. Click "Follow" button
+3. Verify button changes to "Unfollow"
+4. Verify followers count incremented
+
+**Expected:** Follow created. Button state changes. bob_photo receives "follow" notification.
+
+**Selectors:** `profile-follow-btn`, `profile-followers-count`
+
+**API:** `POST /api/users/bob_photo/follow`
+
+---
+
+### TC-FOL-002: Follow request for private account
+**Priority:** high | **Type:** Integration
+
+**Preconditions:** Logged in as eve_new. dave_quiet is a private account.
+
+**Steps:**
+1. Navigate to /profile/dave_quiet
+2. Verify button says "Request to Follow"
+3. Click button
+4. Login as dave_quiet → check notifications
+
+**Expected:** Follow status = "pending". dave sees follow_request notification.
+
+**Selectors:** `profile-follow-btn`
+
+---
+
+### TC-FOL-003: Unfollow a user
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Logged in as alice_dev who follows bob_photo.
+
+**Steps:**
+1. Navigate to /profile/bob_photo
+2. Verify button shows "Unfollow"
+3. Click "Unfollow"
+4. Verify button changes to "Follow"
+
+**Expected:** Follow removed. Button reverts. Feed updates.
+
+**Selectors:** `profile-follow-btn`, `profile-followers-count`
+
+---
+
+### TC-FOL-005: Followers and following lists
+**Priority:** medium | **Type:** UI
+
+**Preconditions:** User alice_dev has followers and follows others.
+
+**Steps:**
+1. Navigate to /profile/alice_dev
+2. Click Followers count → /profile/alice_dev/followers
+3. Verify list shows users
+4. Go back, click Following count → /profile/alice_dev/following
+
+**Expected:** Both lists render with user avatars, names, and @usernames.
+
+**Selectors:** `profile-followers-count`, `profile-following-count`
+
+---
+
+## Messages
+
+### TC-MSG-001: Start new DM conversation
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Logged in. No existing DM with target user.
+
+**Steps:**
+1. Navigate to /messages
+2. Click "New message"
+3. Type "bob" in search field
+4. Click on Bob in results
+
+**Expected:** Conversation page opens. Can type and send messages.
+
+**Selectors:** `new-conversation-btn`, `new-conversation-search`, `new-conversation-modal`
+
+---
+
+### TC-MSG-002: Send a message
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Inside a conversation page.
+
+**Steps:**
+1. Type "Hello!" in message input
+2. Press Enter (or click Send)
+3. Verify message appears as right-aligned blue bubble
+4. Verify input clears
+
+**Expected:** Message sent and displayed. Right-aligned with timestamp.
+
+**Selectors:** `message-input`, `message-send-btn`, `message-{id}`
+
+---
+
+### TC-MSG-003: Unread messages badge
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Login as bob_photo. alice has sent unread messages to bob.
+
+**Steps:**
+1. Check sidebar Messages nav item
+
+**Expected:** Red badge with unread count visible on Messages icon.
+
+**Selectors:** `nav-messages`, `nav-messages-badge`
+
+---
+
+## Notifications
+
+### TC-NOT-001: Unread badge in sidebar
+**Priority:** critical | **Type:** UI
+
+**Preconditions:** Login as alice_dev who has unread notifications (seed data).
+
+**Steps:**
+1. Check sidebar Notifications icon
+
+**Expected:** Red badge with number appears on icon.
+
+**Selectors:** `nav-notifications`, `nav-notifications-badge`
+
+---
+
+### TC-NOT-002: Mark all as read
+**Priority:** high | **Type:** UI
+
+**Preconditions:** User has unread notifications.
+
+**Steps:**
+1. Open /notifications
+2. Click "Mark all read" button
+3. Verify all notification highlights removed
+4. Verify sidebar badge disappears
+
+**Expected:** All marked read. Badge removed from sidebar.
+
+**Selectors:** `notifications-mark-all-btn`, `nav-notifications-badge`
+
+---
+
+## Search
+
+### TC-SRC-001: Search users by name
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Seed data loaded. On /search page.
+
+**Steps:**
+1. Type "alice" in search input
+2. Press Enter
+3. Check Users tab
+
+**Expected:** alice_dev appears in results. Click navigates to profile.
+
+**Selectors:** `nav-search-input`
+
+---
+
+### TC-SRC-002: Search posts by content
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Seed data loaded.
+
+**Steps:**
+1. Search "debugging"
+2. Check Posts tab
+
+**Expected:** Alice's "debugging at 2am" post appears.
+
+**Selectors:** `nav-search-input`
+
+---
+
+### TC-SRC-003: Search hashtags
+**Priority:** medium | **Type:** UI
+
+**Preconditions:** Seed data loaded.
+
+**Steps:**
+1. Search "coding"
+2. Check Hashtags tab
+
+**Expected:** #coding shown with correct post count.
+
+**Selectors:** `nav-search-input`
+
+---
+
+### TC-SRC-004: Empty search results
+**Priority:** low | **Type:** UI
+
+**Preconditions:** On /search page.
+
+**Steps:**
+1. Search "zzzznonexistent"
+
+**Expected:** All tabs show 0 results with "No X found" messages.
+
+**Selectors:** `nav-search-input`
+
+---
+
+## Admin
+
+### TC-ADM-001: Dashboard shows stats
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Logged in as admin.
+
+**Steps:**
+1. Navigate to /admin
+2. Check stats cards
+
+**Expected:** Cards show total users, active users, total posts, comments, messages.
+
+**Selectors:** `admin-stats-users-count`, `admin-stats-posts-count`, `nav-admin`
+
+---
+
+### TC-ADM-002: Ban a user
+**Priority:** critical | **Type:** Integration
+
+**Preconditions:** Logged in as admin. Target user is active.
+
+**Steps:**
+1. Go to /admin/users
+2. Find alice_dev row
+3. Click "Ban" button
+4. Logout
+5. Try to login as alice_dev
+
+**Expected:** User banned (is_active=false). alice_dev login fails with "Account is deactivated".
+
+**Selectors:** `admin-ban-btn-{id}`, `admin-user-row-{id}`
+
+**API:** `PATCH /api/admin/users/{id}`
+
+---
+
+### TC-ADM-003: Change user role
+**Priority:** high | **Type:** UI
+
+**Preconditions:** Logged in as admin.
+
+**Steps:**
+1. Go to /admin/users
+2. Find eve_new
+3. Change role dropdown to "moderator"
+4. Logout, login as eve_new
+
+**Expected:** eve_new now sees Admin nav link in sidebar.
+
+**Selectors:** `admin-role-select-{id}`, `nav-admin`
+
+---
+
+### TC-ADM-004: Regular user blocked from admin
+**Priority:** critical | **Type:** Security
+
+**Preconditions:** Logged in as alice_dev (role=user).
+
+**Steps:**
+1. Verify no Admin link in sidebar
+2. Manually navigate to /admin
+3. Try GET /api/admin/stats with alice token
+
+**Expected:** No admin link visible. API returns 403 Forbidden.
+
+**Selectors:** `nav-admin`
+
+**API:** `GET /api/admin/stats`
+
+---
+
+## System / Edge Cases
+
+### TC-EDGE-001: SQL injection in content is safe
+**Priority:** critical | **Type:** Security
+
+**Preconditions:** Seed data loaded. Post with SQL injection exists (post_25).
+
+**Steps:**
+1. Find seed post containing: `; DROP TABLE posts; --`
+2. Verify it renders as plain text
+3. Run SQL: SELECT COUNT(*) FROM posts — verify tables exist
+
+**Expected:** Content is plain text. Database intact. No tables dropped.
+
+**API:** `GET /api/posts`
+
+---
+
+### TC-EDGE-004: Duplicate like returns 409
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Logged in. Have access token.
+
+**Steps:**
+1. POST /api/posts/{id}/like → 201
+2. POST /api/posts/{id}/like again
+
+**Expected:** 409: `{"detail":"Already liked this post","error_code":"CONFLICT"}`
+
+**API:** `POST /api/posts/{id}/like`
+
+---
+
+### TC-EDGE-006: 404 on non-existent resource
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Have access token.
+
+**Steps:**
+1. GET /api/posts/00000000-0000-0000-0000-000000000999
+
+**Expected:** 404: `{"detail":"Post not found","error_code":"NOT_FOUND"}`
+
+**API:** `GET /api/posts/{id}`
+
+---
+
+### TC-EDGE-007: Upload oversized image (>5MB)
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Have a file > 5MB.
+
+**Steps:**
+1. POST /api/upload/image with file > 5MB
+
+**Expected:** 400: "File size exceeds 5MB limit".
+
+**API:** `POST /api/upload/image`
+
+---
+
+### TC-EDGE-008: Upload non-image file
+**Priority:** medium | **Type:** API
+
+**Preconditions:** Have a .txt or .pdf file.
+
+**Steps:**
+1. POST /api/upload/image with .txt file
+
+**Expected:** 400: "Only JPEG, PNG, GIF, WebP images are allowed".
+
+**API:** `POST /api/upload/image`
+
+---
+
+### TC-EDGE-009: Database reset re-seeds data
+**Priority:** high | **Type:** Integration
+
+**Preconditions:** Some custom data created.
+
+**Steps:**
+1. Create a post via API
+2. POST /api/reset
+3. GET /api/posts — check custom post is gone
+4. Verify seed users exist
+
+**Expected:** All custom data deleted. 8 seed users, 25+ posts restored.
+
+**API:** `POST /api/reset`, `GET /api/posts`, `GET /api/users`
+
+---
+
+## Test Data Reference
+
+| User | Email | Password | Role |
+|------|-------|---------|------|
+| Admin | admin@buzzhive.com | admin123 | Admin |
+| Moderator | mod@buzzhive.com | mod123 | Moderator |
+| Alice | alice@buzzhive.com | alice123 | User |
+| Bob | bob@buzzhive.com | bob123 | User |
+| Carol | carol@buzzhive.com | carol123 | User |
+| Dave | dave@buzzhive.com | dave123 | User (Private) |
+| Eve | eve@buzzhive.com | eve123 | User (New) |
+| Frank | frank@buzzhive.com | frank123 | Banned |
