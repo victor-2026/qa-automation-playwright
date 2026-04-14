@@ -43,3 +43,9 @@ watch -n 5 'tail -5 test-results.txt'
 - **OpenCode** — тяжёлые задачи (reverse engineering, файлы)
 - **VS Code + Copilot** — писать простые тесты
 - **Терминал** — запускать тесты в фоне
+
+## Future Tools (for other systems)
+- Jest/Vitest: unit + integration tests
+- Kafka JS: queue testing
+- ioredis: Redis testing  
+- k6: load testing
