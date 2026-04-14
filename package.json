@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test:gherkin": "cucumber-js --config=cucumber.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/manikosto/qa-automation-sandbox#readme",
   "devDependencies": {
+    "@cucumber/cucumber": "^12.8.1",
     "@playwright/test": "^1.59.1"
   }
 }
