@@ -755,6 +755,55 @@
 
 ---
 
+## Performance (PERF)
+
+### TC-PERF-001: Page Load Performance
+**Priority:** high | **Type:** Performance
+
+**Acceptance Criteria:**
+- Login page: < 2 seconds
+- Feed page: < 3 seconds
+- API response: < 500ms
+
+**Steps:**
+1. Measure time to load login page
+2. Login and measure feed load time
+3. Measure API response times
+
+**Expected:** All pages load within SLA timeframes.
+
+---
+
+### TC-PERF-002: User Action Performance
+**Priority:** medium | **Type:** Performance
+
+**Acceptance Criteria:**
+- Page navigation: < 1 second
+- Post creation: < 2 seconds
+
+**Steps:**
+1. Measure navigation time between pages
+2. Create a post and measure time
+
+**Expected:** Actions complete within SLA timeframes.
+
+---
+
+### TC-PERF-003: Rapid Actions Handling
+**Priority:** medium | **Type:** Performance
+
+**Acceptance Criteria:**
+- System handles rapid user actions without crashes
+- No race conditions
+
+**Steps:**
+1. Perform rapid navigation between pages
+2. Submit multiple actions quickly
+
+**Expected:** System handles all actions correctly.
+
+---
+
 ## Test Data Reference
 
 | User | Email | Password | Role |

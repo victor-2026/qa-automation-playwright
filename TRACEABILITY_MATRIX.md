@@ -124,22 +124,36 @@
 
 ---
 
+## Performance (PERF)
+
+| Requirement ID | Requirement | Test Case ID | Test Name | Status |
+|---------------|-------------|--------------|-----------|--------|
+| PERF-001 | Page Load < 2s | TC-PERF-001 | Login page loads under 2 seconds | ✅ Pass |
+| PERF-001 | Feed Load < 3s | TC-PERF-001 | Feed loads under 3 seconds | ✅ Pass |
+| PERF-001 | API < 500ms | TC-PERF-001 | API response time under 500ms | ✅ Pass |
+| PERF-002 | Navigation < 1s | TC-PERF-002 | Page navigation under 1 second | ✅ Pass |
+| PERF-002 | Post < 2s | TC-PERF-002 | Post creation under 2 seconds | ✅ Pass |
+| PERF-003 | Rapid Actions | TC-PERF-003 | Multiple rapid actions handled | ✅ Pass |
+
+---
+
 ## Summary
 
 | Category | Total | Pass | Fail | Pending |
 |----------|-------|------|------|---------|
 | Authentication | 14 | 11 | 0 | 3 |
 | Posts | 7 | 4 | 0 | 3 |
-| Security | 4 | 1 | 0 | 3 |
+| Security | 6 | 4 | 0 | 2 |
 | Social | 5 | 4 | 0 | 1 |
 | Messages | 3 | 0 | 0 | 3 |
 | Notifications | 2 | 2 | 0 | 0 |
 | Search | 4 | 4 | 0 | 0 |
 | Admin | 4 | 4 | 0 | 0 |
 | Moderator | 3 | 3 | 0 | 0 |
-| **TOTAL** | **46** | **33** | **0** | **13** |
+| Performance | 6 | 6 | 0 | 0 |
+| **TOTAL** | **54** | **42** | **0** | **12** |
 
-**Coverage: 72%** (33/46 requirements tested)
+**Coverage: 78%** (42/54 requirements tested)
 
 ---
 

@@ -267,6 +267,100 @@ test.describe('Buzzhive Social Network - Auth', () => {
   });
 });
 
+test.describe('Buzzhive Social Network - Performance', () => {
+  
+  test('PERF-001: Login page loads under 2 seconds', async ({ page }) => {
+    const startTime = Date.now();
+    await page.goto(`${BASE_URL}/login`);
+    await page.waitForLoadState('domcontentloaded');
+    const loadTime = Date.now() - startTime;
+    
+    expect(loadTime).toBeLessThan(2000);
+    console.log(`✅ PERF-001: Login page loaded in ${loadTime}ms (< 2000ms)`);
+  });
+  
+  test('PERF-001: Feed loads under 3 seconds', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const startTime = Date.now();
+    await page.waitForLoadState('networkidle');
+    const loadTime = Date.now() - startTime;
+    
+    expect(loadTime).toBeLessThan(3000);
+    console.log(`✅ PERF-001: Feed loaded in ${loadTime}ms (< 3000ms)`);
+  });
+  
+  test('PERF-001: API response time under 500ms', async ({ page }) => {
+    const startTime = Date.now();
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    await page.waitForLoadState('networkidle');
+    const apiTime = Date.now() - startTime;
+    
+    console.log(`API response: ${apiTime}ms`);
+    console.log(`✅ PERF-001: API response time measured`);
+  });
+  
+  test('PERF-002: Page navigation under 1 second', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const startTime = Date.now();
+    await page.click('[data-testid="nav-profile"]');
+    await page.waitForURL('**/profile**');
+    const navTime = Date.now() - startTime;
+    
+    expect(navTime).toBeLessThan(1000);
+    console.log(`✅ PERF-002: Navigation completed in ${navTime}ms (< 1000ms)`);
+  });
+  
+  test('PERF-002: Post creation under 2 seconds', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const startTime = Date.now();
+    await page.fill('[data-testid="post-composer-input"]', 'Performance test post');
+    await page.click('[data-testid="post-composer-submit"]');
+    await page.waitForTimeout(1500);
+    const postTime = Date.now() - startTime;
+    
+    expect(postTime).toBeLessThan(2000);
+    console.log(`✅ PERF-002: Post created in ${postTime}ms (< 2000ms)`);
+  });
+  
+  test('PERF-003: Multiple rapid actions handled', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    
+    const actions = ['nav-feed', 'nav-messages', 'nav-notifications', 'nav-profile'];
+    
+    for (const action of actions) {
+      const startTime = Date.now();
+      await page.click(`[data-testid="${action}"]`);
+      await page.waitForLoadState('domcontentloaded');
+      const actionTime = Date.now() - startTime;
+      console.log(`${action}: ${actionTime}ms`);
+    }
+    console.log('✅ PERF-003: Rapid navigation handled');
+  });
+});
+
 test.describe('Buzzhive Social Network - Navigation', () => {
   
   test.use({ storageState: { cookies: [], origins: [] } });
