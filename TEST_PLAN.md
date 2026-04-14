@@ -1,34 +1,52 @@
 # Buzzhive E2E Test Improvements Plan
 
 Generated with Ollama review on 2026-04-14
+Updated: 2026-04-14
 
-## Current Status
-- ✅ 14 tests passing
-- Coverage: Auth, Navigation, Posts, Profile, Messages, Notifications
+## Current Status (2026-04-14)
+- ✅ 64 tests passing
+- Coverage: **74%** (46/62 requirements)
 
-## Missing Tests (Priority Order)
+### Completed
+- Auth tests (14) ✅
+- API Auth tests (8) ✅
+- Posts tests ✅
+- Security tests ✅
+- Social (Follows, Comments) ✅
+- Search tests ✅
+- Admin tests ✅
+- Moderator tests ✅
+- Performance tests ✅
 
-### High Priority
-1. **Logout flow** - session termination
-2. **Like/Unlike posts** - `post-like-btn-{id}`
-3. **Comments on posts** - `comment-input`, `comment-submit-btn`
-4. **Bookmark posts** - `post-bookmark-btn-{id}`
-5. **Follow/Unfollow users** - `profile-follow-btn`
+### Remaining (26 requirements)
 
-### Medium Priority
-6. **Admin Panel** - `admin-ban-btn-{id}`, `admin-role-select-{id}`, `admin-users-table`
-7. **Notifications** - mark as read, mark all read
-8. **Search functionality** - `nav-search`
-9. **Explore page** - `nav-explore`
+#### High Priority
+1. **Messages** - Start DM, Send message, Unread badge
+2. **Posts** - Hashtags, Delete post, Moderator delete
+3. **Token refresh** - API /auth/refresh (bug: returns 500)
 
-### Low Priority
-10. **Responsive/Mobile** - different viewports
-11. **Accessibility** - keyboard nav, ARIA
-12. **Session expiration** - token handling
-13. **Privacy settings** - profile visibility
+#### Medium Priority
+4. **Security** - XSS in posts, SQL injection in posts
+5. **Session expiration** - token handling
+6. **Private accounts** - Follow requests
+
+#### Low Priority
+7. **Responsive/Mobile** - different viewports
+8. **Accessibility** - keyboard nav, ARIA
+9. **Privacy settings** - profile visibility
+
+## Test Reports
+See `TEST_REPORT.md` for historical test runs.
+
+## Documentation
+- `SYSTEM_REQUIREMENTS.md` - Requirements
+- `TEST_CASES.md` - Test case specifications
+- `TRACEABILITY_MATRIX.md` - Requirements coverage
+- `BUGS.md` - Bug tracker
+- `TEST_REPORT.md` - Test execution history
 
 ## Next Steps
-1. Get product specs/requirements from analysts
-2. Map test cases to requirements
-3. Implement missing tests
-4. Add API tests for backend validation
+1. Add Messages tests
+2. Fix /auth/refresh bug (backend)
+3. Add XSS/SQL injection tests for posts
+4. Add Mobile/Responsive tests
