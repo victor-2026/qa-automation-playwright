@@ -341,7 +341,78 @@ Feature: Edge Cases - Content Limits
 
 ## Running Gherkin Tests
 
-These scenarios can be run with:
-- Cucumber.js
-- Playwright with @cucumber/playwright
-- BDD frameworks (Behat, SpecFlow)
+### Installation
+
+```bash
+npm install @cucumber/cucumber
+```
+
+### Configuration
+
+**cucumber.js:**
+```javascript
+module.exports = {
+  default: {
+    format: ['progress-bar', 'summary'],
+    paths: ['features/**/*.feature'],
+    require: ['features/steps/**/*.js'],
+  }
+};
+```
+
+### Step Definitions
+
+**features/steps/auth.steps.js:**
+```javascript
+const { chromium } = require('playwright');
+const { Given, When, Then, After, setDefaultTimeout } = require('@cucumber/cucumber');
+
+setDefaultTimeout(60000);
+
+let browser;
+let page;
+
+Given('I am on the login page', async function() {
+  browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  page = await context.newPage();
+  await page.goto('http://localhost:3000');
+  await page.waitForSelector('[data-testid="auth-email-input"]', { timeout: 30000 });
+});
+
+When('I enter {string} as email', async function(email) {
+  await page.fill('[data-testid="auth-email-input"]', email);
+});
+
+When('I enter {string} as password', async function(password) {
+  await page.fill('[data-testid="auth-password-input"]', password);
+});
+
+When('I click the login button', async function() {
+  await page.click('[data-testid="auth-login-btn"]');
+});
+
+Then('I should be logged in', async function() {
+  await page.waitForTimeout(2000);
+  // Check authentication state
+});
+
+After(async function() {
+  if (browser) await browser.close();
+});
+```
+
+### Running Tests
+
+```bash
+npm run test:gherkin
+# or
+npx cucumber-js --config=cucumber.js
+```
+
+### Key Notes
+
+- Use `chromium.launch()` with `--no-sandbox` args for CI
+- SPA routing: use base URL `/` not `/auth/login`
+- Always wait for `data-testid` selectors
+- Use `@cucumber/cucumber` (NOT `@cucumber/playwright`)
