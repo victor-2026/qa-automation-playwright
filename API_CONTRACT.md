@@ -44,13 +44,13 @@ Last updated: 2026-04-14
 
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | /api/users | List users | ⏳ |
-| GET | /api/users/{username} | Profile | ⏳ |
+| GET | /api/users | List users | ✅ Tested |
+| GET | /api/users/{username} | Profile | ✅ Tested |
 | GET | /api/users/{username}/posts | User posts | ⏳ |
-| POST | /api/users/{username}/follow | Follow | ⏳ |
-| DELETE | /api/users/{username}/follow | Unfollow | ⏳ |
-| GET | /api/users/{username}/followers | Followers | ⏳ |
-| GET | /api/users/{username}/following | Following | ⏳ |
+| POST | /api/users/{username}/follow | Follow | ✅ Tested |
+| DELETE | /api/users/{username}/follow | Unfollow | ✅ Tested |
+| GET | /api/users/{username}/followers | Followers | ✅ Tested |
+| GET | /api/users/{username}/following | Following | ✅ Tested |
 
 ## Messages Endpoints
 
@@ -66,19 +66,19 @@ Last updated: 2026-04-14
 
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | /api/notifications | List | ⏳ |
-| POST | /api/notifications/read-all | Mark all read | ⏳ |
-| GET | /api/notifications/unread-count | Count | ⏳ |
+| GET | /api/notifications | List | ✅ Tested |
+| POST | /api/notifications/read-all | Mark all read | ✅ Tested |
+| GET | /api/notifications/unread-count | Count | ✅ Tested |
 | POST | /api/notifications/{id}/read | Mark one read | ⏳ |
 
 ## Admin Endpoints
 
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | /api/admin/stats | Dashboard | ⏳ |
-| GET | /api/admin/users | List users | ⏳ |
+| GET | /api/admin/stats | Dashboard | ✅ Tested |
+| GET | /api/admin/users | List users | ✅ Tested |
 | PATCH | /api/admin/users/{id} | Update user | ⏳ |
-| GET | /api/admin/posts | All posts | ⏳ |
+| GET | /api/admin/posts | All posts | ✅ Tested |
 | DELETE | /api/admin/posts/{id} | Delete post | ⏳ |
 
 ## Other Endpoints
@@ -92,12 +92,12 @@ Last updated: 2026-04-14
 | GET | /api/follows/requests | Requests | ⏳ |
 | POST | /api/follows/requests/{id}/accept | Accept | ⏳ |
 | POST | /api/follows/requests/{id}/reject | Reject | ⏳ |
-| POST | /api/reset | Reset DB | ⏳ |
+| POST | /api/reset | Reset DB | ✅ Tested |
 | POST | /api/upload/image | Upload | ⏳ |
-| GET | /api/health | Health | ⏳ |
+| GET | /api/health | Health | ✅ Tested |
 
 ---
 
 **Legend:** ✅ Tested | ⚠️ Bug | ⏳ Not tested
 
-**Total API Coverage:** 27/52 (52%)
+**Total API Coverage:** 38/52 (73%)

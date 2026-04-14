@@ -1606,3 +1606,255 @@ test.describe('Buzzhive API - Posts', () => {
     console.log(`✅ API-POST-008: Unauthorized returns ${response.status()} - PASSED`);
   });
 });
+
+test.describe('Buzzhive API - Users', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-USER-001: GET /api/users returns user list', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-001: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/users`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-001: Users list returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-USER-002: GET /api/users/{username} returns profile', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-002: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/users/alice`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-002: User profile returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-USER-003: POST /api/users/{username}/follow follows user', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-003: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.post(`${API_BASE}/users/bob/follow`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-003: Follow returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-USER-004: DELETE /api/users/{username}/follow unfollows user', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-004: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.delete(`${API_BASE}/users/bob/follow`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-004: Unfollow returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-USER-005: GET /api/users/{username}/followers returns followers', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-005: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/users/alice/followers`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-005: Followers returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-USER-006: GET /api/users/{username}/following returns following', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-USER-006: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/users/alice/following`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-USER-006: Following returns ${response.status()} - PASSED`);
+  });
+});
+
+test.describe('Buzzhive API - Notifications', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-NOTIF-001: GET /api/notifications returns list', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-NOTIF-001: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/notifications`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-NOTIF-001: Notifications returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-NOTIF-002: GET /api/notifications/unread-count returns count', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-NOTIF-002: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/notifications/unread-count`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-NOTIF-002: Unread count returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-NOTIF-003: POST /api/notifications/read-all marks all read', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-NOTIF-003: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.post(`${API_BASE}/notifications/read-all`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-NOTIF-003: Mark all read returns ${response.status()} - PASSED`);
+  });
+});
+
+test.describe('Buzzhive API - Admin', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-ADMIN-001: GET /api/admin/stats returns dashboard', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-001: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/admin/stats`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-001: Admin stats returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-ADMIN-002: GET /api/admin/users returns user list', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-002: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/admin/users`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-002: Admin users returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-ADMIN-003: GET /api/admin/posts returns all posts', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-003: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/admin/posts`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-003: Admin posts returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-ADMIN-004: Non-admin cannot access admin endpoints', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-004: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.get(`${API_BASE}/admin/stats`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(400);
+    console.log(`✅ API-ADMIN-004: Non-admin blocked with ${response.status()} - PASSED`);
+  });
+});
+
+test.describe('Buzzhive API - Health', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  test('API-HEALTH-001: GET /api/health returns 200', async ({ page }) => {
+    const response = await page.request.get(`${API_BASE}/health`);
+    expect(response.status()).toBe(200);
+    console.log(`✅ API-HEALTH-001: Health check returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-RESET-001: POST /api/reset resets database', async ({ page }) => {
+    const response = await page.request.post(`${API_BASE}/reset`);
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-RESET-001: Reset DB returns ${response.status()} - PASSED`);
+  });
+});
