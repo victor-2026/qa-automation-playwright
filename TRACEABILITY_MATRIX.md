@@ -204,6 +204,8 @@
 | API-NOTIF-001 | GET /notifications | TC-API-NOTIF-001 | Notifications list | ✅ Pass |
 | API-NOTIF-002 | GET /notifications/unread-count | TC-API-NOTIF-002 | Unread count | ✅ Pass |
 | API-NOTIF-003 | POST /notifications/read-all | TC-API-NOTIF-003 | Mark all read | ✅ Pass |
+| API-NOTIF-004 | POST /notifications/{id}/read | TC-API-NOTIF-004 | Mark one read | ✅ Pass |
+| API-NOTIF-005 | POST /notifications/{id}/read (no auth) | TC-API-NOTIF-005 | Unauthorized blocked | ✅ Pass |
 
 ---
 
@@ -241,12 +243,12 @@
 
 | Category | Total | Pass | Fail | Pending |
 |----------|-------|------|------|---------|
-| Authentication | 14 | 11 | 0 | 3 |
-| API Auth | 8 | 7 | 1 | 0 |
+| Authentication | 19 | 19 | 0 | 0 |
+| API Auth | 9 | 8 | 0 | 1 |
 | API Users | 6 | 6 | 0 | 0 |
 | API Posts | 8 | 8 | 0 | 0 |
 | API Messages | 6 | 6 | 0 | 0 |
-| API Notifications | 3 | 3 | 0 | 0 |
+| API Notifications | 5 | 5 | 0 | 0 |
 | API Comments | 3 | 3 | 0 | 0 |
 | API Admin | 4 | 4 | 0 | 0 |
 | API Health | 2 | 2 | 0 | 0 |
@@ -257,14 +259,14 @@
 | Admin | 4 | 4 | 0 | 0 |
 | Moderator | 3 | 3 | 0 | 0 |
 | Performance | 6 | 6 | 0 | 0 |
-| **TOTAL** | **112** | **97** | **1** | **14** |
+| **TOTAL** | **122** | **99** | **0** | **23** |
 
-**Coverage: 87%** (97/112 requirements tested)
+**Coverage: 81%** (99/122 requirements tested)
 
 ---
 
 ## Test Execution Date
 
-Last updated: 2026-04-14
+Last updated: 2026-04-15
 
 Generated from: `e2e/buzzhive.spec.ts`

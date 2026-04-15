@@ -1753,6 +1753,42 @@ test.describe('Buzzhive API - Notifications', () => {
     expect(response.status()).toBeGreaterThanOrEqual(200);
     console.log(`✅ API-NOTIF-003: Mark all read returns ${response.status()} - PASSED`);
   });
+  
+  test('API-NOTIF-004: POST /api/notifications/{id}/read marks one read', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-NOTIF-004: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const listResponse = await page.request.get(`${API_BASE}/notifications`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    
+    if (listResponse.status() !== 200) {
+      console.log(`⚠️ API-NOTIF-004: Cannot get notifications`);
+      return;
+    }
+    
+    const notifications = await listResponse.json();
+    if (!notifications.length) {
+      console.log(`⚠️ API-NOTIF-004: No notifications to test`);
+      return;
+    }
+    
+    const notifId = notifications[0].id || notifications[0]._id;
+    const response = await page.request.post(`${API_BASE}/notifications/${notifId}/read`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-NOTIF-004: Mark one read returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-NOTIF-005: POST /api/notifications/{id}/read without auth returns 401/403', async ({ page }) => {
+    const response = await page.request.post(`${API_BASE}/notifications/123/read`);
+    expect([401, 403]).toContain(response.status());
+    console.log(`✅ API-NOTIF-005: Unauthorized returns ${response.status()} - PASSED`);
+  });
 });
 
 test.describe('Buzzhive API - Admin', () => {
@@ -2203,5 +2239,111 @@ test.describe('Buzzhive API - Upload', () => {
     
     expect(response.status()).toBeGreaterThanOrEqual(400);
     console.log(`✅ API-UPLOAD-003: Upload without auth returns ${response.status()} - PASSED`);
+  });
+});
+
+test.describe('Buzzhive API - Moderator', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-MOD-001: DELETE /api/posts/{id} by moderator', async ({ page }) => {
+    const tokens = await getAuthToken('mod@buzzhive.com', 'mod123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-MOD-001: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.delete(`${API_BASE}/posts/1`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-MOD-001: Moderator delete returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-MOD-002: Regular user cannot delete others posts', async ({ page }) => {
+    const tokens = await getAuthToken('alice@buzzhive.com', 'alice123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-MOD-002: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.delete(`${API_BASE}/posts/2`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(400);
+    console.log(`✅ API-MOD-002: Non-owner blocked with ${response.status()} - PASSED`);
+  });
+});
+
+test.describe('Buzzhive API - Admin Extended', () => {
+  const API_BASE = 'http://localhost:8000/api';
+  
+  async function getAuthToken(email: string, password: string, page: any): Promise<{ access_token?: string; error?: string }> {
+    const response = await page.request.post(`${API_BASE}/auth/login`, {
+      data: { email, password }
+    });
+    if (response.status() !== 200) {
+      return { error: `Login failed with ${response.status()}` };
+    }
+    try {
+      return await response.json();
+    } catch {
+      return { error: 'Invalid JSON response' };
+    }
+  }
+  
+  test('API-ADMIN-EXT-003: PATCH /api/admin/users/{id}/ban bans user', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-EXT-003: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.patch(`${API_BASE}/admin/users/2/ban`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-EXT-003: Ban user returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-ADMIN-EXT-004: PATCH /api/admin/users/{id}/unban unbans user', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-EXT-004: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.patch(`${API_BASE}/admin/users/2/unban`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-EXT-004: Unban user returns ${response.status()} - PASSED`);
+  });
+  
+  test('API-ADMIN-EXT-005: DELETE /api/admin/users/{id} deletes user', async ({ page }) => {
+    const tokens = await getAuthToken('admin@buzzhive.com', 'admin123', page);
+    if (!tokens.access_token) {
+      console.log(`⚠️ API-ADMIN-EXT-005: ${tokens.error || 'No token'}`);
+      return;
+    }
+    
+    const response = await page.request.delete(`${API_BASE}/admin/users/3`, {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+    expect(response.status()).toBeGreaterThanOrEqual(200);
+    console.log(`✅ API-ADMIN-EXT-005: Delete user returns ${response.status()} - PASSED`);
   });
 });

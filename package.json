@@ -6,7 +6,9 @@
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:gherkin": "cucumber-js --config=cucumber.js"
+    "test:gherkin": "cucumber-js --config=cucumber.js",
+    "test:pbt": "jest --config=jest.config.ts",
+    "test:db": "jest --config=jest.config.ts --testPathPattern=db"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,14 @@
   "homepage": "https://github.com/manikosto/qa-automation-sandbox#readme",
   "devDependencies": {
     "@cucumber/cucumber": "^12.8.1",
-    "@playwright/test": "^1.59.1"
+    "@fast-check/jest": "^2.2.0",
+    "@playwright/test": "^1.59.1",
+    "@types/jest": "^30.0.0",
+    "@types/pg": "^8.20.0",
+    "fast-check": "^4.6.0",
+    "jest": "^30.3.0",
+    "pg": "^8.20.0",
+    "ts-jest": "^29.4.9",
+    "ts-node": "^10.9.2"
   }
 }

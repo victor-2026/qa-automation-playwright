@@ -1,0 +1,479 @@
+
+> qa-automation-sandbox@1.0.0 test
+> playwright test --grep API
+
+
+Running 118 tests using 2 workers
+
+[1A[2K[1/118] [chromium] › e2e/api-expanded.spec.ts:16:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with valid credentials returns 200 + tokens
+[1A[2K[2/118] [chromium] › e2e/buzzhive.spec.ts:357:7 › Buzzhive Social Network - Performance › PERF-001: API response time under 500ms
+[1A[2K  1) [chromium] › e2e/api-expanded.spec.ts:16:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with valid credentials returns 200 + tokens 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m200[39m
+    Received: [31m500[39m
+
+      18 |       data: { email: 'alice@buzzhive.com', password: 'alice123' }
+      19 |     });
+    > 20 |     expect(res.status()).toBe(200);
+         |                          ^
+      21 |     const body = await res.json();
+      22 |     expect(body).toHaveProperty('access_token');
+      23 |     expect(body).toHaveProperty('refresh_token');
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:20:26
+
+    Error Context: test-results/api-expanded-API-Expanded--cb75c-dentials-returns-200-tokens-chromium/error-context.md
+
+
+[1A[2K[3/118] [chromium] › e2e/api-expanded.spec.ts:27:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login returns correct token_type
+[1A[2K  2) [chromium] › e2e/api-expanded.spec.ts:27:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login returns correct token_type 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"[7mB[27mearer"[39m
+    Received: [31m"[7mb[27mearer"[39m
+
+      31 |     const body = await res.json();
+      32 |     expect(body).toHaveProperty('token_type');
+    > 33 |     expect(body.token_type).toBe('Bearer');
+         |                             ^
+      34 |   });
+      35 |
+      36 |   // POST /auth/login - Invalid input
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:33:29
+
+    Error Context: test-results/api-expanded-API-Expanded--daaec--returns-correct-token-type-chromium/error-context.md
+
+
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:357:7 › Buzzhive Social Network - Performance › PERF-001: API response time under 500ms
+API response: 3703ms
+
+[1A[2K✅ PERF-001: API response time measured
+
+[1A[2K[4/118] [chromium] › e2e/buzzhive.spec.ts:406:7 › Buzzhive Social Network - Performance › PERF-003: Multiple rapid actions handled
+[1A[2K[5/118] [chromium] › e2e/api-expanded.spec.ts:37:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with wrong password returns 401
+[1A[2K[6/118] [chromium] › e2e/api-expanded.spec.ts:44:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with non-existent email returns 401
+[1A[2K[7/118] [chromium] › e2e/api-expanded.spec.ts:51:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with empty body returns 400/422
+[1A[2K[8/118] [chromium] › e2e/api-expanded.spec.ts:57:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with very long password (1000 chars)
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:406:7 › Buzzhive Social Network - Performance › PERF-003: Multiple rapid actions handled
+nav-feed: 96ms
+
+[1A[2Knav-messages: 46ms
+
+[1A[2Knav-notifications: 50ms
+
+[1A[2Knav-profile: 55ms
+
+[1A[2K✅ PERF-003: Rapid navigation handled
+
+[1A[2K[9/118] [chromium] › e2e/buzzhive.spec.ts:1074:7 › Buzzhive API - Authentication › API-AUTH-001: POST /api/auth/login returns tokens
+[1A[2K[10/118] [chromium] › e2e/api-expanded.spec.ts:64:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with SQL injection in email
+[1A[2K  3) [chromium] › e2e/api-expanded.spec.ts:64:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with SQL injection in email 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m401[39m
+    Received: [31m422[39m
+
+      66 |       data: { email: "' OR '1'='1", password: 'anything' }
+      67 |     });
+    > 68 |     expect(res.status()).toBe(401);
+         |                          ^
+      69 |   });
+      70 |
+      71 |   // GET /auth/me
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:68:26
+
+    Error Context: test-results/api-expanded-API-Expanded--b0273-with-SQL-injection-in-email-chromium/error-context.md
+
+
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1074:7 › Buzzhive API - Authentication › API-AUTH-001: POST /api/auth/login returns tokens
+✅ API-AUTH-001: Login returns tokens - PASSED
+
+[1A[2K[11/118] [chromium] › e2e/buzzhive.spec.ts:1090:7 › Buzzhive API - Authentication › API-AUTH-001: Login with wrong password returns 401
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1090:7 › Buzzhive API - Authentication › API-AUTH-001: Login with wrong password returns 401
+✅ API-AUTH-001: Wrong password returns 401 - PASSED
+
+[1A[2K[12/118] [chromium] › e2e/buzzhive.spec.ts:1102:7 › Buzzhive API - Authentication › API-AUTH-002: GET /api/auth/me returns user profile
+[1A[2K[13/118] [chromium] › e2e/api-expanded.spec.ts:72:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me with valid token returns 200 + user data
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1102:7 › Buzzhive API - Authentication › API-AUTH-002: GET /api/auth/me returns user profile
+✅ API-AUTH-002: /me returns user profile - PASSED
+
+[1A[2K  4) [chromium] › e2e/api-expanded.spec.ts:72:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me with valid token returns 200 + user data 
+
+    SyntaxError: Unexpected token 'I', "Internal S"... is not valid JSON
+
+      10 |       data: { email: 'alice@buzzhive.com', password: 'alice123' }
+      11 |     });
+    > 12 |     aliceToken = (await loginRes.json()).access_token;
+         |                   ^
+      13 |   });
+      14 |
+      15 |   // POST /auth/login - Happy path
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:12:19
+
+    Error Context: test-results/api-expanded-API-Expanded--292ab-token-returns-200-user-data-chromium/error-context.md
+
+
+[1A[2K[14/118] [chromium] › e2e/api-expanded.spec.ts:82:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me returns all required user fields
+[1A[2K[15/118] [chromium] › e2e/api-expanded.spec.ts:93:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me without token returns 401/403
+[1A[2K[16/118] [chromium] › e2e/api-expanded.spec.ts:98:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me with invalid token returns 401
+[1A[2K[17/118] [chromium] › e2e/api-expanded.spec.ts:106:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with valid data returns 201
+[1A[2K[18/118] [chromium] › e2e/api-expanded.spec.ts:119:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register returns user data
+[1A[2K[19/118] [chromium] › e2e/api-expanded.spec.ts:134:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with duplicate email returns 409
+[1A[2K[20/118] [chromium] › e2e/api-expanded.spec.ts:146:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with duplicate username returns 409
+[1A[2K[21/118] [chromium] › e2e/api-expanded.spec.ts:159:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with password < 6 chars returns 422
+[1A[2K[22/118] [chromium] › e2e/api-expanded.spec.ts:172:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with password = 6 chars (min) succeeds
+[1A[2K[23/118] [chromium] › e2e/api-expanded.spec.ts:185:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with invalid email format returns 422
+[1A[2K[24/118] [chromium] › e2e/api-expanded.spec.ts:198:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with empty display_name returns 422
+[1A[2K[25/118] [chromium] › e2e/api-expanded.spec.ts:211:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-003: Register with username < 3 chars returns 422
+[1A[2K[26/118] [chromium] › e2e/api-expanded.spec.ts:225:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-004: Refresh with valid token returns 200
+[1A[2K[27/118] [chromium] › e2e/api-expanded.spec.ts:237:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-004: Refresh with invalid token returns 400/401
+[1A[2K[28/118] [chromium] › e2e/api-expanded.spec.ts:244:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-004: Refresh without body returns 422
+[1A[2K[29/118] [chromium] › e2e/api-expanded.spec.ts:250:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-005: Logout with valid token returns 200
+[1A[2K[30/118] [chromium] › e2e/api-expanded.spec.ts:263:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-005: Logout without token returns 401
+[1A[2K[31/118] [chromium] › e2e/buzzhive.spec.ts:1124:7 › Buzzhive API - Authentication › API-AUTH-002: GET /api/auth/me without token returns 403
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1124:7 › Buzzhive API - Authentication › API-AUTH-002: GET /api/auth/me without token returns 403
+✅ API-AUTH-002: No token returns 403 - PASSED
+
+[1A[2K[32/118] [chromium] › e2e/buzzhive.spec.ts:1131:7 › Buzzhive API - Authentication › API-AUTH-003: POST /api/auth/register creates new user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1131:7 › Buzzhive API - Authentication › API-AUTH-003: POST /api/auth/register creates new user
+✅ API-AUTH-003: Register creates user - PASSED
+
+[1A[2K[33/118] [chromium] › e2e/api-expanded.spec.ts:284:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns 200
+[1A[2K[34/118] [chromium] › e2e/buzzhive.spec.ts:1149:7 › Buzzhive API - Authentication › API-AUTH-003: Register with duplicate email returns 409
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1149:7 › Buzzhive API - Authentication › API-AUTH-003: Register with duplicate email returns 409
+✅ API-AUTH-003: Duplicate email returns 409 - PASSED
+
+[1A[2K[35/118] [chromium] › e2e/buzzhive.spec.ts:1163:7 › Buzzhive API - Authentication › API-AUTH-004: POST /api/auth/refresh
+[1A[2K  5) [chromium] › e2e/api-expanded.spec.ts:284:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns 200 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m200[39m
+    Received: [31m403[39m
+
+      284 |   test('POST-API-001: GET /posts returns 200', async ({ request }) => {
+      285 |     const res = await request.get(`${API_BASE}/posts`);
+    > 286 |     expect(res.status()).toBe(200);
+          |                          ^
+      287 |   });
+      288 |
+      289 |   test('POST-API-001: GET /posts returns array', async ({ request }) => {
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:286:26
+
+    Error Context: test-results/api-expanded-API-Expanded--642b2-I-001-GET-posts-returns-200-chromium/error-context.md
+
+
+[1A[2K  6) [chromium] › e2e/buzzhive.spec.ts:1163:7 › Buzzhive API - Authentication › API-AUTH-004: POST /api/auth/refresh 
+
+    SyntaxError: Unexpected token 'I', "Internal S"... is not valid JSON
+
+      1168 |       }
+      1169 |     });
+    > 1170 |     const tokens = await loginResponse.json();
+           |                    ^
+      1171 |     
+      1172 |     const refreshResponse = await page.request.post(`${API_BASE}/auth/refresh`, {
+      1173 |       data: {
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/buzzhive.spec.ts:1170:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/buzzhive-Buzzhive-API---Au-aa9eb-H-004-POST-api-auth-refresh-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/buzzhive-Buzzhive-API---Au-aa9eb-H-004-POST-api-auth-refresh-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/buzzhive-Buzzhive-API---Au-aa9eb-H-004-POST-api-auth-refresh-chromium/error-context.md
+
+
+[1A[2K[36/118] [chromium] › e2e/api-expanded.spec.ts:289:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns array
+[1A[2K[37/118] [chromium] › e2e/buzzhive.spec.ts:1188:7 › Buzzhive API - Authentication › API-AUTH-005: POST /api/auth/logout revokes token
+[1A[2K  7) [chromium] › e2e/api-expanded.spec.ts:289:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns array 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      290 |     const res = await request.get(`${API_BASE}/posts`);
+      291 |     const body = await res.json();
+    > 292 |     expect(Array.isArray(body.items || body)).toBeTruthy();
+          |                                               ^
+      293 |   });
+      294 |
+      295 |   test('POST-API-001: GET /posts pagination params work', async ({ request }) => {
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:292:47
+
+    Error Context: test-results/api-expanded-API-Expanded--733af-001-GET-posts-returns-array-chromium/error-context.md
+
+
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1188:7 › Buzzhive API - Authentication › API-AUTH-005: POST /api/auth/logout revokes token
+✅ API-AUTH-005: Logout returns 204 - PASSED
+
+[1A[2K[38/118] [chromium] › e2e/buzzhive.spec.ts:1239:7 › Buzzhive API - Messages › API-MSG-001: GET /api/conversations returns conversation list
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1239:7 › Buzzhive API - Messages › API-MSG-001: GET /api/conversations returns conversation list
+✅ API-MSG-001: Conversations list returns 200 - PASSED
+
+[1A[2K[39/118] [chromium] › e2e/buzzhive.spec.ts:1250:7 › Buzzhive API - Messages › API-MSG-002: POST /api/conversations/dm/{username} starts DM
+[1A[2K[40/118] [chromium] › e2e/api-expanded.spec.ts:295:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts pagination params work
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1250:7 › Buzzhive API - Messages › API-MSG-002: POST /api/conversations/dm/{username} starts DM
+✅ API-MSG-002: Start DM returns 401 - PASSED
+
+[1A[2K  8) [chromium] › e2e/api-expanded.spec.ts:295:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts pagination params work 
+
+    SyntaxError: Unexpected token 'I', "Internal S"... is not valid JSON
+
+      272 |   
+      273 |   test.beforeAll(async ({ request }) => {
+    > 274 |     aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
+          |                   ^
+      275 |       data: { email: 'alice@buzzhive.com', password: 'alice123' }
+      276 |     })).json()).access_token;
+      277 |     
+        at /Users/victor/Projects/qa-automation-sandbox/e2e/api-expanded.spec.ts:274:19
+
+    Error Context: test-results/api-expanded-API-Expanded--23ed5-osts-pagination-params-work-chromium/error-context.md
+
+
+[1A[2K[41/118] [chromium] › e2e/api-expanded.spec.ts:301:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts with invalid page returns 422
+[1A[2K[42/118] [chromium] › e2e/api-expanded.spec.ts:307:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts creates post returns 201
+[1A[2K[43/118] [chromium] › e2e/api-expanded.spec.ts:315:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts returns post data
+[1A[2K[44/118] [chromium] › e2e/api-expanded.spec.ts:325:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with auth returns 401
+[1A[2K[45/118] [chromium] › e2e/api-expanded.spec.ts:333:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with empty content returns 422
+[1A[2K[46/118] [chromium] › e2e/api-expanded.spec.ts:341:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with 1 char content succeeds
+[1A[2K[47/118] [chromium] › e2e/api-expanded.spec.ts:349:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with 2000 chars succeeds
+[1A[2K[48/118] [chromium] › e2e/api-expanded.spec.ts:357:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with 2001 chars returns 422
+[1A[2K[49/118] [chromium] › e2e/api-expanded.spec.ts:365:7 › API Expanded - Posts (10 → 50 tests) › POST-API-002: POST /posts with XSS script tag
+[1A[2K[50/118] [chromium] › e2e/api-expanded.spec.ts:374:7 › API Expanded - Posts (10 → 50 tests) › POST-API-003: GET /posts/feed with auth returns 200
+[1A[2K[51/118] [chromium] › e2e/api-expanded.spec.ts:381:7 › API Expanded - Posts (10 → 50 tests) › POST-API-003: GET /posts/feed without auth returns 401
+[1A[2K[52/118] [chromium] › e2e/api-expanded.spec.ts:387:7 › API Expanded - Posts (10 → 50 tests) › POST-API-004: GET /posts/{id} returns 200 for existing post
+[1A[2K[53/118] [chromium] › e2e/api-expanded.spec.ts:398:7 › API Expanded - Posts (10 → 50 tests) › POST-API-004: GET /posts/{id} returns 404 for non-existent
+[1A[2K[54/118] [chromium] › e2e/api-expanded.spec.ts:403:7 › API Expanded - Posts (10 → 50 tests) › POST-API-004: GET /posts/{id} with invalid UUID returns 422/404
+[1A[2K[55/118] [chromium] › e2e/api-expanded.spec.ts:409:7 › API Expanded - Posts (10 → 50 tests) › POST-API-005: PATCH /posts/{id} updates content
+[1A[2K[56/118] [chromium] › e2e/api-expanded.spec.ts:423:7 › API Expanded - Posts (10 → 50 tests) › POST-API-005: PATCH /posts/{id} without auth returns 401
+[1A[2K[57/118] [chromium] › e2e/api-expanded.spec.ts:430:7 › API Expanded - Posts (10 → 50 tests) › POST-API-005: PATCH /posts/{id} of another user returns 403
+[1A[2K[58/118] [chromium] › e2e/api-expanded.spec.ts:445:7 › API Expanded - Posts (10 → 50 tests) › POST-API-006: DELETE /posts/{id} by owner returns 200/204
+[1A[2K[59/118] [chromium] › e2e/api-expanded.spec.ts:458:7 › API Expanded - Posts (10 → 50 tests) › POST-API-006: DELETE /posts/{id} without auth returns 401
+[1A[2K[60/118] [chromium] › e2e/api-expanded.spec.ts:463:7 › API Expanded - Posts (10 → 50 tests) › POST-API-006: DELETE /posts/{id} of another user returns 403
+[1A[2K[61/118] [chromium] › e2e/api-expanded.spec.ts:477:7 › API Expanded - Posts (10 → 50 tests) › POST-API-007: POST /posts/{id}/like returns 200
+[1A[2K[62/118] [chromium] › e2e/api-expanded.spec.ts:490:7 › API Expanded - Posts (10 → 50 tests) › POST-API-007: POST /posts/{id}/like without auth returns 401
+[1A[2K[63/118] [chromium] › e2e/api-expanded.spec.ts:495:7 › API Expanded - Posts (10 → 50 tests) › POST-API-007: POST /posts/{id}/like twice returns 409
+[1A[2K[64/118] [chromium] › e2e/api-expanded.spec.ts:513:7 › API Expanded - Posts (10 → 50 tests) › POST-API-008: DELETE /posts/{id}/like unlikes
+[1A[2K[65/118] [chromium] › e2e/api-expanded.spec.ts:531:7 › API Expanded - Posts (10 → 50 tests) › POST-API-009: POST /posts/{id}/comments creates comment
+[1A[2K[66/118] [chromium] › e2e/api-expanded.spec.ts:545:7 › API Expanded - Posts (10 → 50 tests) › POST-API-009: POST /posts/{id}/comments without auth returns 401
+[1A[2K[67/118] [chromium] › e2e/api-expanded.spec.ts:552:7 › API Expanded - Posts (10 → 50 tests) › POST-API-009: POST /posts/{id}/comments with empty content returns 422
+[1A[2K[68/118] [chromium] › e2e/api-expanded.spec.ts:567:7 › API Expanded - Posts (10 → 50 tests) › POST-API-010: GET /posts/{id}/comments returns list
+[1A[2K[69/118] [chromium] › e2e/buzzhive.spec.ts:1262:7 › Buzzhive API - Messages › API-MSG-003: GET /api/conversations/{id} returns messages
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1262:7 › Buzzhive API - Messages › API-MSG-003: GET /api/conversations/{id} returns messages
+⚠️ API-MSG-003: No conversations to test
+
+[1A[2K[70/118] [chromium] › e2e/buzzhive.spec.ts:1286:7 › Buzzhive API - Messages › API-MSG-004: POST /api/conversations/{id}/read marks as read
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1286:7 › Buzzhive API - Messages › API-MSG-004: POST /api/conversations/{id}/read marks as read
+⚠️ API-MSG-004: No conversations to test
+
+[1A[2K[71/118] [chromium] › e2e/buzzhive.spec.ts:1315:7 › Buzzhive API - Messages › API-MSG-005: DELETE /api/conversations/{id} deletes conversation
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1315:7 › Buzzhive API - Messages › API-MSG-005: DELETE /api/conversations/{id} deletes conversation
+⚠️ API-MSG-005: No conversations endpoint access
+
+[1A[2K[72/118] [chromium] › e2e/buzzhive.spec.ts:1339:7 › Buzzhive API - Messages › API-MSG-006: GET /api/conversations without auth returns 401/403
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1339:7 › Buzzhive API - Messages › API-MSG-006: GET /api/conversations without auth returns 401/403
+✅ API-MSG-006: Unauthorized returns 403 - PASSED
+
+[1A[2K[73/118] [chromium] › e2e/buzzhive.spec.ts:1363:7 › Buzzhive API - Posts › API-POST-001: GET /api/posts returns post list
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1363:7 › Buzzhive API - Posts › API-POST-001: GET /api/posts returns post list
+✅ API-POST-001: Posts list returns 200 - PASSED
+
+[1A[2K[74/118] [chromium] › e2e/buzzhive.spec.ts:1379:7 › Buzzhive API - Posts › API-POST-002: POST /api/posts creates new post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1379:7 › Buzzhive API - Posts › API-POST-002: POST /api/posts creates new post
+⚠️ API-POST-002: Login failed with 500
+
+[1A[2K[75/118] [chromium] › e2e/buzzhive.spec.ts:1396:7 › Buzzhive API - Posts › API-POST-003: GET /api/posts/feed returns feed
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1396:7 › Buzzhive API - Posts › API-POST-003: GET /api/posts/feed returns feed
+✅ API-POST-003: Feed returns 200 - PASSED
+
+[1A[2K[76/118] [chromium] › e2e/buzzhive.spec.ts:1412:7 › Buzzhive API - Posts › API-POST-004: POST /api/posts/{id}/like likes a post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1412:7 › Buzzhive API - Posts › API-POST-004: POST /api/posts/{id}/like likes a post
+⚠️ API-POST-004: Login failed with 500
+
+[1A[2K[77/118] [chromium] › e2e/buzzhive.spec.ts:1456:7 › Buzzhive API - Posts › API-POST-005: DELETE /api/posts/{id}/like unlikes a post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1456:7 › Buzzhive API - Posts › API-POST-005: DELETE /api/posts/{id}/like unlikes a post
+⚠️ API-POST-005: No posts to test
+
+[1A[2K[78/118] [chromium] › e2e/buzzhive.spec.ts:1500:7 › Buzzhive API - Posts › API-POST-006: POST /api/posts/{id}/comments adds comment
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1500:7 › Buzzhive API - Posts › API-POST-006: POST /api/posts/{id}/comments adds comment
+⚠️ API-POST-006: No posts to test
+
+[1A[2K[79/118] [chromium] › e2e/buzzhive.spec.ts:1545:7 › Buzzhive API - Posts › API-POST-007: GET /api/posts/{id}/comments returns comments
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1545:7 › Buzzhive API - Posts › API-POST-007: GET /api/posts/{id}/comments returns comments
+⚠️ API-POST-007: Login failed with 500
+
+[1A[2K[80/118] [chromium] › e2e/buzzhive.spec.ts:1589:7 › Buzzhive API - Posts › API-POST-008: GET /api/posts without auth returns 401/403
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1589:7 › Buzzhive API - Posts › API-POST-008: GET /api/posts without auth returns 401/403
+✅ API-POST-008: Unauthorized returns 403 - PASSED
+
+[1A[2K[81/118] [chromium] › e2e/buzzhive.spec.ts:1613:7 › Buzzhive API - Users › API-USER-001: GET /api/users returns user list
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1613:7 › Buzzhive API - Users › API-USER-001: GET /api/users returns user list
+✅ API-USER-001: Users list returns 200 - PASSED
+
+[1A[2K[82/118] [chromium] › e2e/buzzhive.spec.ts:1627:7 › Buzzhive API - Users › API-USER-002: GET /api/users/{username} returns profile
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1627:7 › Buzzhive API - Users › API-USER-002: GET /api/users/{username} returns profile
+⚠️ API-USER-002: Login failed with 500
+
+[1A[2K[83/118] [chromium] › e2e/buzzhive.spec.ts:1641:7 › Buzzhive API - Users › API-USER-003: POST /api/users/{username}/follow follows user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1641:7 › Buzzhive API - Users › API-USER-003: POST /api/users/{username}/follow follows user
+✅ API-USER-003: Follow returns 404 - PASSED
+
+[1A[2K[84/118] [chromium] › e2e/buzzhive.spec.ts:1655:7 › Buzzhive API - Users › API-USER-004: DELETE /api/users/{username}/follow unfollows user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1655:7 › Buzzhive API - Users › API-USER-004: DELETE /api/users/{username}/follow unfollows user
+⚠️ API-USER-004: Login failed with 500
+
+[1A[2K[85/118] [chromium] › e2e/buzzhive.spec.ts:1669:7 › Buzzhive API - Users › API-USER-005: GET /api/users/{username}/followers returns followers
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1669:7 › Buzzhive API - Users › API-USER-005: GET /api/users/{username}/followers returns followers
+✅ API-USER-005: Followers returns 404 - PASSED
+
+[1A[2K[86/118] [chromium] › e2e/buzzhive.spec.ts:1683:7 › Buzzhive API - Users › API-USER-006: GET /api/users/{username}/following returns following
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1683:7 › Buzzhive API - Users › API-USER-006: GET /api/users/{username}/following returns following
+⚠️ API-USER-006: Login failed with 500
+
+[1A[2K[87/118] [chromium] › e2e/buzzhive.spec.ts:1715:7 › Buzzhive API - Notifications › API-NOTIF-001: GET /api/notifications returns list
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1715:7 › Buzzhive API - Notifications › API-NOTIF-001: GET /api/notifications returns list
+✅ API-NOTIF-001: Notifications returns 200 - PASSED
+
+[1A[2K[88/118] [chromium] › e2e/buzzhive.spec.ts:1729:7 › Buzzhive API - Notifications › API-NOTIF-002: GET /api/notifications/unread-count returns count
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1729:7 › Buzzhive API - Notifications › API-NOTIF-002: GET /api/notifications/unread-count returns count
+⚠️ API-NOTIF-002: Login failed with 500
+
+[1A[2K[89/118] [chromium] › e2e/buzzhive.spec.ts:1743:7 › Buzzhive API - Notifications › API-NOTIF-003: POST /api/notifications/read-all marks all read
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1743:7 › Buzzhive API - Notifications › API-NOTIF-003: POST /api/notifications/read-all marks all read
+✅ API-NOTIF-003: Mark all read returns 204 - PASSED
+
+[1A[2K[90/118] [chromium] › e2e/buzzhive.spec.ts:1757:7 › Buzzhive API - Notifications › API-NOTIF-004: POST /api/notifications/{id}/read marks one read
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1757:7 › Buzzhive API - Notifications › API-NOTIF-004: POST /api/notifications/{id}/read marks one read
+⚠️ API-NOTIF-004: Login failed with 500
+
+[1A[2K[91/118] [chromium] › e2e/buzzhive.spec.ts:1787:7 › Buzzhive API - Notifications › API-NOTIF-005: POST /api/notifications/{id}/read without auth returns 401/403
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1787:7 › Buzzhive API - Notifications › API-NOTIF-005: POST /api/notifications/{id}/read without auth returns 401/403
+✅ API-NOTIF-005: Unauthorized returns 403 - PASSED
+
+[1A[2K[92/118] [chromium] › e2e/buzzhive.spec.ts:1811:7 › Buzzhive API - Admin › API-ADMIN-001: GET /api/admin/stats returns dashboard
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1811:7 › Buzzhive API - Admin › API-ADMIN-001: GET /api/admin/stats returns dashboard
+✅ API-ADMIN-001: Admin stats returns 200 - PASSED
+
+[1A[2K[93/118] [chromium] › e2e/buzzhive.spec.ts:1825:7 › Buzzhive API - Admin › API-ADMIN-002: GET /api/admin/users returns user list
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1825:7 › Buzzhive API - Admin › API-ADMIN-002: GET /api/admin/users returns user list
+⚠️ API-ADMIN-002: Login failed with 500
+
+[1A[2K[94/118] [chromium] › e2e/buzzhive.spec.ts:1839:7 › Buzzhive API - Admin › API-ADMIN-003: GET /api/admin/posts returns all posts
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1839:7 › Buzzhive API - Admin › API-ADMIN-003: GET /api/admin/posts returns all posts
+✅ API-ADMIN-003: Admin posts returns 200 - PASSED
+
+[1A[2K[95/118] [chromium] › e2e/buzzhive.spec.ts:1853:7 › Buzzhive API - Admin › API-ADMIN-004: Non-admin cannot access admin endpoints
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1853:7 › Buzzhive API - Admin › API-ADMIN-004: Non-admin cannot access admin endpoints
+✅ API-ADMIN-004: Non-admin blocked with 403 - PASSED
+
+[1A[2K[96/118] [chromium] › e2e/buzzhive.spec.ts:1871:7 › Buzzhive API - Health › API-HEALTH-001: GET /api/health returns 200
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1871:7 › Buzzhive API - Health › API-HEALTH-001: GET /api/health returns 200
+✅ API-HEALTH-001: Health check returns 200 - PASSED
+
+[1A[2K[97/118] [chromium] › e2e/buzzhive.spec.ts:1877:7 › Buzzhive API - Health › API-RESET-001: POST /api/reset resets database
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1877:7 › Buzzhive API - Health › API-RESET-001: POST /api/reset resets database
+✅ API-RESET-001: Reset DB returns 200 - PASSED
+
+[1A[2K[98/118] [chromium] › e2e/buzzhive.spec.ts:1901:7 › Buzzhive API - Comments › API-COMMENT-001: POST /api/comments/{id}/like likes comment
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1901:7 › Buzzhive API - Comments › API-COMMENT-001: POST /api/comments/{id}/like likes comment
+✅ API-COMMENT-001: Like comment returns 422 - PASSED
+
+[1A[2K[99/118] [chromium] › e2e/buzzhive.spec.ts:1915:7 › Buzzhive API - Comments › API-COMMENT-002: DELETE /api/comments/{id}/like unlikes comment
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1915:7 › Buzzhive API - Comments › API-COMMENT-002: DELETE /api/comments/{id}/like unlikes comment
+✅ API-COMMENT-002: Unlike comment returns 422 - PASSED
+
+[1A[2K[100/118] [chromium] › e2e/buzzhive.spec.ts:1929:7 › Buzzhive API - Comments › API-COMMENT-003: GET /api/comments/{id}/replies returns replies
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1929:7 › Buzzhive API - Comments › API-COMMENT-003: GET /api/comments/{id}/replies returns replies
+⚠️ API-COMMENT-003: Login failed with 500
+
+[1A[2K[101/118] [chromium] › e2e/buzzhive.spec.ts:1961:7 › Buzzhive API - Bookmarks › API-BOOK-001: GET /api/bookmarks returns bookmarks
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1961:7 › Buzzhive API - Bookmarks › API-BOOK-001: GET /api/bookmarks returns bookmarks
+✅ API-BOOK-001: Bookmarks returns 200 - PASSED
+
+[1A[2K[102/118] [chromium] › e2e/buzzhive.spec.ts:1993:7 › Buzzhive API - Follow Requests › API-FOLLOW-001: GET /api/follows/requests returns requests
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:1993:7 › Buzzhive API - Follow Requests › API-FOLLOW-001: GET /api/follows/requests returns requests
+⚠️ API-FOLLOW-001: Login failed with 500
+
+[1A[2K[103/118] [chromium] › e2e/buzzhive.spec.ts:2007:7 › Buzzhive API - Follow Requests › API-FOLLOW-002: POST /api/follows/requests/{id}/accept accepts request
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2007:7 › Buzzhive API - Follow Requests › API-FOLLOW-002: POST /api/follows/requests/{id}/accept accepts request
+✅ API-FOLLOW-002: Accept request returns 422 - PASSED
+
+[1A[2K[104/118] [chromium] › e2e/buzzhive.spec.ts:2021:7 › Buzzhive API - Follow Requests › API-FOLLOW-003: POST /api/follows/requests/{id}/reject rejects request
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2021:7 › Buzzhive API - Follow Requests › API-FOLLOW-003: POST /api/follows/requests/{id}/reject rejects request
+⚠️ API-FOLLOW-003: Login failed with 500
+
+[1A[2K[105/118] [chromium] › e2e/buzzhive.spec.ts:2053:7 › Buzzhive API - Posts Extended › API-POST-EXT-001: GET /api/posts/{id} returns single post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2053:7 › Buzzhive API - Posts Extended › API-POST-EXT-001: GET /api/posts/{id} returns single post
+✅ API-POST-EXT-001: Single post returns 422 - PASSED
+
+[1A[2K[106/118] [chromium] › e2e/buzzhive.spec.ts:2067:7 › Buzzhive API - Posts Extended › API-POST-EXT-002: PATCH /api/posts/{id} updates post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2067:7 › Buzzhive API - Posts Extended › API-POST-EXT-002: PATCH /api/posts/{id} updates post
+⚠️ API-POST-EXT-002: Login failed with 500
+
+[1A[2K[107/118] [chromium] › e2e/buzzhive.spec.ts:2082:7 › Buzzhive API - Posts Extended › API-POST-EXT-003: DELETE /api/posts/{id} deletes post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2082:7 › Buzzhive API - Posts Extended › API-POST-EXT-003: DELETE /api/posts/{id} deletes post
+✅ API-POST-EXT-003: Delete post returns 422 - PASSED
+
+[1A[2K[108/118] [chromium] › e2e/buzzhive.spec.ts:2096:7 › Buzzhive API - Posts Extended › API-POST-EXT-004: GET /api/users/{username}/posts returns user posts
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2096:7 › Buzzhive API - Posts Extended › API-POST-EXT-004: GET /api/users/{username}/posts returns user posts
+⚠️ API-POST-EXT-004: Login failed with 500
+
+[1A[2K[109/118] [chromium] › e2e/buzzhive.spec.ts:2128:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-001: PATCH /api/admin/users/{id} updates user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2128:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-001: PATCH /api/admin/users/{id} updates user
+✅ API-ADMIN-EXT-001: Update user returns 422 - PASSED
+
+[1A[2K[110/118] [chromium] › e2e/buzzhive.spec.ts:2143:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-002: DELETE /api/admin/posts/{id} deletes post
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2143:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-002: DELETE /api/admin/posts/{id} deletes post
+⚠️ API-ADMIN-EXT-002: Login failed with 500
+
+[1A[2K[111/118] [chromium] › e2e/buzzhive.spec.ts:2175:7 › Buzzhive API - Upload › API-UPLOAD-001: POST /api/upload/image uploads valid image
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2175:7 › Buzzhive API - Upload › API-UPLOAD-001: POST /api/upload/image uploads valid image
+✅ API-UPLOAD-001: Upload returns 200 - PASSED
+
+[1A[2K[112/118] [chromium] › e2e/buzzhive.spec.ts:2201:7 › Buzzhive API - Upload › API-UPLOAD-002: POST /api/upload/image rejects non-image
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2201:7 › Buzzhive API - Upload › API-UPLOAD-002: POST /api/upload/image rejects non-image
+⚠️ API-UPLOAD-002: Login failed with 500
+
+[1A[2K[113/118] [chromium] › e2e/buzzhive.spec.ts:2227:7 › Buzzhive API - Upload › API-UPLOAD-003: POST /api/upload/image requires auth
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2227:7 › Buzzhive API - Upload › API-UPLOAD-003: POST /api/upload/image requires auth
+✅ API-UPLOAD-003: Upload without auth returns 403 - PASSED
+
+[1A[2K[114/118] [chromium] › e2e/buzzhive.spec.ts:2262:7 › Buzzhive API - Moderator › API-MOD-001: DELETE /api/posts/{id} by moderator
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2262:7 › Buzzhive API - Moderator › API-MOD-001: DELETE /api/posts/{id} by moderator
+✅ API-MOD-001: Moderator delete returns 422 - PASSED
+
+[1A[2K[115/118] [chromium] › e2e/buzzhive.spec.ts:2276:7 › Buzzhive API - Moderator › API-MOD-002: Regular user cannot delete others posts
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2276:7 › Buzzhive API - Moderator › API-MOD-002: Regular user cannot delete others posts
+✅ API-MOD-002: Non-owner blocked with 422 - PASSED
+
+[1A[2K[116/118] [chromium] › e2e/buzzhive.spec.ts:2308:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-003: PATCH /api/admin/users/{id}/ban bans user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2308:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-003: PATCH /api/admin/users/{id}/ban bans user
+✅ API-ADMIN-EXT-003: Ban user returns 404 - PASSED
+
+[1A[2K[117/118] [chromium] › e2e/buzzhive.spec.ts:2322:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-004: PATCH /api/admin/users/{id}/unban unbans user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2322:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-004: PATCH /api/admin/users/{id}/unban unbans user
+⚠️ API-ADMIN-EXT-004: Login failed with 500
+
+[1A[2K[118/118] [chromium] › e2e/buzzhive.spec.ts:2336:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-005: DELETE /api/admin/users/{id} deletes user
+[1A[2K[chromium] › e2e/buzzhive.spec.ts:2336:7 › Buzzhive API - Admin Extended › API-ADMIN-EXT-005: DELETE /api/admin/users/{id} deletes user
+✅ API-ADMIN-EXT-005: Delete user returns 422 - PASSED
+
+[1A[2K  8 failed
+    [chromium] › e2e/api-expanded.spec.ts:16:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with valid credentials returns 200 + tokens 
+    [chromium] › e2e/api-expanded.spec.ts:27:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login returns correct token_type 
+    [chromium] › e2e/api-expanded.spec.ts:64:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-001: Login with SQL injection in email 
+    [chromium] › e2e/api-expanded.spec.ts:72:7 › API Expanded - Auth (5 → 25 tests) › AUTH-API-002: /me with valid token returns 200 + user data 
+    [chromium] › e2e/api-expanded.spec.ts:284:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns 200 
+    [chromium] › e2e/api-expanded.spec.ts:289:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts returns array 
+    [chromium] › e2e/api-expanded.spec.ts:295:7 › API Expanded - Posts (10 → 50 tests) › POST-API-001: GET /posts pagination params work 
+    [chromium] › e2e/buzzhive.spec.ts:1163:7 › Buzzhive API - Authentication › API-AUTH-004: POST /api/auth/refresh 
+  45 did not run
+  65 passed (41.1s)

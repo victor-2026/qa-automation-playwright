@@ -1,1355 +1,262 @@
 # Test Cases - Buzzhive Social Network
 
-55+ test cases for QA automation practice.
+**Reference:** All test implementations are in `e2e/buzzhive.spec.ts`
+
+---
+
+## Summary
 
----
-
-## Auth
-
-### TC-AUTH-001: Successful login
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** DB in default state. User alice_dev exists and is active.
-
-**Steps:**
-1. Open /login
-2. Enter email: alice@buzzhive.com
-3. Enter password: alice123
-4. Click "Sign in"
-
-**Expected:** Redirect to /. Sidebar shows "Alice Developer". Feed loads.
-
-**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`
-
----
-
-### TC-AUTH-002: Login with wrong password
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** DB in default state.
-
-**Steps:**
-1. Open /login
-2. Enter email: alice@buzzhive.com
-3. Enter password: wrongpass
-4. Click "Sign in"
-
-**Expected:** Error message visible: "Invalid email or password". Stay on /login.
-
-**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`, `auth-error-message`
-
----
-
-### TC-AUTH-003: Login with banned account
-**Priority:** high | **Type:** Integration
-
-**Preconditions:** User frank_banned exists with is_active=false.
-
-**Steps:**
-1. Open /login
-2. Enter email: frank@buzzhive.com
-3. Enter password: frank123
-4. Click "Sign in"
-
-**Expected:** Error: "Account is deactivated". No redirect. No token stored.
-
-**API:** `POST /api/auth/login`
-
----
-
-### TC-AUTH-004: Register new account
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Email and username must not already exist in DB.
-
-**Steps:**
-1. Open /register
-2. Enter display name: "Test User"
-3. Enter username: testuser_123
-4. Enter email: testuser@example.com
-5. Enter password: test123
-6. Click "Create account"
-
-**Expected:** Redirect to /login with success toast. Login with new credentials works.
-
-**Selectors:** `auth-display-name-input`, `auth-username-input`, `auth-email-input`, `auth-password-input`, `auth-register-btn`
-
----
-
-### TC-AUTH-005: Register with duplicate email
-**Priority:** high | **Type:** API
-
-**Preconditions:** User alice_dev already exists.
-
-**Steps:**
-1. POST /api/auth/register with body: `{"email":"alice@buzzhive.com","username":"newuser","password":"pass123","display_name":"New"}`
-
-**Expected:** 409 Conflict: `{"detail":"User with this email or username already exists"}`
-
-**API:** `POST /api/auth/register`
-
----
-
-### TC-AUTH-006: Token refresh flow
-**Priority:** high | **Type:** API
-
-**Preconditions:** Valid refresh_token obtained from login.
-
-**Steps:**
-1. POST /api/auth/login to get access_token + refresh_token
-2. Wait for access_token to expire (or manually use expired one)
-3. GET /api/auth/me with expired token → 401
-4. POST /api/auth/refresh with refresh_token
-5. GET /api/auth/me with new access_token → 200
-
-**Expected:** Expired token returns 401. Refresh returns new token pair. New token works.
-
-**API:** `POST /api/auth/login`, `POST /api/auth/refresh`, `GET /api/auth/me`
-
----
-
-### TC-AUTH-007: Quick login buttons fill form
-**Priority:** medium | **Type:** UI
-
-**Preconditions:** On /login page.
-
-**Steps:**
-1. Click "Admin" quick login button
-2. Check email and password fields
-
-**Expected:** Email = admin@buzzhive.com, Password = admin123.
-
-**Selectors:** `auth-email-input`, `auth-password-input`
-
----
-
-### TC-AUTH-008: Username validation rejects spaces
-**Priority:** medium | **Type:** UI
-
-**Preconditions:** On /register page.
-
-**Steps:**
-1. Enter username: "bad user" (with space)
-2. Submit form
-
-**Expected:** Validation error. Username must match `^[a-zA-Z0-9_]+$`.
-
-**Selectors:** `auth-username-input`, `auth-register-btn`
-
----
-
-### TC-AUTH-009: Login with invalid email formats
-**Priority:** high | **Type:** UI / Edge Case
-
-**Preconditions:** On /login page.
-
-**Test Data (RFC 5321/5322 Negative Tests):**
-| Email | Expected |
-|-------|----------|
-| `wrong@buzzhive.com` | Error (user not found) |
-| `plaintext` | Error (no @) |
-| `user@` | Error (no domain) |
-| `@domain.com` | Error (no user) |
-| `user@domain` | Error (no TLD) |
-| `user@.com` | Error (dot at start) |
-| `user@@domain.com` | Error (double @) |
-
-**Steps:**
-1. Enter each invalid email format
-2. Enter valid password
-3. Click "Sign in"
-4. Verify stay on /login page
-
-**Expected:** All invalid formats rejected. Stay on /login. No successful login.
-
-**HTML5 Validation Test:**
-- `invalid-email` → `el.validity.valid = false`
-
-**Selectors:** `auth-email-input`, `auth-password-input`, `auth-login-btn`
-
----
-
-### TC-AUTH-010: SQL injection in login fields is blocked
-**Priority:** critical | **Type:** Security
-
-**Preconditions:** On /login page.
-
-**Test Data (SQL Injection Payloads):**
-- `' OR '1'='1`
-- `admin'--`
-- `' OR 1=1--`
-- `'; DROP TABLE users;--`
-
-**Test Data (XSS Payloads):**
-- `<script>alert("XSS")</script>`
-- `"><img src=x onerror=alert(1)>`
-- `javascript:alert('XSS')`
-
-**Steps:**
-1. Enter SQL injection payload in email field
-2. Enter any password
-3. Click "Sign in"
-4. Repeat for password field
-5. Repeat for XSS payloads
-
-**Expected:** 
-- Error shown "Invalid email or password"
-- No successful login
-- No script execution
-- Stay on /login page
-
-**Security Check:** No SQL error messages exposed to user.
-
----
-
-### TC-AUTH-011: Password Boundary Tests
-**Priority:** critical | **Type:** Edge Case
-
-**System Limits:**
-- Password Minimum: 6 characters
-
-**Test Data:**
-| Password | Length | Expected Result |
-|----------|--------|-----------------|
-| `a` | 1 | ❌ HTML5 validation rejects (< minlength=6) |
-| `123456` | 6 | ✅ Accepted (but wrong password → error) |
-| `a`.repeat(1000) | 1000 | ✅ Handled (wrong password → error) |
-| `a`.repeat(3001) | 3001 | ✅ Handled (wrong password → error) |
-
-**Steps:**
-1. Enter 1 character password
-2. Verify HTML5 validation blocks submit
-3. Enter 6 character password
-4. Verify accepted (but shows wrong password error)
-5. Enter very long passwords
-6. Verify system handles gracefully
-
-**Expected:**
-- Short passwords blocked by HTML5 validation
-- Long passwords accepted but show wrong password error
-- No crashes or errors with extreme lengths
-
----
-
-## Posts
-
-### TC-POST-001: Create a new post
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Logged in as any active user.
-
-**Steps:**
-1. Navigate to / (Feed)
-2. Type "Hello from automation!" in composer
-3. Click "Post" button
-
-**Expected:** Post appears at top of feed. Toast: "Post created!". Counter resets.
-
-**Selectors:** `post-composer-input`, `post-composer-submit`
-
----
-
-### TC-POST-002: Post with hashtags auto-links
-**Priority:** high | **Type:** Integration
-
-**Preconditions:** Logged in as any user.
-
-**Steps:**
-1. Create post: "Testing #automation today"
-2. Check that #automation is rendered as a link
-3. Click the hashtag link
-4. Verify Explore page opens with hashtag filter
-
-**Expected:** Hashtag rendered as clickable link. Explore shows posts tagged #automation.
-
-**API:** `POST /api/posts`, `GET /api/posts?hashtag=automation`
-
----
-
-### TC-POST-003: Like and unlike a post
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Logged in. At least one post visible. Post is NOT already liked.
-
-**Steps:**
-1. Note current like count on a post
-2. Click like button (heart icon)
-3. Verify count +1 and heart is filled red
-4. Click like button again
-5. Verify count -1 and heart is outline
-
-**Expected:** Like toggles. Count increments/decrements. Heart state changes. State persists on page reload.
-
-**Selectors:** `post-like-btn-{id}`, `post-likes-count-{id}`
-
----
-
-### TC-POST-004: Bookmark and view bookmarks
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Logged in. Post is not bookmarked.
-
-**Steps:**
-1. Click bookmark icon on a post
-2. Verify icon becomes filled
-3. Navigate to /bookmarks
-4. Verify the post appears in bookmarks list
-
-**Expected:** Bookmark icon toggles. Post appears in /bookmarks.
-
-**Selectors:** `post-bookmark-btn-{id}`, `nav-bookmarks`
-
----
-
-### TC-POST-005: Delete own post
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Logged in as alice_dev. At least one own post exists.
-
-**Steps:**
-1. Click (...) menu on own post
-2. Click "Delete"
-3. Confirm in dialog
-
-**Expected:** Post disappears from feed immediately.
-
-**Selectors:** `post-menu-btn-{id}`, `post-delete-btn-{id}`
-
----
-
-### TC-POST-006: Moderator soft-deletes post
-**Priority:** high | **Type:** Integration
-
-**Preconditions:** Logged in as moderator. Target post exists.
-
-**Steps:**
-1. Find any user post in feed
-2. Click (...) menu → Delete
-3. Login as admin → /admin/content
-4. Verify post shows as [DELETED]
-
-**Expected:** Post removed from public feed. Visible in admin with [DELETED] tag.
-
-**API:** `DELETE /api/posts/{id}`, `GET /api/admin/posts?is_deleted=true`
-
----
-
-### TC-POST-007: Post at max length (2000 chars)
-**Priority:** medium | **Type:** Edge Case
-
-**Preconditions:** Logged in. Seed post with 2000 characters exists (post_24).
-
-**Steps:**
-1. Open composer
-2. Enter exactly 2000 characters
-3. Verify counter shows 2000/2000
-4. Submit
-
-**Expected:** Post created. Counter accurate. Long post renders with proper word-wrap.
-
-**Selectors:** `post-composer-input`, `post-composer-submit`
-
----
-
-### TC-POST-008: XSS attempt in post content
-**Priority:** critical | **Type:** Security
-
-**Preconditions:** Seed data loaded. Post with `<script>alert("xss")</script>` exists (post_25).
-
-**Steps:**
-1. Navigate to feed or explore
-2. Find the seed post with script tag content
-3. Inspect DOM - verify no `<script>` element exists
-4. Verify content displayed as plain text
-
-**Expected:** Script tag rendered as text. No JavaScript execution. No console errors.
-
-**Selectors:** `post-content-{id}`
-
----
-
-## Comments
-
-### TC-COM-001: Add comment to post
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Logged in. On a post detail page (/post/{id}).
-
-**Steps:**
-1. Type "Great post!" in comment input
-2. Click send button
-3. Verify comment appears in list
-
-**Expected:** Comment appears. Post comments_count increments. Toast shown.
-
-**Selectors:** `comment-input`, `comment-submit-btn`
-
----
-
-### TC-COM-002: Reply to a comment (nested)
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Post has at least one comment.
-
-**Steps:**
-1. Click "Reply" on a comment
-2. Verify "Replying to @username" label appears
-3. Type reply text
-4. Click submit
-
-**Expected:** Reply appears indented under parent comment.
-
-**Selectors:** `comment-reply-btn-{id}`, `comment-input`, `comment-submit-btn`
-
----
-
-### TC-COM-003: Like a comment
-**Priority:** medium | **Type:** UI
-
-**Preconditions:** On post detail page with comments.
-
-**Steps:**
-1. Click heart icon on a comment
-2. Verify count +1, heart turns red
-
-**Expected:** Comment like toggles correctly.
-
-**Selectors:** `comment-like-btn-{id}`
-
----
-
-## Follows
-
-### TC-FOL-001: Follow a public user
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Logged in as eve_new. eve does NOT follow bob_photo.
-
-**Steps:**
-1. Navigate to /profile/bob_photo
-2. Click "Follow" button
-3. Verify button changes to "Unfollow"
-4. Verify followers count incremented
-
-**Expected:** Follow created. Button state changes. bob_photo receives "follow" notification.
-
-**Selectors:** `profile-follow-btn`, `profile-followers-count`
-
-**API:** `POST /api/users/bob_photo/follow`
-
----
-
-### TC-FOL-002: Follow request for private account
-**Priority:** high | **Type:** Integration
-
-**Preconditions:** Logged in as eve_new. dave_quiet is a private account.
-
-**Steps:**
-1. Navigate to /profile/dave_quiet
-2. Verify button says "Request to Follow"
-3. Click button
-4. Login as dave_quiet → check notifications
-
-**Expected:** Follow status = "pending". dave sees follow_request notification.
-
-**Selectors:** `profile-follow-btn`
-
----
-
-### TC-FOL-003: Unfollow a user
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Logged in as alice_dev who follows bob_photo.
-
-**Steps:**
-1. Navigate to /profile/bob_photo
-2. Verify button shows "Unfollow"
-3. Click "Unfollow"
-4. Verify button changes to "Follow"
-
-**Expected:** Follow removed. Button reverts. Feed updates.
-
-**Selectors:** `profile-follow-btn`, `profile-followers-count`
-
----
-
-### TC-FOL-005: Followers and following lists
-**Priority:** medium | **Type:** UI
-
-**Preconditions:** User alice_dev has followers and follows others.
-
-**Steps:**
-1. Navigate to /profile/alice_dev
-2. Click Followers count → /profile/alice_dev/followers
-3. Verify list shows users
-4. Go back, click Following count → /profile/alice_dev/following
-
-**Expected:** Both lists render with user avatars, names, and @usernames.
-
-**Selectors:** `profile-followers-count`, `profile-following-count`
-
----
-
-## Messages
-
-### TC-MSG-001: Start new DM conversation
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Logged in. No existing DM with target user.
-
-**Steps:**
-1. Navigate to /messages
-2. Click "New message"
-3. Type "bob" in search field
-4. Click on Bob in results
-
-**Expected:** Conversation page opens. Can type and send messages.
-
-**Selectors:** `new-conversation-btn`, `new-conversation-search`, `new-conversation-modal`
-
----
-
-### TC-MSG-002: Send a message
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Inside a conversation page.
-
-**Steps:**
-1. Type "Hello!" in message input
-2. Press Enter (or click Send)
-3. Verify message appears as right-aligned blue bubble
-4. Verify input clears
-
-**Expected:** Message sent and displayed. Right-aligned with timestamp.
-
-**Selectors:** `message-input`, `message-send-btn`, `message-{id}`
-
----
-
-### TC-MSG-003: Unread messages badge
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Login as bob_photo. alice has sent unread messages to bob.
-
-**Steps:**
-1. Check sidebar Messages nav item
-
-**Expected:** Red badge with unread count visible on Messages icon.
-
-**Selectors:** `nav-messages`, `nav-messages-badge`
-
----
-
-## Notifications
-
-### TC-NOT-001: Unread badge in sidebar
-**Priority:** critical | **Type:** UI
-
-**Preconditions:** Login as alice_dev who has unread notifications (seed data).
-
-**Steps:**
-1. Check sidebar Notifications icon
-
-**Expected:** Red badge with number appears on icon.
-
-**Selectors:** `nav-notifications`, `nav-notifications-badge`
-
----
-
-### TC-NOT-002: Mark all as read
-**Priority:** high | **Type:** UI
-
-**Preconditions:** User has unread notifications.
-
-**Steps:**
-1. Open /notifications
-2. Click "Mark all read" button
-3. Verify all notification highlights removed
-4. Verify sidebar badge disappears
-
-**Expected:** All marked read. Badge removed from sidebar.
-
-**Selectors:** `notifications-mark-all-btn`, `nav-notifications-badge`
-
----
-
-## Search
-
-### TC-SRC-001: Search users by name
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Seed data loaded. On /search page.
-
-**Steps:**
-1. Type "alice" in search input
-2. Press Enter
-3. Check Users tab
-
-**Expected:** alice_dev appears in results. Click navigates to profile.
-
-**Selectors:** `nav-search-input`
-
----
-
-### TC-SRC-002: Search posts by content
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Seed data loaded.
-
-**Steps:**
-1. Search "debugging"
-2. Check Posts tab
-
-**Expected:** Alice's "debugging at 2am" post appears.
-
-**Selectors:** `nav-search-input`
-
----
-
-### TC-SRC-003: Search hashtags
-**Priority:** medium | **Type:** UI
-
-**Preconditions:** Seed data loaded.
-
-**Steps:**
-1. Search "coding"
-2. Check Hashtags tab
-
-**Expected:** #coding shown with correct post count.
-
-**Selectors:** `nav-search-input`
+| Category | Count | Priority Breakdown |
+|----------|-------|-------------------|
+| Authentication | 19 | critical: 14, high: 5 |
+| API Tests | 65 | critical: 40, high: 25 |
+| Navigation | 4 | high |
+| Posts | 2 | high |
+| Profile | 2 | medium |
+| Messages | 1 | medium |
+| Notifications | 2 | medium |
+| Search | 8 | high |
+| Admin | 4 | critical |
+| Moderator | 3 | high |
+| Performance | 4 | medium |
+| **TOTAL** | **120** | |
 
 ---
 
-### TC-SRC-004: Empty search results
-**Priority:** low | **Type:** UI
+## Authentication
 
-**Preconditions:** On /search page.
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| AUTH-001 | Login with valid credentials | critical | UI | buzzhive.spec.ts:27 |
+| AUTH-001 | JWT tokens stored | critical | UI | buzzhive.spec.ts:42 |
+| AUTH-001 | Session persists on reload | critical | UI | buzzhive.spec.ts:64 |
+| AUTH-001 | Sidebar shows username | critical | UI | buzzhive.spec.ts:82 |
+| AUTH-001 | Admin can login | critical | UI | buzzhive.spec.ts:277 |
+| AUTH-002 | Wrong password error | critical | UI | buzzhive.spec.ts:98 |
+| AUTH-002 | No tokens on failed login | critical | UI | buzzhive.spec.ts:243 |
+| AUTH-002 | Stay on login page | critical | UI | buzzhive.spec.ts:265 |
+| AUTH-003 | Banned user blocked | high | Integration | buzzhive.spec.ts:800 |
+| AUTH-004 | Registration - all fields | critical | UI | buzzhive.spec.ts:289 |
+| AUTH-004 | Registration - email validation | critical | UI | buzzhive.spec.ts:299 |
+| AUTH-004 | Registration - password validation | critical | UI | buzzhive.spec.ts:314 |
+| AUTH-009 | Wrong email error | critical | UI | buzzhive.spec.ts:210 |
+| AUTH-009 | HTML5 email validation | high | UI | buzzhive.spec.ts:231 |
+| AUTH-010 | SQL injection in password | critical | Security | buzzhive.spec.ts:152 |
+| AUTH-010 | SQL injection in email | critical | Security | buzzhive.spec.ts:172 |
+| AUTH-010 | XSS in fields blocked | critical | Security | buzzhive.spec.ts:191 |
+| AUTH-011 | Password boundary (1 char) | high | Boundary | buzzhive.spec.ts:107 |
+| AUTH-011 | Password boundary (6 chars) | high | Boundary | buzzhive.spec.ts:122 |
+
+---
+
+## API - Authentication
+
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-AUTH-001 | POST /auth/login returns tokens | critical | API | buzzhive.spec.ts:1074 |
+| API-AUTH-001 | Wrong password returns 401 | critical | API | buzzhive.spec.ts:1090 |
+| API-AUTH-002 | GET /auth/me returns profile | critical | API | buzzhive.spec.ts:1102 |
+| API-AUTH-002 | No token returns 403 | critical | API | buzzhive.spec.ts:1124 |
+| API-AUTH-003 | Register creates user | critical | API | buzzhive.spec.ts:1131 |
+| API-AUTH-003 | Duplicate email returns 409 | high | API | buzzhive.spec.ts:1149 |
+| API-AUTH-004 | POST /auth/refresh | high | API | buzzhive.spec.ts:1163 |
+| API-AUTH-005 | POST /auth/logout | high | API | buzzhive.spec.ts:1188 |
+
+---
+
+## API - Posts
+
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-POST-001 | GET /posts returns list | critical | API | buzzhive.spec.ts:1363 |
+| API-POST-002 | POST /posts creates post | critical | API | buzzhive.spec.ts:1379 |
+| API-POST-003 | GET /posts/feed | critical | API | buzzhive.spec.ts:1396 |
+| API-POST-004 | POST /posts/{id}/like | high | API | buzzhive.spec.ts:1412 |
+| API-POST-005 | DELETE /posts/{id}/like | high | API | buzzhive.spec.ts:1456 |
+| API-POST-006 | POST /posts/{id}/comments | high | API | buzzhive.spec.ts:1500 |
+| API-POST-007 | GET /posts/{id}/comments | high | API | buzzhive.spec.ts:1545 |
+| API-POST-008 | GET /posts without auth | critical | API | buzzhive.spec.ts:1589 |
 
-**Steps:**
-1. Search "zzzznonexistent"
+---
+
+## API - Users
 
-**Expected:** All tabs show 0 results with "No X found" messages.
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-USER-001 | GET /users returns list | high | API | buzzhive.spec.ts:1613 |
+| API-USER-002 | GET /users/{username} | high | API | buzzhive.spec.ts:1627 |
+| API-USER-003 | POST /users/{username}/follow | high | API | buzzhive.spec.ts:1641 |
+| API-USER-004 | DELETE /users/{username}/follow | high | API | buzzhive.spec.ts:1655 |
+| API-USER-005 | GET /users/{username}/followers | high | API | buzzhive.spec.ts:1669 |
+| API-USER-006 | GET /users/{username}/following | high | API | buzzhive.spec.ts:1683 |
 
-**Selectors:** `nav-search-input`
-
----
-
-## Admin
-
-### TC-ADM-001: Dashboard shows stats
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Logged in as admin.
-
-**Steps:**
-1. Navigate to /admin
-2. Check stats cards
-
-**Expected:** Cards show total users, active users, total posts, comments, messages.
-
-**Selectors:** `admin-stats-users-count`, `admin-stats-posts-count`, `nav-admin`
-
----
-
-### TC-ADM-002: Ban a user
-**Priority:** critical | **Type:** Integration
-
-**Preconditions:** Logged in as admin. Target user is active.
-
-**Steps:**
-1. Go to /admin/users
-2. Find alice_dev row
-3. Click "Ban" button
-4. Logout
-5. Try to login as alice_dev
-
-**Expected:** User banned (is_active=false). alice_dev login fails with "Account is deactivated".
-
-**Selectors:** `admin-ban-btn-{id}`, `admin-user-row-{id}`
-
-**API:** `PATCH /api/admin/users/{id}`
-
----
-
-### TC-ADM-003: Change user role
-**Priority:** high | **Type:** UI
-
-**Preconditions:** Logged in as admin.
-
-**Steps:**
-1. Go to /admin/users
-2. Find eve_new
-3. Change role dropdown to "moderator"
-4. Logout, login as eve_new
-
-**Expected:** eve_new now sees Admin nav link in sidebar.
-
-**Selectors:** `admin-role-select-{id}`, `nav-admin`
-
----
-
-### TC-ADM-004: Regular user blocked from admin
-**Priority:** critical | **Type:** Security
-
-**Preconditions:** Logged in as alice_dev (role=user).
-
-**Steps:**
-1. Verify no Admin link in sidebar
-2. Manually navigate to /admin
-3. Try GET /api/admin/stats with alice token
-
-**Expected:** No admin link visible. API returns 403 Forbidden.
-
-**Selectors:** `nav-admin`
-
-**API:** `GET /api/admin/stats`
-
----
-
-## System / Edge Cases
-
-### TC-EDGE-001: SQL injection in content is safe
-**Priority:** critical | **Type:** Security
-
-**Preconditions:** Seed data loaded. Post with SQL injection exists (post_25).
-
-**Steps:**
-1. Find seed post containing: `; DROP TABLE posts; --`
-2. Verify it renders as plain text
-3. Run SQL: SELECT COUNT(*) FROM posts — verify tables exist
-
-**Expected:** Content is plain text. Database intact. No tables dropped.
-
-**API:** `GET /api/posts`
-
----
-
-### TC-EDGE-004: Duplicate like returns 409
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Logged in. Have access token.
-
-**Steps:**
-1. POST /api/posts/{id}/like → 201
-2. POST /api/posts/{id}/like again
-
-**Expected:** 409: `{"detail":"Already liked this post","error_code":"CONFLICT"}`
-
-**API:** `POST /api/posts/{id}/like`
-
----
-
-### TC-EDGE-006: 404 on non-existent resource
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Have access token.
-
-**Steps:**
-1. GET /api/posts/00000000-0000-0000-0000-000000000999
-
-**Expected:** 404: `{"detail":"Post not found","error_code":"NOT_FOUND"}`
-
-**API:** `GET /api/posts/{id}`
-
----
-
-### TC-EDGE-007: Upload oversized image (>5MB)
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Have a file > 5MB.
-
-**Steps:**
-1. POST /api/upload/image with file > 5MB
-
-**Expected:** 400: "File size exceeds 5MB limit".
-
-**API:** `POST /api/upload/image`
-
----
-
-### TC-EDGE-008: Upload non-image file
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Have a .txt or .pdf file.
-
-**Steps:**
-1. POST /api/upload/image with .txt file
-
-**Expected:** 400: "Only JPEG, PNG, GIF, WebP images are allowed".
-
-**API:** `POST /api/upload/image`
-
----
-
-### TC-EDGE-009: Database reset re-seeds data
-**Priority:** high | **Type:** Integration
-
-**Preconditions:** Some custom data created.
-
-**Steps:**
-1. Create a post via API
-2. POST /api/reset
-3. GET /api/posts — check custom post is gone
-4. Verify seed users exist
-
-**Expected:** All custom data deleted. 8 seed users, 25+ posts restored.
-
-**API:** `POST /api/reset`, `GET /api/posts`, `GET /api/users`
-
----
-
-## Performance (PERF)
-
-### TC-PERF-001: Page Load Performance
-**Priority:** high | **Type:** Performance
-
-**Acceptance Criteria:**
-- Login page: < 2 seconds
-- Feed page: < 3 seconds
-- API response: < 500ms
-
-**Steps:**
-1. Measure time to load login page
-2. Login and measure feed load time
-3. Measure API response times
-
-**Expected:** All pages load within SLA timeframes.
-
----
-
-### TC-PERF-002: User Action Performance
-**Priority:** medium | **Type:** Performance
-
-**Acceptance Criteria:**
-- Page navigation: < 1 second
-- Post creation: < 2 seconds
-
-**Steps:**
-1. Measure navigation time between pages
-2. Create a post and measure time
-
-**Expected:** Actions complete within SLA timeframes.
-
----
-
-### TC-PERF-003: Rapid Actions Handling
-**Priority:** medium | **Type:** Performance
-
-**Acceptance Criteria:**
-- System handles rapid user actions without crashes
-- No race conditions
-
-**Steps:**
-1. Perform rapid navigation between pages
-2. Submit multiple actions quickly
-
-**Expected:** System handles all actions correctly.
-
----
-
-## API Tests (API)
-
-### TC-API-AUTH-001: POST /api/auth/login
-**Priority:** critical | **Type:** API
-
-**Endpoint:** `POST /api/auth/login`
-
-**Request:**
-```json
-{
-  "email": "alice@buzzhive.com",
-  "password": "alice123"
-}
-```
-
-**Expected Response (200):**
-```json
-{
-  "access_token": "...",
-  "refresh_token": "..."
-}
-```
-
-**Error Response (401):**
-```json
-{
-  "detail": "Invalid email or password"
-}
-```
-
----
-
-### TC-API-AUTH-002: GET /api/auth/me
-**Priority:** critical | **Type:** API
-
-**Endpoint:** `GET /api/auth/me`
-
-**Headers:** `Authorization: Bearer {access_token}`
-
-**Expected Response (200):**
-```json
-{
-  "id": "...",
-  "email": "alice@buzzhive.com",
-  "username": "alice_dev",
-  "display_name": "Alice Developer"
-}
-```
-
-**Error Response (401):** No token or invalid token
-
----
-
-### TC-API-AUTH-003: POST /api/auth/register
-**Priority:** critical | **Type:** API
-
-**Endpoint:** `POST /api/auth/register`
-
-**Request:**
-```json
-{
-  "email": "newuser@test.com",
-  "username": "newuser123",
-  "password": "password123",
-  "display_name": "New User"
-}
-```
-
-**Expected Response (201):**
-```json
-{
-  "access_token": "...",
-  "refresh_token": "..."
-}
-```
-
-**Error Response (409):** Email or username already exists
-
----
-
-### TC-API-AUTH-004: POST /api/auth/refresh
-**Priority:** high | **Type:** API
-
-**Endpoint:** `POST /api/auth/refresh`
-
-**Request:**
-```json
-{
-  "refresh_token": "{refresh_token}"
-}
-```
-
-**Expected Response (200):**
-```json
-{
-  "access_token": "...",
-  "refresh_token": "..."
-}
-```
-
----
-
-### TC-API-AUTH-005: POST /api/auth/logout
-**Priority:** medium | **Type:** API
-
-**Endpoint:** `POST /api/auth/logout`
-
-**Headers:** `Authorization: Bearer {access_token}`
-
-**Request:**
-```json
-{
-  "refresh_token": "{refresh_token}"
-}
-```
-
-**Expected Response (200):** Empty body or `{"message": "Logged out"}`
-
----
-
-## API - Comments
-
-### TC-API-CMT-001: POST /api/comments/{id}/like
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/comments/1/like
-
-**Expected:** 200/201 response.
-
----
-
-### TC-API-CMT-002: DELETE /api/comments/{id}/like
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. DELETE /api/comments/1/like
-
-**Expected:** 200/204 response.
-
----
-
-### TC-API-CMT-003: GET /api/comments/{id}/replies
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/comments/1/replies
-
-**Expected:** 200 response with replies array.
-
----
-
-## API - Bookmarks
-
-### TC-API-BOOK-001: GET /api/bookmarks
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/bookmarks
-
-**Expected:** 200 response with bookmarks array.
-
----
-
-## API - Follow Requests
-
-### TC-API-FOLLOW-001: GET /api/follows/requests
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/follows/requests
-
-**Expected:** 200 response.
-
----
-
-### TC-API-FOLLOW-002: POST /api/follows/requests/{id}/accept
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user with pending request.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/follows/requests/1/accept
-
-**Expected:** 200/201 response.
-
----
-
-### TC-API-FOLLOW-003: POST /api/follows/requests/{id}/reject
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user with pending request.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/follows/requests/1/reject
-
-**Expected:** 200/204 response.
-
----
-
-## API - Posts Extended
-
-### TC-API-POST-EXT-001: GET /api/posts/{id}
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/posts/1
-
-**Expected:** 200 response with single post.
-
----
-
-### TC-API-POST-EXT-002: PATCH /api/posts/{id}
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user owns post.
-
-**Steps:**
-1. GET /api/auth/login
-2. PATCH /api/posts/1 with content update
-
-**Expected:** 200 response.
-
----
-
-### TC-API-POST-EXT-003: DELETE /api/posts/{id}
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user owns post.
-
-**Steps:**
-1. GET /api/auth/login
-2. DELETE /api/posts/1
-
-**Expected:** 200/204 response.
-
----
-
-### TC-API-POST-EXT-004: GET /api/users/{username}/posts
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/users/alice/posts
-
-**Expected:** 200 response with posts array.
-
----
-
-## API - Admin Extended
-
-### TC-API-ADMIN-EXT-001: PATCH /api/admin/users/{id}
-**Priority:** critical | **Type:** API
-
-**Preconditions:** Admin role.
-
-**Steps:**
-1. GET /api/auth/login (admin)
-2. PATCH /api/admin/users/1 with role update
-
-**Expected:** 200 response.
-
----
-
-### TC-API-ADMIN-EXT-002: DELETE /api/admin/posts/{id}
-**Priority:** critical | **Type:** API
-
-**Preconditions:** Admin role.
-
-**Steps:**
-1. GET /api/auth/login (admin)
-2. DELETE /api/admin/posts/1
-
-**Expected:** 200/204 response.
-
----
-
-## API - Upload
-
-### TC-API-UPLOAD-001: POST /api/upload/image
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/upload/image with valid JPEG image
-
-**Expected:** 200 response with {url: "/uploads/..."}
-
----
-
-### TC-API-UPLOAD-002: POST /api/upload/image rejects non-image
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/upload/image with .txt file
-
-**Expected:** 400 response: "Only JPEG, PNG, GIF, WebP images are allowed"
-
----
-
-### TC-API-UPLOAD-003: POST /api/upload/image requires auth
-**Priority:** critical | **Type:** API
-
-**Steps:**
-1. POST /api/upload/image without token
-
-**Expected:** 401/403 response.
-
----
-
-### TC-API-UPLOAD-004: POST /api/upload/image rejects >5MB
-**Priority:** high | **Type:** API
-
-**Preconditions:** Authenticated user.
-
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/upload/image with file > 5MB
-
-**Expected:** 400 response: "File size exceeds 5MB limit"
-
 ---
-
-## API - Health
-
-### TC-API-HEALTH-001: GET /api/health
-**Priority:** critical | **Type:** API
 
-**Steps:**
-1. GET /api/health
+## API - Messages
+
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-MSG-001 | GET /conversations | high | API | buzzhive.spec.ts:1239 |
+| API-MSG-002 | POST /conversations/dm/{username} | high | API | buzzhive.spec.ts:1250 |
+| API-MSG-003 | GET /conversations/{id} | high | API | buzzhive.spec.ts:1262 |
+| API-MSG-004 | POST /conversations/{id}/read | high | API | buzzhive.spec.ts:1286 |
+| API-MSG-005 | DELETE /conversations/{id} | high | API | buzzhive.spec.ts:1315 |
+| API-MSG-006 | GET /conversations without auth | critical | API | buzzhive.spec.ts:1339 |
 
-**Expected:** 200 response with status healthy.
-
 ---
-
-### TC-API-RESET-001: POST /api/reset
-**Priority:** critical | **Type:** API
 
-**Steps:**
-1. POST /api/reset
+## API - Notifications
 
-**Expected:** 200 response, database reset.
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-NOTIF-001 | GET /notifications | high | API | buzzhive.spec.ts:1715 |
+| API-NOTIF-002 | GET /notifications/unread-count | high | API | buzzhive.spec.ts:1729 |
+| API-NOTIF-003 | POST /notifications/read-all | high | API | buzzhive.spec.ts:1743 |
+| API-NOTIF-004 | POST /notifications/{id}/read | high | API | buzzhive.spec.ts:1757 |
+| API-NOTIF-005 | Mark one read without auth | critical | API | buzzhive.spec.ts:1787 |
 
 ---
-
-## API - Users Extended
-
-### TC-API-USER-001: GET /api/users
-**Priority:** medium | **Type:** API
 
-**Preconditions:** Authenticated user.
+## API - Admin
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/users
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-ADMIN-001 | GET /admin/stats | critical | API | buzzhive.spec.ts:1775 |
+| API-ADMIN-002 | GET /admin/users | high | API | buzzhive.spec.ts:1789 |
+| API-ADMIN-003 | GET /admin/posts | high | API | buzzhive.spec.ts:1803 |
+| API-ADMIN-004 | Non-admin blocked | critical | API | buzzhive.spec.ts:1817 |
+| API-ADMIN-EXT-001 | PATCH /admin/users/{id} | high | API | buzzhive.spec.ts:2092 |
+| API-ADMIN-EXT-002 | DELETE /admin/posts/{id} | high | API | buzzhive.spec.ts:2107 |
+| API-ADMIN-EXT-003 | PATCH /admin/users/{id}/ban | high | API | buzzhive.spec.ts:2272 |
+| API-ADMIN-EXT-004 | PATCH /admin/users/{id}/unban | high | API | buzzhive.spec.ts:2286 |
+| API-ADMIN-EXT-005 | DELETE /admin/users/{id} | high | API | buzzhive.spec.ts:2300 |
 
-**Expected:** 200 response with users array.
-
 ---
-
-### TC-API-USER-002: GET /api/users/{username}
-**Priority:** high | **Type:** API
 
-**Preconditions:** Authenticated user.
+## API - Other
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/users/alice
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| API-HEALTH-001 | GET /health | critical | API | buzzhive.spec.ts:1835 |
+| API-RESET-001 | POST /reset | high | API | buzzhive.spec.ts:1841 |
+| API-COMMENT-001 | POST /comments/{id}/like | high | API | buzzhive.spec.ts:1865 |
+| API-COMMENT-002 | DELETE /comments/{id}/like | high | API | buzzhive.spec.ts:1879 |
+| API-COMMENT-003 | GET /comments/{id}/replies | high | API | buzzhive.spec.ts:1893 |
+| API-BOOK-001 | GET /bookmarks | medium | API | buzzhive.spec.ts:1925 |
+| API-FOLLOW-001 | GET /follows/requests | high | API | buzzhive.spec.ts:1957 |
+| API-FOLLOW-002 | POST /follows/requests/{id}/accept | high | API | buzzhive.spec.ts:1971 |
+| API-FOLLOW-003 | POST /follows/requests/{id}/reject | high | API | buzzhive.spec.ts:1985 |
+| API-POST-EXT-001 | GET /posts/{id} | high | API | buzzhive.spec.ts:2017 |
+| API-POST-EXT-002 | PATCH /posts/{id} | high | API | buzzhive.spec.ts:2031 |
+| API-POST-EXT-003 | DELETE /posts/{id} | high | API | buzzhive.spec.ts:2046 |
+| API-POST-EXT-004 | GET /users/{username}/posts | high | API | buzzhive.spec.ts:2060 |
+| API-UPLOAD-001 | POST /upload/image (valid) | high | API | buzzhive.spec.ts:2139 |
+| API-UPLOAD-002 | POST /upload/image (reject) | high | API | buzzhive.spec.ts:2165 |
+| API-UPLOAD-003 | POST /upload/image (no auth) | critical | API | buzzhive.spec.ts:2191 |
+| API-MOD-001 | DELETE /posts/{id} by mod | high | API | buzzhive.spec.ts:2226 |
+| API-MOD-002 | Non-owner blocked | high | API | buzzhive.spec.ts:2240 |
 
-**Expected:** 200 response with user profile.
-
 ---
-
-### TC-API-USER-003: POST /api/users/{username}/follow
-**Priority:** high | **Type:** API
 
-**Preconditions:** Authenticated user.
+## E2E - Navigation
 
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/users/bob/follow
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| NAV-001 | Navigation elements visible | high | UI | buzzhive.spec.ts:430 |
+| NAV-002 | Navigate to profile | medium | UI | buzzhive.spec.ts:445 |
+| NAV-003 | Navigate to search | medium | UI | buzzhive.spec.ts:457 |
+| NAV-004 | Navigate to explore | medium | UI | buzzhive.spec.ts:468 |
 
-**Expected:** 200/201 response.
-
 ---
-
-### TC-API-USER-004: DELETE /api/users/{username}/follow
-**Priority:** high | **Type:** API
 
-**Preconditions:** Authenticated user following target.
+## E2E - Posts
 
-**Steps:**
-1. GET /api/auth/login
-2. DELETE /api/users/bob/follow
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| POST-001 | Feed shows posts | high | UI | buzzhive.spec.ts:482 |
+| POST-002 | Create a post | critical | UI | buzzhive.spec.ts:493 |
+| POST-003 | Like and unlike | high | UI | buzzhive.spec.ts:604 |
+| POST-004 | Bookmark a post | medium | UI | buzzhive.spec.ts:627 |
+| POST-005 | Add comment | high | UI | buzzhive.spec.ts:646 |
 
-**Expected:** 200/204 response.
-
 ---
-
-### TC-API-USER-005: GET /api/users/{username}/followers
-**Priority:** medium | **Type:** API
 
-**Preconditions:** Authenticated user.
+## E2E - Search
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/users/alice/followers
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| SEARCH-001 | Search page loads | high | UI | buzzhive.spec.ts:848 |
+| SEARCH-002 | Search for users | high | UI | buzzhive.spec.ts:863 |
+| SEARCH-003 | Search for posts | high | UI | buzzhive.spec.ts:884 |
+| SEARCH-004 | Search for hashtags | high | UI | buzzhive.spec.ts:907 |
+| SEARCH-005 | Search via Enter key | medium | UI | buzzhive.spec.ts:930 |
+| SEARCH-006 | Display result counts | medium | UI | buzzhive.spec.ts:949 |
+| SEARCH-007 | Empty search results | medium | UI | buzzhive.spec.ts:973 |
+| SEARCH-008 | Tab switching | medium | UI | buzzhive.spec.ts:997 |
 
-**Expected:** 200 response with followers array.
-
 ---
-
-### TC-API-USER-006: GET /api/users/{username}/following
-**Priority:** medium | **Type:** API
 
-**Preconditions:** Authenticated user.
+## E2E - Admin/Moderator
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/users/alice/following
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| ADMIN-001 | Dashboard shows stats | critical | UI | buzzhive.spec.ts:751 |
+| ADMIN-002 | Admin can ban user | critical | UI | buzzhive.spec.ts:781 |
+| ADMIN-003 | Change user role | high | UI | buzzhive.spec.ts:811 |
+| ADMIN-004 | Regular user blocked | critical | UI | buzzhive.spec.ts:768 |
+| MOD-001 | Moderator access panel | high | UI | buzzhive.spec.ts:696 |
+| MOD-002 | Moderator delete posts | high | UI | buzzhive.spec.ts:711 |
+| MOD-003 | Moderator cannot ban | high | UI | buzzhive.spec.ts:733 |
 
-**Expected:** 200 response with following array.
-
 ---
-
-## API - Notifications Extended
 
-### TC-API-NOTIF-001: GET /api/notifications
-**Priority:** high | **Type:** API
+## E2E - Other
 
-**Preconditions:** Authenticated user.
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| PROFILE-001 | Profile shows info | medium | UI | buzzhive.spec.ts:515 |
+| PROFILE-002 | Navigate to settings | medium | UI | buzzhive.spec.ts:531 |
+| MSG-001 | Messages page | medium | UI | buzzhive.spec.ts:552 |
+| NOTIF-001 | Notifications page | medium | UI | buzzhive.spec.ts:568 |
+| NOTIF-002 | Mark all as read | medium | UI | buzzhive.spec.ts:582 |
+| SOCIAL-001 | Follow and unfollow | high | UI | buzzhive.spec.ts:671 |
+| LOGOUT-001 | Can logout | critical | UI | buzzhive.spec.ts:830 |
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/notifications
-
-**Expected:** 200 response with notifications array.
-
 ---
-
-### TC-API-NOTIF-002: GET /api/notifications/unread-count
-**Priority:** medium | **Type:** API
-
-**Preconditions:** Authenticated user.
 
-**Steps:**
-1. GET /api/auth/login
-2. GET /api/notifications/unread-count
+## Performance
 
-**Expected:** 200 response with count.
+| ID | Test Name | Priority | Type | Location |
+|----|-----------|----------|------|----------|
+| PERF-001 | Login page < 2s | medium | Performance | buzzhive.spec.ts:332 |
+| PERF-001 | Feed < 3s | medium | Performance | buzzhive.spec.ts:342 |
+| PERF-001 | API < 500ms | medium | Performance | buzzhive.spec.ts:357 |
+| PERF-002 | Navigation < 1s | medium | Performance | buzzhive.spec.ts:371 |
+| PERF-002 | Post creation < 2s | medium | Performance | buzzhive.spec.ts:387 |
+| PERF-003 | Rapid actions | medium | Performance | buzzhive.spec.ts:406 |
 
 ---
 
-### TC-API-NOTIF-003: POST /api/notifications/read-all
-**Priority:** medium | **Type:** API
+## Priority Legend
 
-**Preconditions:** Authenticated user with unread notifications.
+| Priority | Description |
+|----------|-------------|
+| critical | Must pass for release |
+| high | Important, should pass |
+| medium | Nice to have |
 
-**Steps:**
-1. GET /api/auth/login
-2. POST /api/notifications/read-all
+## Type Legend
 
-**Expected:** 200/204 response.
+| Type | Description |
+|------|-------------|
+| UI | End-to-end UI test |
+| API | API integration test |
+| Integration | Cross-component test |
+| Security | Security validation |
+| Boundary | Edge case testing |
+| Performance | Performance test |
 
 ---
 
-## Test Data Reference
-
-| User | Email | Password | Role |
-|------|-------|---------|------|
-| Admin | admin@buzzhive.com | admin123 | Admin |
-| Moderator | mod@buzzhive.com | mod123 | Moderator |
-| Alice | alice@buzzhive.com | alice123 | User |
-| Bob | bob@buzzhive.com | bob123 | User |
-| Carol | carol@buzzhive.com | carol123 | User |
-| Dave | dave@buzzhive.com | dave123 | User (Private) |
-| Eve | eve@buzzhive.com | eve123 | User (New) |
-| Frank | frank@buzzhive.com | frank123 | Banned |
+*Generated: 2026-04-15*
+*Source: e2e/buzzhive.spec.ts (2349 lines, 120 tests)*

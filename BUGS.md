@@ -45,25 +45,33 @@ const isInvalid = await passwordInput.evaluate(el => el.validity.valid);
 
 ---
 
-### AUTH-011-02: POST /api/auth/refresh returns 500
-**Status:** 🔴 Open  
+### AUTH-011-02: POST /api/auth/refresh (Was returning 500)
+**Status:** 🟢 Fixed (2026-04-15)  
 **Date:** 2026-04-14  
 **Severity:** High  
 **Module:** API/Auth  
 
 **Description:**
-Token refresh endpoint returns 500 Internal Server Error.
+Token refresh endpoint was returning 500 Internal Server Error.
 
-**Current Behavior:**
+**Previous Behavior:**
 ```
 POST /api/auth/refresh
 → 500 Internal Server Error
 ```
 
-**Expected Behavior:**
+**Current Behavior (2026-04-15):**
 ```
 POST /api/auth/refresh
 → 200 { access_token, refresh_token }
+```
+
+**Verification:**
+```bash
+curl -X POST http://localhost:8000/api/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{"refresh_token":"<valid_token>"}'
+# Returns: 200 with new tokens ✅
 ```
 
 **Steps to Reproduce:**

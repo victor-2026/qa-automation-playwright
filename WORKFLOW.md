@@ -49,6 +49,11 @@ watch -n 5 'tail -5 test-results.txt'
 - Kafka JS: queue testing
 - ioredis: Redis testing  
 - k6: load testing
+- **TrickCatcher** (ACL 2025): finding tricky bugs in passing tests
+  - F1: 41-51% (vs 25-36% baseline), 16× fewer false positives
+  - Requires: Python 3.10, conda, LLM API key
+  - Note: For source code (C++/Python), not API testing
+  - GitHub: github.com/RinCloud/TrickCatcher
 
 ## Rules
 
