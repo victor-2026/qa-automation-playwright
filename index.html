@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Automation Sandbox - Buzzhive</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 2.5em; color: #58a6ff; margin-bottom: 10px; }
+        .subtitle { color: #8b949e; margin-bottom: 40px; font-size: 1.1em; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .metric { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; text-align: center; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #58a6ff; }
+        .metric-label { color: #8b949e; font-size: 0.9em; }
+        h2 { color: #f0f6fc; font-size: 1.5em; margin: 40px 0 20px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        .doc-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 15px; transition: border-color 0.2s; }
+        .doc-card:hover { border-color: #58a6ff; }
+        .doc-card a { color: #58a6ff; text-decoration: none; font-size: 1.2em; font-weight: 600; }
+        .doc-card a:hover { text-decoration: underline; }
+        .doc-desc { color: #8b949e; margin-top: 8px; font-size: 0.9em; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; margin-left: 10px; background: #238636; color: white; }
+        .badge.new { background: #a371f7; }
+        footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.9em; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 QA Automation Sandbox</h1>
+        <p class="subtitle">Buzzhive Social Network — Zero-Budget AI-Assisted Testing</p>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">456</div>
+                <div class="metric-label">Tests (+7.5x)</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">94%</div>
+                <div class="metric-label">API Coverage</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$0</div>
+                <div class="metric-label">Budget</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">-19%</div>
+                <div class="metric-label">Execution Time</div>
+            </div>
+        </div>
+
+        <h2>📊 Reports</h2>
+        <div class="doc-card">
+            <a href="PRESENTATION_FOR_MANAGEMENT">📈 Presentation for Management</a>
+            <div class="doc-desc">Executive summary with metrics, achievements, and next steps</div>
+        </div>
+        <div class="doc-card">
+            <a href="ENHANCEMENT_REPORT">🔧 Enhancement Report</a>
+            <div class="doc-desc">Detailed session report: what was built, challenges, learnings</div>
+        </div>
+        <div class="doc-card">
+            <a href="TEST_REPORT">✅ Test Report</a>
+            <div class="doc-desc">Test execution results and coverage breakdown</div>
+        </div>
+
+        <h2>📋 Specifications</h2>
+        <div class="doc-card">
+            <a href="AI_READY_DOR">🤖 AI-Ready DOR</a> <span class="badge new">For AI Agents</span>
+            <div class="doc-desc">Machine-readable specification for AI-assisted testing</div>
+        </div>
+        <div class="doc-card">
+            <a href="API_CONTRACT">📡 API Contract</a>
+            <div class="doc-desc">52 endpoints documented from Swagger</div>
+        </div>
+        <div class="doc-card">
+            <a href="TRACEABILITY_MATRIX">🔗 Traceability Matrix</a>
+            <div class="doc-desc">Requirements to tests mapping</div>
+        </div>
+
+        <h2>🔍 Quality</h2>
+        <div class="doc-card">
+            <a href="BUGS">🐛 Bugs</a>
+            <div class="doc-desc">Known issues and severity tracking</div>
+        </div>
+        <div class="doc-card">
+            <a href="ANTI_FLAKY_REVIEW">⚡ Anti-Flaky Review</a>
+            <div class="doc-desc">How we eliminated 40 waitForTimeout instances</div>
+        </div>
+        <div class="doc-card">
+            <a href="INVARIANTS">🏛️ Invariants</a>
+            <div class="doc-desc">System rules that must always hold</div>
+        </div>
+
+        <h2>🔧 Process</h2>
+        <div class="doc-card">
+            <a href="WORKFLOW">🔄 Workflow</a>
+            <div class="doc-desc">Development process and best practices</div>
+        </div>
+        <div class="doc-card">
+            <a href="TEST_CASES">📝 Test Cases</a>
+            <div class="doc-desc">Simplified test case catalog</div>
+        </div>
+        <div class="doc-card">
+            <a href="GHERKIN_TESTS">🥒 Gherkin Tests</a>
+            <div class="doc-desc">23 BDD scenarios in Gherkin format</div>
+        </div>
+
+        <footer>
+            <p>Built with Playwright, Jest, fast-check, Cucumber • AI: Groq Llama 3.3 70B, Ollama</p>
+            <p>GitHub: <a href="https://github.com/victor-2026/qa-automation-playwright" style="color: #58a6ff;">victor-2026/qa-automation-playwright</a></p>
+        </footer>
+    </div>
+</body>
+</html>
