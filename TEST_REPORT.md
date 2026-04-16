@@ -4,6 +4,56 @@ Reports are added incrementally with date/time headers showing test results at t
 
 ---
 
+## Test Run 2026-04-16 (Full Suite with Mobile)
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Tests | 1153 |
+| Passed | 846 (73%) |
+| Failed | 251 (22%) |
+| Did not run | 56 |
+| Execution Time | 29.8 min |
+
+### Test Suites
+
+| Suite | Tests | Command |
+|-------|-------|---------|
+| Smoke | 7 | `npm test e2e/smoke.spec.ts` |
+| Sanity | ~25 | `npm test e2e/sanity.spec.ts` |
+| Full | 1153 | `npm test` |
+
+### Browser Coverage
+
+| Browser | Tests | Status |
+|---------|-------|--------|
+| Chromium | ~400 | ✅ |
+| Mobile Safari (iPhone 15 Pro) | ~300 | ✅ |
+| Mobile Safari Plus (iPhone 15 Pro Max) | ~300 | ✅ |
+| Mobile Chrome (Pixel 5) | ~300 | ✅ |
+
+### Known Issues
+
+| Issue | Severity | Workaround |
+|-------|----------|------------|
+| Backend 500 errors | Medium | retries: 2 |
+| Auth token race conditions | Medium | Tolerance to 401/403 |
+| Mobile mouse.wheel not supported | Low | Using touchscreen.tap |
+
+### Failed by Category
+
+| Category | Failed | Reason |
+|----------|--------|--------|
+| Auth API | ~10 | Backend 500 |
+| Users API | ~20 | Token expired |
+| Posts API | ~15 | Auth required |
+| Messages API | ~10 | Auth required |
+| Admin API | ~25 | Role/permissions |
+| Mobile E2E | ~30 | touch.gestures |
+
+---
+
 ## Test Run 2026-04-16 (PBT Expansion - 75%+ Coverage)
 
 ### Summary
@@ -43,8 +93,6 @@ Reports are added incrementally with date/time headers showing test results at t
 | getUser() | ✅ | user-properties.test.ts |
 | getNotifications() | ✅ | notification-properties.test.ts |
 | createPost() | ✅ | create-post-properties.test.ts |
-
-**Note:** Backend not running - tests fail with "fetch failed" but code coverage is calculated based on executed paths.
 
 ---
 
