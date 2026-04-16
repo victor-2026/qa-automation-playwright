@@ -12,8 +12,36 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     
+    services:
+      backend:
+        image: ghcr.io/manikosto/buzzhive-backend:latest
+        ports:
+          - 8000:8000
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: buzzhive
+          POSTGRES_USER: buzzhive_user
+          POSTGRES_PASSWORD: buzzhive_password
+        ports:
+          - 5432:5432
+    
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Wait for backend
+        run: |
+          for i in {1..15}; do
+            if curl -sf http://localhost:8000/api/health > /dev/null 2>&1; then
+              echo "Backend ready"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/15)"
+            sleep 2
+          done
+          echo "Backend not ready after 30s"
+          exit 1
+        timeout-minutes: 2
       
       - name: OWASP ZAP Scan
         uses: zaproxy/action-baseline@v0.13.0
