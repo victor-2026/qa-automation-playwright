@@ -7,14 +7,33 @@ function expectStatusOk(res: { status: () => number }, fallback = 500) {
   expect([200, 201, fallback]).toContain(status);
 }
 
+async function getToken(request: APIRequestContext, email: string, password: string): Promise<string> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await request.post(`${API_BASE}/auth/login`, {
+        data: { email, password }
+      });
+      if (res.status() === 200) {
+        const body = await res.json();
+        if (body.access_token) return body.access_token;
+      }
+    } catch (e) {
+      // retry
+    }
+    if (attempt < 2) await new Promise(r => setTimeout(r, 1000));
+  }
+  return '';
+}
+
+async function getModToken(request: APIRequestContext): Promise<string> {
+  return getToken(request, 'mod@buzzhive.com', 'mod123');
+}
+
 test.describe('API Expanded - Auth (5 → 25 tests)', () => {
   let aliceToken: string;
   
   test.beforeAll(async ({ request }) => {
-    const loginRes = await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    });
-    aliceToken = (await loginRes.json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
   });
 
   // POST /auth/login - Happy path
@@ -276,13 +295,8 @@ test.describe('API Expanded - Posts (10 → 50 tests)', () => {
   let bobToken: string;
   
   test.beforeAll(async ({ request }) => {
-    aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
-    
-    bobToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'bob@buzzhive.com', password: 'bob123' }
-    })).json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
+    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /posts - List (requires auth)
@@ -598,17 +612,9 @@ test.describe('API Expanded - Users (6 → 35 tests)', () => {
   let adminToken: string;
   
   test.beforeAll(async ({ request }) => {
-    aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
-    
-    bobToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'bob@buzzhive.com', password: 'bob123' }
-    })).json()).access_token;
-    
-    adminToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'admin@buzzhive.com', password: 'admin123' }
-    })).json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
+    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
+    adminToken = await getToken(request, 'admin@buzzhive.com', 'admin123');
   });
 
   // GET /users - List
@@ -763,13 +769,8 @@ test.describe('API Expanded - Messages (5 → 25 tests)', () => {
   let bobToken: string;
   
   test.beforeAll(async ({ request }) => {
-    aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
-    
-    bobToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'bob@buzzhive.com', password: 'bob123' }
-    })).json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
+    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /conversations
@@ -909,13 +910,8 @@ test.describe('API Expanded - Notifications (4 → 20 tests)', () => {
   let bobToken: string;
   
   test.beforeAll(async ({ request }) => {
-    aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
-    
-    bobToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'bob@buzzhive.com', password: 'bob123' }
-    })).json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
+    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /notifications
@@ -1069,17 +1065,9 @@ test.describe('API Expanded - Admin (8 → 40 tests)', () => {
   let userToken: string;
   
   test.beforeAll(async ({ request }) => {
-    adminToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'admin@buzzhive.com', password: 'admin123' }
-    })).json()).access_token;
-    
-    modToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'mod@buzzhive.com', password: 'mod123' }
-    })).json()).access_token;
-    
-    userToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
+    adminToken = await getToken(request, 'admin@buzzhive.com', 'admin123');
+    modToken = await getModToken(request);
+    userToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
   });
 
   // GET /admin/stats
@@ -1340,13 +1328,8 @@ test.describe('API Expanded - Other Endpoints (6 → 30 tests)', () => {
   let bobToken: string;
   
   test.beforeAll(async ({ request }) => {
-    aliceToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
-    })).json()).access_token;
-    
-    bobToken = (await (await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'bob@buzzhive.com', password: 'bob123' }
-    })).json()).access_token;
+    aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
+    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /api/health
