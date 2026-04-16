@@ -1,4 +1,4 @@
-name: QA Test Suite
+name: Quality Gates
 
 on:
   push:
@@ -6,10 +6,14 @@ on:
   pull_request:
     branches: [main, develop]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
-  # ========== LINT & TYPE CHECK (Always runs) ==========
+  # ========== QUALITY GATES ==========
+  
   lint:
-    name: Lint & Type Check
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
     
@@ -20,22 +24,143 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
           
       - name: Install dependencies
         run: npm ci
         
       - name: Run ESLint
-        run: npx eslint e2e/ pbt/ db/ --max-warnings=0 || true
+        run: npm run lint
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
         
       - name: Type check
-        run: npx tsc --noEmit || true
+        run: npm run typecheck
 
-  # ========== NOTE ==========
-  # E2E, API, PBT, DB tests require:
-  # - Local Docker containers (docker-compose up)
-  # - OR ghcr.io/manikosto/buzzhive-backend:latest
-  # - OR ghcr.io/manikosto/buzzhive-frontend:latest
-  #
-  # These are private/hypothetical containers.
-  # Run locally with: docker-compose up
-  # Then: npm test
+  unit-tests:
+    name: Unit Tests (PBT + DB)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run PBT Tests
+        run: npm run test:pbt
+        continue-on-error: true
+
+  component-tests:
+    name: Component Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run Component Tests
+        run: npm run test:components
+        continue-on-error: true
+
+  # ========== SMOKE TESTS (requires backend) ==========
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [lint, typecheck]
+    
+    services:
+      backend:
+        image: ghcr.io/manikosto/buzzhive-backend:latest
+        ports:
+          - 8000:8000
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: buzzhive
+          POSTGRES_USER: buzzhive_user
+          POSTGRES_PASSWORD: buzzhive_password
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Wait for backend
+        run: |
+          for i in {1..15}; do
+            if curl -sf http://localhost:8000/api/health > /dev/null 2>&1; then
+              echo "Backend ready"
+              exit 0
+            fi
+            echo "Waiting... ($i/15)"
+            sleep 2
+          done
+          echo "Backend not ready"
+          exit 1
+        timeout-minutes: 2
+      
+      - name: Run Smoke Tests
+        run: npm run test:smoke
+        continue-on-error: true
+
+  # ========== SUMMARY ==========
+  quality-summary:
+    name: Quality Summary
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, unit-tests, component-tests]
+    if: always()
+    
+    steps:
+      - name: Summary
+        run: |
+          echo "## Quality Gates Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Gate | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Type Check | ${{ needs.typecheck.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests (PBT) | ${{ needs.unit-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Component Tests | ${{ needs.component-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke Tests | ${{ needs.smoke-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY

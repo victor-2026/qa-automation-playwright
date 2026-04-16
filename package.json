@@ -6,10 +6,13 @@
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:smoke": "playwright test e2e/smoke.spec.ts --project=chromium",
     "test:gherkin": "cucumber-js --config=cucumber.js",
     "test:pbt": "jest --config=jest.config.ts",
     "test:db": "jest --config=jest.config.ts --testPathPattern=db",
-    "test:components": "jest --config=jest.config.ts --testPathPattern=components"
+    "test:components": "jest --config=jest.config.ts --testPathPattern=components",
+    "lint": "eslint e2e/ pbt/ db/ --max-warnings=0",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
