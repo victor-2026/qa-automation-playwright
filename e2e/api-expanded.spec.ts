@@ -2,11 +2,6 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 
 const API_BASE = 'http://localhost:8000/api';
 
-function expectStatusOk(res: { status: () => number }, fallback = 500) {
-  const status = res.status();
-  expect([200, 201, fallback]).toContain(status);
-}
-
 async function getToken(request: APIRequestContext, email: string, password: string): Promise<string> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -613,7 +608,7 @@ test.describe('API Expanded - Users (6 → 35 tests)', () => {
   
   test.beforeAll(async ({ request }) => {
     aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
-    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
+    const _bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
     adminToken = await getToken(request, 'admin@buzzhive.com', 'admin123');
   });
 
@@ -911,7 +906,7 @@ test.describe('API Expanded - Notifications (4 → 20 tests)', () => {
   
   test.beforeAll(async ({ request }) => {
     aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
-    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
+    const _bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /notifications
@@ -1325,11 +1320,10 @@ test.describe('API Expanded - Admin (8 → 40 tests)', () => {
 
 test.describe('API Expanded - Other Endpoints (6 → 30 tests)', () => {
   let aliceToken: string;
-  let bobToken: string;
   
   test.beforeAll(async ({ request }) => {
     aliceToken = await getToken(request, 'alice@buzzhive.com', 'alice123');
-    bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
+    const _bobToken = await getToken(request, 'bob@buzzhive.com', 'bob123');
   });
 
   // GET /api/health

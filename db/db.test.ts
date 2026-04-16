@@ -1,5 +1,5 @@
 import { describe, test, expect, afterAll } from '@jest/globals';
-import { query, getOne, getAll, close } from './db-client';
+import { query, getOne, close } from './db-client';
 
 describe('Schema Tests (No CRUD - Use API)', () => {
   test('users table exists', async () => {
