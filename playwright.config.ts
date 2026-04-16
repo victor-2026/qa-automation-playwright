@@ -5,6 +5,7 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   timeout: 30000,
   retries: 2,
+  workers: 4,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
