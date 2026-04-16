@@ -1,6 +1,6 @@
 import { test, expect, devices } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://192.168.1.210:3000';
 
 test.describe('iPhone 15 Pro Tests', () => {
   
