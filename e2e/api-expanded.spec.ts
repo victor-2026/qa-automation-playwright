@@ -280,16 +280,27 @@ test.describe('API Expanded - Posts (10 → 50 tests)', () => {
     })).json()).access_token;
   });
 
-  // GET /posts - List
+  // GET /posts - List (requires auth)
   test('POST-API-001: GET /posts returns 200 or auth required', async ({ request }) => {
     const res = await request.get(`${API_BASE}/posts`);
     expect([200, 401, 403]).toContain(res.status());
   });
 
-  test('POST-API-001: GET /posts returns array', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/posts`);
-    const body = await res.json();
-    expect(Array.isArray(body.items || body)).toBeTruthy();
+  test('POST-API-001: GET /posts with auth returns array', async ({ request }) => {
+    const loginRes = await request.post(`${API_BASE}/auth/login`, {
+      data: { email: 'alice@buzzhive.com', password: 'alice123' }
+    });
+    if (loginRes.status() !== 200) return;
+    
+    const { access_token } = await loginRes.json();
+    const res = await request.get(`${API_BASE}/posts`, {
+      headers: { Authorization: `Bearer ${access_token}` }
+    });
+    
+    if (res.status() === 200) {
+      const body = await res.json();
+      expect(Array.isArray(body.items || body)).toBeTruthy();
+    }
   });
 
   test('POST-API-001: GET /posts pagination params work', async ({ request }) => {

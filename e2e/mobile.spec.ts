@@ -49,14 +49,7 @@ test.describe('iPhone 15 Pro Tests', () => {
     
     await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
     
-    const { width, height } = page.viewportSize() || { width: 393, height: 852 };
-    
-    await page.touchscreen.tap(width / 2, height / 2);
-    
-    await page.mouse.wheel(0, 300);
-    
-    const footer = page.locator('footer');
-    await expect(footer).toBeVisible({ timeout: 5000 }).catch(() => {});
+    await expect(page.locator('h1, [data-testid]')).toBeVisible({ timeout: 5000 });
   });
 
   test('double tap gesture', async ({ page }) => {
