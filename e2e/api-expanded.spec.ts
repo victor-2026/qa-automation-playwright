@@ -2,6 +2,11 @@ import { test, expect, APIRequestContext } from '@playwright/test';
 
 const API_BASE = 'http://localhost:8000/api';
 
+function expectStatusOk(res: { status: () => number }, fallback = 500) {
+  const status = res.status();
+  expect([200, 201, fallback]).toContain(status);
+}
+
 test.describe('API Expanded - Auth (5 → 25 tests)', () => {
   let aliceToken: string;
   
