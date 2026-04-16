@@ -29,23 +29,38 @@ describe('Schema Tests (No CRUD - Use API)', () => {
 });
 
 describe('Data Integrity (Read-Only)', () => {
-  test('no orphan posts', async () => {
-    const result = await query(`SELECT COUNT(*) as count FROM posts p LEFT JOIN users u ON p.author_id = u.id WHERE u.id IS NULL AND p.is_deleted = false`);
-    expect(parseInt(result.rows[0].count)).toBe(0);
-  });
-
-  test('no orphan comments', async () => {
-    const result = await query(`SELECT COUNT(*) as count FROM comments c LEFT JOIN posts p ON c.post_id = p.id WHERE p.id IS NULL`);
-    expect(parseInt(result.rows[0].count)).toBe(0);
-  });
-
-  test('post.likes_count >= 0', async () => {
+  test('INV-POST-001: post.likes_count >= 0', async () => {
     const result = await query(`SELECT COUNT(*) as count FROM posts WHERE likes_count < 0`);
     expect(parseInt(result.rows[0].count)).toBe(0);
   });
 
-  test('post.comments_count >= 0', async () => {
+  test('INV-POST-002: post.comments_count >= 0', async () => {
     const result = await query(`SELECT COUNT(*) as count FROM posts WHERE comments_count < 0`);
+    expect(parseInt(result.rows[0].count)).toBe(0);
+  });
+
+  test('INV-POST-003: post.content length <= 2000', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM posts WHERE LENGTH(content) > 2000`);
+    expect(parseInt(result.rows[0].count)).toBe(0);
+  });
+
+  test('INV-POST-003: post.content is not empty', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM posts WHERE LENGTH(TRIM(content)) = 0 AND is_deleted = false`);
+    expect(parseInt(result.rows[0].count)).toBe(0);
+  });
+
+  test('INV-SYS-002: no orphan posts', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM posts p LEFT JOIN users u ON p.author_id = u.id WHERE u.id IS NULL AND p.is_deleted = false`);
+    expect(parseInt(result.rows[0].count)).toBe(0);
+  });
+
+  test('INV-SYS-002: no orphan comments', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM comments c LEFT JOIN posts p ON c.post_id = p.id WHERE p.id IS NULL`);
+    expect(parseInt(result.rows[0].count)).toBe(0);
+  });
+
+  test('INV-MSG-001: conversation.unread_count >= 0', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM conversations WHERE unread_count < 0`);
     expect(parseInt(result.rows[0].count)).toBe(0);
   });
 });
