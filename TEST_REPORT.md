@@ -10,7 +10,7 @@ Reports are added incrementally with date/time headers showing test results at t
 
 | Metric | Value |
 |--------|-------|
-| Total Tests | 1153 |
+| Total Tests | 1153 (+ 4 component) |
 | Passed | 846 (73%) |
 | Failed | 251 (22%) |
 | Did not run | 56 |
@@ -51,6 +51,18 @@ Reports are added incrementally with date/time headers showing test results at t
 | Messages API | ~10 | Auth required |
 | Admin API | ~25 | Role/permissions |
 | Mobile E2E | ~30 | touch.gestures |
+
+---
+
+## Test Categories
+
+| Type | Location | Command | Time |
+|------|----------|---------|------|
+| E2E | e2e/*.spec.ts | `npm test` | ~5 мин |
+| API | e2e/api*.spec.ts | `npm test` | ~2 мин |
+| DB | db/*.test.ts | `npm run test:db` | ~10 сек |
+| PBT | pbt/*.test.ts | `npm run test:pbt` | ~30 сек |
+| **Component** | components/*.test.tsx | `npm run test:components` | ~5 сек |
 
 ---
 
