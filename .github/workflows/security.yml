@@ -6,9 +6,6 @@ on:
     - cron: '0 3 * * 0'
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
 jobs:
   zap-scan:
     name: OWASP ZAP Security Scan
@@ -30,6 +27,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: zap_report.html
+          path: |
+            zap_report.html
+            zap-baseline-report.html
+            zap_report.json
           retention-days: 30
           if-no-files-found: 'warn'
