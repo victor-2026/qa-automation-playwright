@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
+  testMatch: '**/*.spec.ts',
   timeout: 30000,
   retries: 0,
   reporter: 'html',
@@ -14,6 +15,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: /mobile\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
     {

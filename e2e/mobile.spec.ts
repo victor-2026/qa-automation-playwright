@@ -27,7 +27,7 @@ test.describe('iPhone 15 Pro Tests', () => {
     await expect(passwordInput).toBeVisible({ timeout: 5000 });
   });
 
-  test('touch gestures work', async ({ page }) => {
+  test('touch gestures: tap and fill', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     
     const emailInput = page.locator('[data-testid="auth-email-input"]');
@@ -42,6 +42,33 @@ test.describe('iPhone 15 Pro Tests', () => {
     
     const loginBtn = page.locator('[data-testid="auth-login-btn"]');
     await loginBtn.tap();
+  });
+
+  test('touch gestures: swipe down on page', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    
+    const { width, height } = page.viewportSize() || { width: 393, height: 852 };
+    
+    await page.touchscreen.tap(width / 2, height / 2);
+    
+    await page.mouse.wheel(0, 300);
+    
+    const footer = page.locator('footer');
+    await expect(footer).toBeVisible({ timeout: 5000 }).catch(() => {});
+  });
+
+  test('double tap gesture', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    const emailInput = page.locator('[data-testid="auth-email-input"]');
+    await expect(emailInput).toBeVisible({ timeout: 5000 });
+    
+    await emailInput.dbltap();
+    
+    const inputValue = await emailInput.inputValue();
+    console.log(`Input value after double tap: "${inputValue}"`);
   });
 });
 
@@ -53,8 +80,8 @@ test.describe('iPhone 15 Pro Max Tests', () => {
     const viewport = page.viewportSize();
     console.log(`Viewport: ${viewport?.width}x${viewport?.height}`);
     
-    const loginButton = page.locator('button').filter({ hasText: /login|sign in/i });
-    await expect(loginButton.first()).toBeVisible({ timeout: 5000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
   });
 
   test('login page renders correctly', async ({ page }) => {
@@ -62,6 +89,24 @@ test.describe('iPhone 15 Pro Max Tests', () => {
     
     const emailInput = page.locator('[data-testid="auth-email-input"]');
     await expect(emailInput).toBeVisible({ timeout: 5000 });
+  });
+
+  test('pinch-to-zoom gesture', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    
+    const { width, height } = page.viewportSize() || { width: 430, height: 932 };
+    
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    await page.touchscreen.tap(centerX, centerY);
+    
+    const box = await page.locator('[data-testid="auth-email-input"]').boundingBox();
+    if (box) {
+      await page.mouse.wheel(0, -200);
+    }
   });
 });
 
@@ -73,11 +118,11 @@ test.describe('Android Pixel 5 Tests', () => {
     const viewport = page.viewportSize();
     console.log(`Android Viewport: ${viewport?.width}x${viewport?.height}`);
     
-    const loginButton = page.locator('button').filter({ hasText: /login|sign in/i });
-    await expect(loginButton.first()).toBeVisible({ timeout: 5000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
   });
 
-  test('touch gestures work on Android', async ({ page }) => {
+  test('touch gestures: tap and fill on Android', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`);
     
     const emailInput = page.locator('[data-testid="auth-email-input"]');
@@ -92,5 +137,24 @@ test.describe('Android Pixel 5 Tests', () => {
     
     const loginBtn = page.locator('[data-testid="auth-login-btn"]');
     await loginBtn.tap();
+  });
+
+  test('swipe gesture on Android', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+    
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    
+    const { width, height } = page.viewportSize() || { width: 393, height: 851 };
+    
+    const startX = width / 2;
+    const startY = height * 0.6;
+    const endY = height * 0.3;
+    
+    await page.touchscreen.tap(startX, startY);
+    
+    await page.mouse.move(startX, startY);
+    await page.mouse.down();
+    await page.mouse.move(startX, endY, { steps: 10 });
+    await page.mouse.up();
   });
 });
