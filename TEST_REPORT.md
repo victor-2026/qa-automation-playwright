@@ -89,6 +89,14 @@ Reports are added incrementally with date/time headers showing test results at t
 | DB | db/*.test.ts | `npm run test:db` | ~10 сек |
 | PBT | pbt/*.test.ts | `npm run test:pbt` | ~30 сек |
 | **Component** | components/*.test.tsx | `npm run test:components` | ~5 сек |
+| **Visual** | e2e/visual.spec.ts | `npm test e2e/visual.spec.ts` | ~30 сек |
+
+### Additional Tools
+
+| Tool | Purpose | Status |
+|------|---------|--------|
+| OWASP ZAP | Security scanning | Weekly CI |
+| Playwright Visual | Screenshot diffs | ✅ Ready |
 
 ---
 
