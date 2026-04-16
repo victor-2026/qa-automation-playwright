@@ -65,7 +65,6 @@ Reports are added incrementally with date/time headers showing test results at t
 |-------|----------|------------|
 | Backend 500 errors | Medium | retries: 2 |
 | Auth token race conditions | Medium | Tolerance to 401/403 |
-| Mobile mouse.wheel not supported | Low | Using touchscreen.tap |
 
 ### Failed by Category
 

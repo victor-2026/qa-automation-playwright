@@ -19,7 +19,7 @@ jobs:
         uses: zaproxy/action-baseline@v0.9.0
         with:
           target: 'http://localhost:8000/api/health'
-          rules: '/home/runner/action、工艺/Download/.zap/rules.tsv'
+          rules: '/home/runner/action/.zap/rules.tsv'
           cmd_options: '-config api.disablekey=true'
           
       - name: Upload ZAP Report

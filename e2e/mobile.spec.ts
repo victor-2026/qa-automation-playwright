@@ -98,7 +98,7 @@ test.describe('iPhone 15 Pro Max Tests', () => {
     
     const box = await page.locator('[data-testid="auth-email-input"]').boundingBox();
     if (box) {
-      await page.mouse.wheel(0, -200);
+      await page.touchscreen.tap(centerX, centerY);
     }
   });
 });
