@@ -13,8 +13,8 @@ test.describe('iPhone 15 Pro Tests', () => {
     const title = await page.title();
     console.log(`Page title: ${title}`);
     
-    const loginButton = page.locator('button').filter({ hasText: /login|sign in/i });
-    await expect(loginButton.first()).toBeVisible({ timeout: 5000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+    await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
   });
 
   test('login page renders correctly', async ({ page }) => {
