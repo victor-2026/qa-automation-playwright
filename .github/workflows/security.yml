@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: OWASP ZAP Scan
-        uses: zaproxy/action-baseline@v0.13.0
+        uses: zaproxy/action-baseline@v0.14.0
         with:
           target: 'http://localhost:8000/api/health'
           cmd_options: '-config api.disablekey=true'
@@ -27,7 +27,7 @@ jobs:
           
       - name: Upload ZAP Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: zap-report
           path: |
@@ -38,4 +38,4 @@ jobs:
           if-no-files-found: 'warn'
 
   # Note: Full security scan requires local backend. Run locally with:
-  # docker-compose up backend && docker run -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8000/api/health
+  # docker-compose up backend && brew install owasp-zap && zap-baseline.py -t http://localhost:8000/api/health
