@@ -16,6 +16,32 @@ Reports are added incrementally with date/time headers showing test results at t
 | Did not run | 56 |
 | Execution Time | 29.8 min |
 
+---
+
+## Test Run 2026-04-16 (Chromium Only - workers=4)
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Tests | 299 |
+| Passed | 242 (81%) |
+| Flaky (retried) | 8 |
+| Failed | 49 |
+| Execution Time | 9.9 min |
+
+### Failed Categories
+
+| Category | Failed | Root Cause |
+|----------|--------|------------|
+| Posts API | 5 | aliceToken = undefined (backend 500) |
+| Users API | 15 | aliceToken = undefined |
+| Messages API | 5 | aliceToken = undefined |
+| Admin API | 10 | aliceToken = undefined |
+| Other Endpoints | 14 | aliceToken = undefined |
+
+**Note:** Backend returns 500 errors causing auth token acquisition to fail. `retries: 2` handles flaky tests (8 passed on retry).
+
 ### Test Suites
 
 | Suite | Tests | Command |
