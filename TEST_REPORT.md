@@ -71,6 +71,40 @@ Reports are added incrementally with date/time headers showing test results at t
 
 ---
 
+## Load Tests - 2026-04-17 (Local)
+
+### Summary
+
+| Test | Users | Result | Time |
+|------|-------|--------|------|
+| **Smoke** | 5 simultaneous | ✅ PASS | 1305ms |
+| **Basic** | 10 sequential | ✅ 10/10 | 2665ms |
+| **Stress** | 20 spike | ✅ 20/20 | 6665ms |
+| **Network** | failure + recovery | ✅ PASS | - |
+
+### Test Results
+
+```
+Running 4 tests using 1 worker
+4 passed (15.1s)
+```
+
+### Key Findings
+- **System handles 20 concurrent users** without failures
+- **Average response time** under 1 second per user
+- **Network recovery** works correctly
+
+### Test Commands
+```bash
+npm run test:load:all    # All load tests
+npm run test:load:smoke  # 5 users
+npm run test:load:basic  # 10 users
+npm run test:load:stress # 20 users
+npm run test:load:network # network recovery
+```
+
+---
+
 ## Planned Improvements
 
 ### CI/CD Enhancements
