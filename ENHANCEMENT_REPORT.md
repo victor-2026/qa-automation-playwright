@@ -1,5 +1,15 @@
 # Enhancement Report — QA Automation Session
 
+<style>
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+th { background: #f5f5f5; font-weight: 600; }
+tr:nth-child(even) { background: #fafafa; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+pre { background: #f5f5f5; padding: 12px; overflow-x: auto; border-radius: 6px; }
+blockquote { border-left: 4px solid #ddd; margin: 1em 0; padding: 0.5em 1em; color: #555; }
+</style>
+
 **Period:** 2026-04-14 to 2026-04-15
 **Project:** Buzzhive QA Sandbox
 **Author:** AI-assisted QA engineering
