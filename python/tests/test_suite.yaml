@@ -1,0 +1,60 @@
+# YAML Test Suite for Buzzhive API
+# Run: pytest python/tests/test_yaml_suite.py -v
+
+name: "Buzzhive API Tests"
+version: "1.0"
+
+suites:
+  - name: "Auth"
+    tests:
+      - id: "AUTH-001"
+        method: "POST"
+        path: "/api/auth/login"
+        body:
+          email: "alice@buzzhive.com"
+          password: "alice123"
+        expected:
+          status: 200
+      
+      - id: "AUTH-002"
+        method: "POST"
+        path: "/api/auth/login"
+        body:
+          email: "invalid@test.com"
+          password: "wrong"
+        expected:
+          status: 401
+      
+      - id: "AUTH-003"
+        method: "POST"
+        path: "/api/auth/register"
+        body:
+          email: "yamluser@test.com"
+          password: "pass123"
+          username: "yamluser"
+        expected:
+          status: 201
+
+  - name: "Posts"
+    tests:
+      - id: "POST-001"
+        method: "GET"
+        path: "/api/posts"
+        expected:
+          status: 200
+      
+      - id: "POST-002"
+        method: "POST"
+        path: "/api/posts"
+        body:
+          content: "Test post from YAML"
+        expected:
+          status: 201
+
+  - name: "Users"
+    tests:
+      - id: "USER-001"
+        method: "GET"
+        path: "/api/users"
+        expected:
+          status: 200

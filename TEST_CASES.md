@@ -258,5 +258,203 @@
 
 ---
 
-*Generated: 2026-04-15*
-*Source: e2e/buzzhive.spec.ts (2349 lines, 120 tests)*
+## Примеры реализации тест-кейсов в разных форматах
+
+### 1. Gherkin (Cucumber) — Текущий формат
+
+```gherkin
+# features/auth.feature
+Feature: Buzzhive Authentication
+
+  Scenario: Login with valid credentials
+    Given I am on the login page
+    When I enter "alice@buzzhive.com" as email
+    And I enter "alice123" as password
+    And I click the login button
+    Then I should be logged in
+
+# Запуск: npm run test:gherkin
+```
+
+---
+
+### 2. Python (Pytest + Table-Driven) — БЕЗ Gherkin/Cucumber
+
+**Python List (Inline):**
+```python
+# python/tests/test_auth.py
+import pytest
+import requests
+
+BASE_URL = "http://localhost:8000/api"
+
+TEST_CASES = [
+    # (email, password, expected_status, check_token)
+    ("alice@buzzhive.com", "alice123", 200, True),
+    ("alice@buzzhive.com", "wrongpassword", 401, False),
+    ("", "alice123", 422, False),
+]
+
+@pytest.mark.parametrize("email,password,expected,check_token", TEST_CASES)
+def test_login(email, password, expected, check_token):
+    response = requests.post(
+        f"{BASE_URL}/auth/login",
+        json={"email": email, "password": password}
+    )
+    assert response.status_code == expected
+    if check_token:
+        assert "access_token" in response.json()
+
+# Запуск: pytest python/tests/test_auth.py -v
+```
+
+**JSON (External):**
+```python
+# python/tests/test_auth_json.py
+import json
+import pytest
+import requests
+
+BASE_URL = "http://localhost:8000/api"
+
+with open("python/tests/test_data/auth_cases.json") as f:
+    cases = json.load(f)
+
+@pytest.mark.parametrize("case", cases)
+def test_login_json(case):
+    response = requests.post(
+        f"{BASE_URL}/auth/login",
+        json={"email": case["email"], "password": case["password"]}
+    )
+    assert response.status_code == case["expected"]
+
+# python/tests/test_data/auth_cases.json:
+# [
+#   {"email": "alice@buzzhive.com", "password": "alice123", "expected": 200},
+#   {"email": "wrong@test.com", "password": "wrong", "expected": 401}
+# ]
+```
+
+---
+
+### 3. YAML (Data-Driven) — БЕЗ Gherkin/Cucumber
+
+```yaml
+# python/tests/test_data/auth.yaml
+- name: "Login valid"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "alice@buzzhive.com"
+    password: "alice123"
+  expected_status: 200
+
+- name: "Login wrong password"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "alice@buzzhive.com"
+    password: "wrong"
+  expected_status: 401
+
+- name: "Login missing email"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: ""
+    password: "alice123"
+  expected_status: 422
+```
+
+```python
+# python/tests/test_yaml.py
+import yaml
+import pytest
+import requests
+
+BASE_URL = "http://localhost:8000/api"
+
+with open("python/tests/test_data/auth.yaml") as f:
+    cases = list(yaml.safe_load_all(f))
+
+@pytest.mark.parametrize("case", cases)
+def test_auth_yaml(case):
+    response = requests.request(
+        case["method"],
+        f"{BASE_URL}{case['path']}",
+        json=case.get("body")
+    )
+    assert response.status_code == case["expected_status"]
+
+# Запуск: pytest python/tests/test_yaml.py -v
+```
+
+---
+
+### 4. JSON/Groovy (CI/CD) — БЕЗ Gherkin/Cucumber
+
+**JSON Test Suite:**
+```json
+// python/tests/test_data/auth_suite.json
+{
+  "name": "Auth API Tests",
+  "tests": [
+    {
+      "id": "AUTH-001",
+      "method": "POST",
+      "path": "/auth/login",
+      "body": {"email": "alice@buzzhive.com", "password": "alice123"},
+      "expected": 200
+    },
+    {
+      "id": "AUTH-002",
+      "method": "POST",
+      "path": "/auth/login",
+      "body": {"email": "alice@buzzhive.com", "password": "wrong"},
+      "expected": 401
+    }
+  ]
+}
+```
+
+**Groovy (Jenkins Pipeline):**
+```groovy
+// jenkins/auth_tests.groovy
+def tests = [
+    [email: "alice@buzzhive.com", password: "alice123", expected: 200],
+    [email: "wrong@test.com", password: "wrong", expected: 401]
+]
+
+tests.each { tc ->
+    def response = httpPost(
+        url: "http://localhost:8000/api/auth/login",
+        body: tc
+    )
+    assert response.status == tc.expected
+}
+```
+
+---
+
+## Какой формат выбрать
+
+| Количество тестов | Рекомендуемый формат | Инструменты |
+|-------------------|---------------------|-------------|
+| < 20 тестов | Python list (inline) | pytest + requests |
+| 20-100 тестов | YAML файлы | pytest + pyyaml |
+| 100+ тестов | JSON suite | pytest + requests |
+| CI/CD | Groovy | Jenkins Pipeline |
+| BDD с бизнесом | Gherkin | Cucumber |
+
+---
+
+## Переход с Gherkin на другой формат
+
+| Из Gherkin | На Python | На YAML | На JSON |
+|-----------|----------|---------|---------|
+| Feature: Auth | `test_auth.py` | `auth.yaml` | `auth_suite.json` |
+| Scenario: Login | `@pytest.mark.parametrize` | `- name: "Login"` | `{ "id": "AUTH-001" }` |
+| Given/When/Then | `requests.post()` | `method: POST` | `"method": "POST"` |
+
+*Generated: 2026-04-17*
+*Source: See corresponding implementation files*

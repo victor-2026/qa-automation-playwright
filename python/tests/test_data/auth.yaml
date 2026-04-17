@@ -1,0 +1,47 @@
+# Auth API Test Cases (YAML format)
+# Run: pytest python/tests/test_yaml.py -v
+
+- name: "Login valid credentials"
+  id: "AUTH-001"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "alice@buzzhive.com"
+    password: "alice123"
+  expected_status: 200
+
+- name: "Login wrong password"
+  id: "AUTH-002"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "alice@buzzhive.com"
+    password: "wrongpassword"
+  expected_status: 401
+
+- name: "Login invalid email"
+  id: "AUTH-003"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "invalid@test.com"
+    password: "anypassword"
+  expected_status: 401
+
+- name: "Login missing email"
+  id: "AUTH-004"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: ""
+    password: "alice123"
+  expected_status: 422
+
+- name: "Login missing password"
+  id: "AUTH-005"
+  method: "POST"
+  path: "/auth/login"
+  body:
+    email: "alice@buzzhive.com"
+    password: ""
+  expected_status: 422

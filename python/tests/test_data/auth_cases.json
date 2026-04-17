@@ -1,0 +1,7 @@
+[
+  {"email": "alice@buzzhive.com", "password": "alice123", "expected": 200, "description": "Valid login"},
+  {"email": "alice@buzzhive.com", "password": "wrongpassword", "expected": 401, "description": "Wrong password"},
+  {"email": "invalid@test.com", "password": "anypassword", "expected": 401, "description": "Invalid email"},
+  {"email": "", "password": "alice123", "expected": 422, "description": "Missing email"},
+  {"email": "alice@buzzhive.com", "password": "", "expected": 422, "description": "Missing password"}
+]
