@@ -1,0 +1,49 @@
+# WireMock mappings for mocking external services
+# Run: docker run -it --rm -p 8080:8080 -v $PWD/wiremock:/home/wiremock/mappings wiremock/wiremock:3.3.1
+
+# Example: Mock payment service
+{
+  "request": {
+    "method": "POST",
+    "url": "/v1/payments"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "payment_id": "pay_{{random value}}",
+      "status": "succeeded",
+      "amount": "{{request.body.amount}}",
+      "created_at": "{{now}}"
+    }
+  }
+}
+
+# Example: Mock SMS service
+{
+  "request": {
+    "method": "POST",
+    "url": "/v1/sms/send"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "message_id": "msg_{{random value}}",
+      "status": "delivered"
+    }
+  }
+}
+
+# Example: Mock external user validation
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/external/users/.*"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "valid": true,
+      "risk_score": 0.1
+    }
+  }
+}

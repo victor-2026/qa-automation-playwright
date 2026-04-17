@@ -11,6 +11,10 @@
     "test:pbt": "jest --config=jest.config.ts",
     "test:db": "jest --config=jest.config.ts --testPathPattern=db",
     "test:components": "jest --config=jest.config.ts --testPathPattern=components",
+    "test:python": "pytest python/tests/ -v",
+    "test:go": "go test -v ./go/...",
+    "test:k6": "k6 run k6/api-load-test.js",
+    "test:k6:quick": "k6 run -e QUICK=true k6/api-load-test.js",
     "lint": "eslint e2e/ pbt/ db/ --max-warnings=0",
     "typecheck": "tsc --noEmit"
   },
