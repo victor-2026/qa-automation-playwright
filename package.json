@@ -15,6 +15,11 @@
     "test:go": "go test -v ./go/...",
     "test:k6": "k6 run k6/api-load-test.js",
     "test:k6:quick": "k6 run -e QUICK=true k6/api-load-test.js",
+    "test:load:smoke": "playwright test e2e/load/smoke-load.spec.ts --project=chromium",
+    "test:load:basic": "playwright test e2e/load/basic-load.spec.ts --project=chromium",
+    "test:load:stress": "playwright test e2e/load/stress-load.spec.ts --project=chromium",
+    "test:load:network": "playwright test e2e/load/network-fail.spec.ts --project=chromium",
+    "test:load:all": "playwright test e2e/load/",
     "lint": "eslint e2e/ pbt/ db/ --max-warnings=0",
     "typecheck": "tsc --noEmit"
   },
