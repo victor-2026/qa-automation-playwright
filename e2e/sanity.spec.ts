@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
-
-const BASE_URL = 'http://localhost:3000';
-const API_BASE = 'http://localhost:8000/api';
+import { APP_BASE_URL, API_BASE, TEST_USERNAME, TEST_PASSWORD, TEST_ACCOUNTS } from './setup/credentials';
+import { cleanupTestData } from './teardown/cleanup';
 
 test.describe('Sanity Tests - Main Functionality', () => {
   
@@ -9,24 +8,28 @@ test.describe('Sanity Tests - Main Functionality', () => {
   
   test.beforeAll(async ({ request }) => {
     const res = await request.post(`${API_BASE}/auth/login`, {
-      data: { email: 'alice@buzzhive.com', password: 'alice123' }
+      data: { email: TEST_USERNAME, password: TEST_PASSWORD }
     });
     if (res.status() === 200) {
       aliceToken = (await res.json()).access_token;
     }
   });
 
+  test.afterAll(async ({ request }) => {
+    await cleanupTestData(request, TEST_ACCOUNTS);
+  });
+
   test.describe('Auth', () => {
     test('Login - valid credentials', async ({ page }) => {
-      await page.goto(`${BASE_URL}/login`);
-      await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-      await page.fill('[data-testid="auth-password-input"]', 'alice123');
+      await page.goto(`${APP_BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', TEST_USERNAME);
+      await page.fill('[data-testid="auth-password-input"]', TEST_PASSWORD);
       await page.click('[data-testid="auth-login-btn"]');
       await expect(page.locator('body')).toBeVisible({ timeout: 15000 });
     });
 
     test('Login - invalid credentials shows error', async ({ page }) => {
-      await page.goto(`${BASE_URL}/login`);
+      await page.goto(`${APP_BASE_URL}/login`);
       await page.fill('[data-testid="auth-email-input"]', 'wrong@test.com');
       await page.fill('[data-testid="auth-password-input"]', 'wrongpass');
       await page.click('[data-testid="auth-login-btn"]');
@@ -36,15 +39,15 @@ test.describe('Sanity Tests - Main Functionality', () => {
 
   test.describe('Posts', () => {
     test('View feed', async ({ page }) => {
-      await page.goto(`${BASE_URL}/feed`);
+      await page.goto(`${APP_BASE_URL}/feed`);
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       await expect(page.locator('body')).toBeVisible({ timeout: 5000 });
     });
 
     test('Create post', async ({ page }) => {
-      await page.goto(`${BASE_URL}/login`);
-      await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-      await page.fill('[data-testid="auth-password-input"]', 'alice123');
+      await page.goto(`${APP_BASE_URL}/login`);
+      await page.fill('[data-testid="auth-email-input"]', TEST_USERNAME);
+      await page.fill('[data-testid="auth-password-input"]', TEST_PASSWORD);
       await page.click('[data-testid="auth-login-btn"]');
       await expect(page.locator('body')).toBeVisible({ timeout: 15000 });
       
@@ -55,7 +58,7 @@ test.describe('Sanity Tests - Main Functionality', () => {
 
   test.describe('Users', () => {
     test('View user profile', async ({ page }) => {
-      await page.goto(`${BASE_URL}/profile/alice`);
+      await page.goto(`${APP_BASE_URL}/profile/alice`);
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     });
 
@@ -70,14 +73,14 @@ test.describe('Sanity Tests - Main Functionality', () => {
 
   test.describe('Messages', () => {
     test('View conversations', async ({ page }) => {
-      await page.goto(`${BASE_URL}/messages`);
+      await page.goto(`${APP_BASE_URL}/messages`);
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     });
   });
 
   test.describe('Notifications', () => {
     test('View notifications', async ({ page }) => {
-      await page.goto(`${BASE_URL}/notifications`);
+      await page.goto(`${APP_BASE_URL}/notifications`);
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     });
 

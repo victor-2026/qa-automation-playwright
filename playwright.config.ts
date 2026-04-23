@@ -6,9 +6,12 @@ export default defineConfig({
   timeout: 30000,
   retries: 2,
   workers: 4,
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['junit', { outputFile: 'test-results/junit.xml' }]
+  ],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.APP_BASE_URL || 'http://localhost:3000',
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
