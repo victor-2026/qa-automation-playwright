@@ -47,9 +47,9 @@ jobs:
           TEST_MOD_PASSWORD: ${{ secrets.TEST_MOD_PASSWORD }}
           TEST_BOB_EMAIL: ${{ secrets.TEST_BOB_EMAIL }}
           TEST_BOB_PASSWORD: ${{ secrets.TEST_BOB_PASSWORD }}
-        run: npx playwright test --reporter=html,junit
+        run: npx playwright test --reporter=html,junit --retries=2
 
-      - name: Upload artifacts
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -61,6 +61,7 @@ jobs:
   quality-gates:
     name: Quality Gates
     runs-on: ubuntu-latest
+    needs: [test]
 
     steps:
       - name: Checkout
@@ -76,10 +77,10 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: npm run lint || true
+        run: npm run lint
 
       - name: TypeCheck
         run: npx tsc --noEmit
 
       - name: Security audit
-        run: npm audit --audit-level=high || true
+        run: npm audit --production --audit-level=high
