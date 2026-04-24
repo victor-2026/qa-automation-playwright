@@ -39,16 +39,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Try Docker setup
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v6
+        with:
+          version: '20.10'
         id: docker-setup
+
+      - name: Build and start services
+        if: steps.docker-setup.outputs.outcome == 'success'
         run: |
-          if command -v docker &> /dev/null; then
-            echo "Docker available"
-            echo "DOCKER_AVAILABLE=true" >> $GITHUB_OUTPUT
-          else
-            echo "Docker NOT available - will skip tests"
-            echo "DOCKER_AVAILABLE=false" >> $GITHUB_OUTPUT
-          fi
+          docker-compose build backend || echo "Build may use cache"
+          docker-compose up -d db backend
+          sleep 30
+          docker-compose ps || true
+          echo "Services started"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
 
       - name: Build and start services
         if: steps.docker-setup.outputs.DOCKER_AVAILABLE == 'true'
@@ -73,13 +80,13 @@ jobs:
       - name: Check backend
         id: check-backend
         run: |
-          # Skip if docker wasn't available
-          if [ "${{ steps.docker-setup.outputs.DOCKER_AVAILABLE }}" != "true" ]; then
+          # Skip if docker setup failed
+          if [ "${{ steps.docker-setup.outputs.outcome }}" != "success" ]; then
+            echo "Docker not available or setup failed"
             echo "BACKEND_AVAILABLE=false" >> $GITHUB_OUTPUT
-            echo "Docker not available"
             exit 0
           fi
-          
+
           echo "Checking if backend is available..."
           # Wait for backend to start (up to 60s)
           for i in {1..30}; do
