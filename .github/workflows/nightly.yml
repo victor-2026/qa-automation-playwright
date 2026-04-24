@@ -35,7 +35,12 @@ jobs:
             -d '{"email":"admin@buzzhive.com","password":"admin123"}' \
             | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
           curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
-          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" ADMIN_TOKEN="$TOKEN" npx playwright test e2e/smoke.spec.ts --retries=2
+          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" \
+          TEST_USERNAME="alice@buzzhive.com" TEST_PASSWORD="alice123" \
+          TEST_ADMIN_EMAIL="admin@buzzhive.com" TEST_ADMIN_PASSWORD="admin123" \
+          TEST_MOD_EMAIL="mod@buzzhive.com" TEST_MOD_PASSWORD="mod123" \
+          TEST_BOB_EMAIL="bob@buzzhive.com" TEST_BOB_PASSWORD="bob123" \
+          ADMIN_TOKEN="$TOKEN" npx playwright test e2e/smoke.spec.ts --retries=2
 
   full-suite:
     name: Full Suite
@@ -62,4 +67,9 @@ jobs:
             -d '{"email":"admin@buzzhive.com","password":"admin123"}' \
             | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
           curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
-          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" ADMIN_TOKEN="$TOKEN" npx playwright test --retries=2
+          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" \
+          TEST_USERNAME="alice@buzzhive.com" TEST_PASSWORD="alice123" \
+          TEST_ADMIN_EMAIL="admin@buzzhive.com" TEST_ADMIN_PASSWORD="admin123" \
+          TEST_MOD_EMAIL="mod@buzzhive.com" TEST_MOD_PASSWORD="mod123" \
+          TEST_BOB_EMAIL="bob@buzzhive.com" TEST_BOB_PASSWORD="bob123" \
+          ADMIN_TOKEN="$TOKEN" npx playwright test --retries=2
