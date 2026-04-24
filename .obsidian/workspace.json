@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "b1c92801a72afc61",
+    "type": "split",
+    "children": [
+      {
+        "id": "ac88a4b057e80c2a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0f18b0e5d5b652c5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TEST_PLAN.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "TEST_PLAN"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "bc2cfee050fbbfe5",
+    "type": "split",
+    "children": [
+      {
+        "id": "44a2f62732a41e73",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5e0022aab98c969b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "c673fa0af54cdc27",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "f807cbee45bc5b16",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "48355620d4eb6182",
+    "type": "split",
+    "children": [
+      {
+        "id": "09f4bdc12856035e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8b9926a395dd9878",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "TEST_PLAN.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for TEST_PLAN"
+            }
+          },
+          {
+            "id": "e4aafc64d9b512e3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "TEST_PLAN.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from TEST_PLAN"
+            }
+          },
+          {
+            "id": "6d16f50cb74352e7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "628d867c52c3ae08",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "fcd5feb2e0e6b47c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "TEST_PLAN.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of TEST_PLAN"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0f18b0e5d5b652c5",
+  "lastOpenFiles": [
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry2",
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry1",
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium/error-context.md",
+    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry2",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry1",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry2",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry1",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium/error-context.md",
+    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry2",
+    "TC_MAPPING.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-retry1/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus/error-context.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Safari-Plus-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome/error-context.md",
+    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari/error-context.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Safari-retry2/error-context.md",
+    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Chrome-retry2/error-context.md"
+  ]
+}

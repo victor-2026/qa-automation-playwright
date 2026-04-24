@@ -35,13 +35,42 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Check backend
+        # This check handles both local Docker backend and external deployment
+        # Tests require: FastAPI backend + PostgreSQL at APP_BASE_URL
         id: check-backend
         run: |
           echo "Checking if backend is available..."
-          if curl -s --max-time 5 "${{ secrets.APP_BASE_URL }}/health" > /dev/null 2>&1; then
+          # Try both /api/health and /health paths
+          if curl -s --max-time 5 "${{ secrets.APP_BASE_URL }}/api/health" > /dev/null 2>&1; then
             echo "BACKEND_AVAILABLE=true" >> $GITHUB_OUTPUT
+            echo "Backend available at ${{ secrets.APP_BASE_URL }}"
+          elif curl -s --max-time 5 "${{ secrets.APP_BASE_URL }}/health" > /dev/null 2>&1; then
+            echo "BACKEND_AVAILABLE=true" >> $GITHUB_OUTPUT
+            echo "Backend available at ${{ secrets.APP_BASE_URL }}"
           else
             echo "BACKEND_AVAILABLE=false" >> $GITHUB_OUTPUT
+            echo "Backend NOT available at ${{ secrets.APP_BASE_URL }}"
+          fi
+
+      - name: Seed database
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
+        run: |
+          echo "Seeding database..."
+          # Get token first, then reset DB
+          TOKEN=$(curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@buzzhive.com","password":"admin123"}' \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null)
+          
+          if [ -n "$TOKEN" ]; then
+            curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/reset" \
+              -H "Authorization: Bearer $TOKEN" \
+              && echo "Database seeded successfully" \
+              || echo "Warning: reset failed, tests may use existing data"
+          else
+            echo "Warning: Could not get admin token, trying reset without auth..."
+            curl -s -X POST "${{ secrets.APP_BASE_URL }}/api/reset" \
+              || echo "Warning: reset endpoint may require auth"
           fi
 
       - name: Run Playwright tests
@@ -60,6 +89,10 @@ jobs:
         run: npx playwright test --retries=2 || true
 
       - name: Skip tests (no backend)
+        # Backend can be:
+        # 1. Docker Compose services (local) - set APP_BASE_URL to http://localhost:8000
+        # 2. Deployed environment (external) - set APP_BASE_URL to deployed URL
+        # GitHub Actions services section is already configured in workflow
         if: steps.check-backend.outputs.BACKEND_AVAILABLE != 'true'
         run: |
           echo "⚠️ Backend not available - skipping tests"

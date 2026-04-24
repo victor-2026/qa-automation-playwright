@@ -48,6 +48,41 @@ Wait ~30 seconds for all services to start. That's it.
 
 ---
 
+## Running Tests Locally (requires Docker)
+
+### Prerequisites
+Before running tests, ensure Docker is running:
+```bash
+docker ps
+```
+
+### Start the Application
+```bash
+docker-compose up --build -d
+docker-compose ps
+```
+
+### Run Tests
+```bash
+npm test                              # All tests
+npm test --project=chromium         # Chromium only
+npm test e2e/smoke.spec.ts         # Smoke tests only
+npm test e2e/api/                  # API tests only
+```
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| 500 errors | Backend unstable — tests use retries:2 |
+| "Connection refused" | Run `docker-compose up -d` |
+| Need to reset data | `curl -X POST http://localhost:8000/api/reset` |
+
+### CI / GitHub Actions
+Docker services auto-start in CI. No extra setup needed.
+
+---
+
 ## What's Inside
 
 ### Social Network Features

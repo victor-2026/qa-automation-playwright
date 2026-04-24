@@ -456,5 +456,32 @@ tests.each { tc ->
 | Scenario: Login | `@pytest.mark.parametrize` | `- name: "Login"` | `{ "id": "AUTH-001" }` |
 | Given/When/Then | `requests.post()` | `method: POST` | `"method": "POST"` |
 
+---
+
+## TC Mapping Status (2026-04-24)
+
+**Reference:** See `TC_MAPPING.md` for full mapping between frontend TC and e2e/ tests
+
+| Source | Format | Count |
+|--------|--------|-------|
+| Frontend `/docs` | TC-AUTH-001 | 60 |
+| e2e/ code | AUTH-API-001 | ~90 |
+
+**Naming differs:** TC-{MODULE}-{###} vs {MODULE}-API-{###}
+
+### Covered by e2e/
+
+- ✅ Auth, Posts, Follows, Comments
+
+### Missing (HIGH Priority)
+
+| TC ID | Description |
+|-------|--------------|
+| TC-EDGE-010 | Private account post visibility |
+| TC-FOL-002 | Follow request to private account |
+
+---
+
 *Generated: 2026-04-17*
-*Source: See corresponding implementation files*
+*Updated: 2026-04-24 (TC mapping added)*
+*See also: TC_MAPPING.md*
