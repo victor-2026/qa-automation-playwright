@@ -96,7 +96,7 @@ jobs:
               || echo "Warning: reset endpoint may require auth"
           fi
 
-- name: Run Playwright tests
+      - name: Run Playwright tests
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
         env:
           APP_BASE_URL: http://localhost:8000
