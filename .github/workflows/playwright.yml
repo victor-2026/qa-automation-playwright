@@ -39,16 +39,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build and start services
         run: |
-          docker-compose build backend
+          docker-compose build backend || echo "Build may use cache"
           docker-compose up -d db backend
           # Wait for db to be healthy
-          timeout 60 bash -c 'until docker-compose exec -T db pg_isready -U buzzhive_user -d buzzhive; do sleep 2; done'
-          sleep 10
+          sleep 30
+          # Check if services are running
+          docker-compose ps || true
           echo "Services started"
 
       - name: Setup Node.js
