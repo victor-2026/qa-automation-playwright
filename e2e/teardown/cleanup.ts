@@ -12,7 +12,7 @@ export type Accounts = {
   bob?: { email: string; password: string };
 };
 
-const API_BASE = process.env.API_BASE || 'http://localhost:8000/api';
+const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
 
 async function loginAndGetToken(request: APIRequestContext, email: string, password: string): Promise<string | null> {
   try {

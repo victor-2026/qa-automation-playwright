@@ -17,7 +17,7 @@ export const TEST_USERNAME = requireEnv('TEST_USERNAME');
 export const TEST_PASSWORD = requireEnv('TEST_PASSWORD');
 
 // Optional with defaults
-export const API_BASE = process.env.API_BASE || 'http://localhost:8000/api';
+export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
 
 // Test account roles
 export const TEST_ACCOUNTS = {
