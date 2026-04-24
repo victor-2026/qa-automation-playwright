@@ -27,10 +27,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Smoke Tests Skipped
+      - name: Smoke Tests
         run: |
-          echo "⚠️ Smoke tests skipped: backend image unavailable (ghcr.io/manikosto/buzzhive-backend)"
-          echo "Run locally with: docker-compose up backend && npm run test:smoke"
+          BACKEND_URL="${{ vars.BACKEND_URL }}"
+          TOKEN=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@buzzhive.com","password":"admin123"}' \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
+          curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
+          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" ADMIN_TOKEN="$TOKEN" npx playwright test e2e/smoke.spec.ts --retries=2
 
   full-suite:
     name: Full Suite
@@ -49,7 +54,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Full Suite Skipped
+      - name: Full Suite
         run: |
-          echo "⚠️ Full suite skipped: backend image unavailable (ghcr.io/manikosto/buzzhive-backend)"
-          echo "Run locally with: docker-compose up backend && npm test"
+          BACKEND_URL="${{ vars.BACKEND_URL }}"
+          TOKEN=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@buzzhive.com","password":"admin123"}' \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
+          curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
+          APP_BASE_URL="$BACKEND_URL" API_BASE_URL="$BACKEND_URL/api" ADMIN_TOKEN="$TOKEN" npx playwright test --retries=2
