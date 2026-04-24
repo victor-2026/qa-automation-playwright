@@ -17,9 +17,13 @@ class Settings(BaseSettings):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Fix postgres:// → postgresql://
-        if self.DATABASE_URL and self.DATABASE_URL.startswith("postgres://"):
-            self.DATABASE_URL = self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        if self.DATABASE_URL:
+            url = self.DATABASE_URL
+            url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            url = url.split("?")[0]
+            url = url.replace(":5432", "")
+            self.DATABASE_URL = url
 
 
 settings = Settings()
