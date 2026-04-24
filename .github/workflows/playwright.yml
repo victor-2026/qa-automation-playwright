@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ secrets.BACKEND_URL }}
+      url: ${{ vars.BACKEND_URL }}
 
     steps:
       - name: Checkout
@@ -177,7 +177,7 @@ jobs:
       - name: Check Render backend
         id: check-backend
         run: |
-          BACKEND_URL="${{ vars.BACKEND_URL || secrets.BACKEND_URL }}"
+          BACKEND_URL="${{ vars.BACKEND_URL }}"
           echo "Testing backend at: $BACKEND_URL"
           
           for i in {1..10}; do
@@ -195,7 +195,7 @@ jobs:
       - name: Seed database
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
         run: |
-          BACKEND_URL="${{ vars.BACKEND_URL || secrets.BACKEND_URL }}"
+          BACKEND_URL="${{ vars.BACKEND_URL }}"
           echo "Seeding database..."
           TOKEN=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
             -H "Content-Type: application/json" \
@@ -209,8 +209,8 @@ jobs:
       - name: Run E2E tests on Render
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
         env:
-          APP_BASE_URL: ${{ vars.BACKEND_URL || secrets.BACKEND_URL }}
-          API_BASE_URL: ${{ vars.BACKEND_URL || secrets.BACKEND_URL }}/api
+          APP_BASE_URL: ${{ vars.BACKEND_URL }}
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
           TEST_USERNAME: alice@buzzhive.com
           TEST_PASSWORD: alice123
           TEST_ADMIN_EMAIL: admin@buzzhive.com
