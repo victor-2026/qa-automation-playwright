@@ -52,7 +52,7 @@ jobs:
           TEST_BOB_EMAIL: bob@buzzhive.com
           TEST_BOB_PASSWORD: bob123
           ADMIN_TOKEN: ${{ steps.token.outputs.token }}
-        run: npx playwright test e2e/smoke.spec.ts --retries=2
+        run: npx playwright test e2e/api/smoke-api.spec.ts --retries=2
 
   full-suite:
     name: Full Suite
