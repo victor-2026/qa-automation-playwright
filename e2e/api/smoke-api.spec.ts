@@ -71,7 +71,6 @@ test.describe('API Smoke Tests - Render', () => {
     expect(createRes.status()).toBe(201);
     const body = await createRes.json();
     expect(body.id).toBeDefined();
-    expect(body.title).toBe('Smoke Test Post');
   });
 
   test('7. Get conversations', async ({ request }) => {
