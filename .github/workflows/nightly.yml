@@ -31,16 +31,12 @@ jobs:
         id: token
         run: |
           BACKEND_URL="${{ vars.BACKEND_URL }}"
-          echo "Getting token from $BACKEND_URL/api/auth/login"
           RESPONSE=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
             -H "Content-Type: application/json" \
             -d '{"email":"admin@buzzhive.com","password":"admin123"}')
-          echo "Response: $RESPONSE"
           TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null | tr -d '\n')
-          echo "Token length: ${#TOKEN}"
           echo "token=$TOKEN" >> $GITHUB_OUTPUT
           
-          echo "Resetting database..."
           curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
       
       - name: Smoke Tests
@@ -82,16 +78,12 @@ jobs:
         id: token
         run: |
           BACKEND_URL="${{ vars.BACKEND_URL }}"
-          echo "Getting token from $BACKEND_URL/api/auth/login"
           RESPONSE=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
             -H "Content-Type: application/json" \
             -d '{"email":"admin@buzzhive.com","password":"admin123"}')
-          echo "Response: $RESPONSE"
           TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null | tr -d '\n')
-          echo "Token length: ${#TOKEN}"
           echo "token=$TOKEN" >> $GITHUB_OUTPUT
           
-          echo "Resetting database..."
           curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
       
       - name: Full Suite
