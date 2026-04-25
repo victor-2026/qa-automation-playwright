@@ -237,7 +237,7 @@ jobs:
   quality-gates:
     name: Quality Gates
     runs-on: ubuntu-latest
-    needs: [test, render-e2e]
+    needs: [render-e2e]
 
     steps:
       - name: Checkout
