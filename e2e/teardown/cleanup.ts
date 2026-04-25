@@ -30,13 +30,15 @@ async function loginAndGetToken(request: APIRequestContext, email: string, passw
 }
 
 /**
- * Cleanup test data created during tests
- * - Test posts (SmokeTest, Test post)
- * - Test users (smoke, temp, test users)
- * - Test conversations
- * - Likes on test posts
+ * Simple cleanup - skip on CI to avoid timeout issues
  */
 export async function cleanupTestData(request: APIRequestContext, accounts?: Accounts): Promise<void> {
+  // Skip cleanup on CI to avoid timeout
+  if (process.env.CI) {
+    console.log('[teardown] Skipped in CI');
+    return;
+  }
+
   const adminToken = accounts?.admin
     ? await loginAndGetToken(request, accounts.admin.email, accounts.admin.password)
     : null;

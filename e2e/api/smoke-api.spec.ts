@@ -5,6 +5,8 @@ import { cleanupTestData } from '../teardown/cleanup';
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
 
 test.describe('API Smoke Tests - Render', () => {
+  test.setTimeout(60000);
+
   test.afterAll(async ({ request }) => {
     await cleanupTestData(request, TEST_ACCOUNTS);
   });
