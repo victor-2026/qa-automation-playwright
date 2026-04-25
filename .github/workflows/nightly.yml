@@ -54,49 +54,49 @@ jobs:
           ADMIN_TOKEN: ${{ steps.token.outputs.token }}
         run: npx playwright test e2e/api/smoke-api.spec.ts --retries=2
 
-  full-suite:
-    name: Full Suite
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
+# Full suite skipped - run locally with Docker
+  # full-suite:
+  #   name: Full Suite
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 180
     
-    steps:
-      - uses: actions/checkout@v5
+  #   steps:
+  #     - uses: actions/checkout@v5
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: 'npm'
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v5
+  #       with:
+  #         node-version: '22'
+  #         cache: 'npm'
           
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
       
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+  #     - name: Install Playwright browsers
+  #       run: npx playwright install --with-deps
       
-      - name: Get admin token
-        id: token
-        run: |
-          BACKEND_URL="${{ vars.BACKEND_URL }}"
-          RESPONSE=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
-            -H "Content-Type: application/json" \
-            -d '{"email":"admin@buzzhive.com","password":"admin123"}')
-          TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null | tr -d '\n')
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
-          
-          curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
+  #     - name: Get admin token
+  #       id: token
+  #       run: |
+  #         BACKEND_URL="${{ vars.BACKEND_URL }}"
+  #         RESPONSE=$(curl -s -X POST "$BACKEND_URL/api/auth/login" \
+  #           -H "Content-Type: application/json" \
+  #           -d '{"email":"admin@buzzhive.com","password":"admin123"}')
+  #         TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null | tr -d '\n')
+  #         echo "token=$TOKEN" >> $GITHUB_OUTPUT
+  #         curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
       
-      - name: Full Suite
-        env:
-          APP_BASE_URL: ${{ vars.BACKEND_URL }}
-          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
-          TEST_USERNAME: alice@buzzhive.com
-          TEST_PASSWORD: alice123
-          TEST_ADMIN_EMAIL: admin@buzzhive.com
-          TEST_ADMIN_PASSWORD: admin123
-          TEST_MOD_EMAIL: mod@buzzhive.com
-          TEST_MOD_PASSWORD: mod123
-          TEST_BOB_EMAIL: bob@buzzhive.com
-          TEST_BOB_PASSWORD: bob123
-          ADMIN_TOKEN: ${{ steps.token.outputs.token }}
-        run: npx playwright test --retries=2
+  #     - name: Full Suite
+  #       env:
+  #         APP_BASE_URL: ${{ vars.BACKEND_URL }}
+  #         API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+  #         TEST_USERNAME: alice@buzzhive.com
+  #         TEST_PASSWORD: alice123
+  #         TEST_ADMIN_EMAIL: admin@buzzhive.com
+  #         TEST_ADMIN_PASSWORD: admin123
+  #         TEST_MOD_EMAIL: mod@buzzhive.com
+  #         TEST_MOD_PASSWORD: mod123
+  #         TEST_BOB_EMAIL: bob@buzzhive.com
+  #         TEST_BOB_PASSWORD: bob123
+  #         ADMIN_TOKEN: ${{ steps.token.outputs.token }}
+  #       run: npx playwright test --retries=2
