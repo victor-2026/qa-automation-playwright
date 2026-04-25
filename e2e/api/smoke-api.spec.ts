@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { cleanupTestData, TEST_ACCOUNTS } from '../teardown/cleanup';
+import { TEST_ACCOUNTS } from '../setup/credentials';
+import { cleanupTestData } from '../teardown/cleanup';
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
 
