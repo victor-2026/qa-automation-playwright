@@ -1,25 +1,41 @@
 # Frontend Deployment Guide
 
+## Architecture
+
+```
+┌─────────────────────┐         ┌─────────────────────┐
+│   Frontend (Web)    │ ──────► │   Backend (API)      │
+│ (your-app.onrender) │         │ buzzhive-test.onrender │
+└─────────────────────┘         └─────────────────────┘
+        │                            │
+   VITE_API_URL ──────────────► https://buzzhive-test.onrender.com/api
+```
+
 ## Quick Deploy (Render)
 
-### 1. Connect Repository
+### 1. Backend (already deployed)
 ```
-https://github.com/victor-2026/qa-automation-playwright
+URL: https://buzzhive-test.onrender.com
+Status: ✅ Running
 ```
 
-### 2. Create Web Service
-- **Name**: `buzzhive-frontend`
-- **Branch**: `main`
-- **Build Command**: `cd frontend && npm install && npm run build`
-- **Output Directory**: `frontend/dist`
-- **Start Command**: `npm run preview`
+### 2. Deploy Frontend (new service)
+
+**Render Dashboard → New → Web Service**
+
+| Setting | Value |
+|--------|-------|
+| Name | `buzzhive-frontend` |
+| Branch | `main` |
+| Build Command | `cd frontend && npm install && npm run build` |
+| Output Directory | `dist` |
+| Start Command | `npx serve dist` |
 
 ### 3. Environment Variables
+
 ```
 VITE_API_URL=https://buzzhive-test.onrender.com/api
 ```
-
-### 4. Deploy
 
 ---
 
