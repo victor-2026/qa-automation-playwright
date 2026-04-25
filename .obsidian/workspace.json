@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TEST_PLAN.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TEST_PLAN"
+              "title": "README"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "TEST_PLAN.md",
+                "file": "docs/FRONTEND_DEPLOY.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for TEST_PLAN"
+              "title": "Backlinks for FRONTEND_DEPLOY"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "TEST_PLAN.md",
+                "file": "docs/FRONTEND_DEPLOY.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from TEST_PLAN"
+              "title": "Outgoing links from FRONTEND_DEPLOY"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "TEST_PLAN.md",
+                "file": "docs/FRONTEND_DEPLOY.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of TEST_PLAN"
+              "title": "Outline of FRONTEND_DEPLOY"
             }
           }
         ]
@@ -185,40 +185,44 @@
   },
   "active": "0f18b0e5d5b652c5",
   "lastOpenFiles": [
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry2",
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium-retry1",
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium/error-context.md",
-    "test-results/api-users-API---Users-TC-F-3a564-dles-private-account-follow-chromium",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry2",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium-retry1",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-chromium",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry2",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium-retry1",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium/error-context.md",
-    "test-results/api-users-API---Users-TC-E-4a700-bility-for-private-accounts-chromium",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry2",
-    "TC_MAPPING.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-chromium/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-retry1/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari-Plus/error-context.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Safari-Plus-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Chrome/error-context.md",
-    "test-results/api-users-API---Users-TC-F-ceccd-and-following-returns-lists-Mobile-Safari/error-context.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Safari-retry2/error-context.md",
-    "test-results/api-users-API---Users-TC-F-9455d-ludes-follows-you-indicator-Mobile-Chrome-retry2/error-context.md"
+    "docs/FRONTEND_DEPLOY.md",
+    "README.md",
+    "TEST_PLAN.md",
+    "frontend/nginx.conf",
+    "frontend/dist/assets/index-CFkxz6H-.js",
+    "frontend/dist/assets/index-CbYxuAEo.css",
+    "frontend/dist/index.html",
+    "frontend/dist/buzzhive.svg",
+    "frontend/dist/assets",
+    "frontend/dist",
+    "frontend/tsconfig.tsbuildinfo",
+    "frontend/package-lock.json",
+    "frontend/node_modules/date-fns/yearsToQuarters.d.ts",
+    "frontend/node_modules/date-fns/yearsToMonths.d.ts",
+    "frontend/node_modules/date-fns/SECURITY.md",
+    "frontend/node_modules/date-fns/README.md",
+    "frontend/node_modules/date-fns/LICENSE.md",
+    "frontend/node_modules/date-fns/CHANGELOG.md",
+    "frontend/node_modules/rollup/README.md",
+    "frontend/node_modules/rollup/LICENSE.md",
+    "frontend/node_modules/path-parse/README.md",
+    "frontend/node_modules/date-fns/docs/webpack.md",
+    "frontend/node_modules/date-fns/docs/unicodeTokens.md",
+    "frontend/node_modules/date-fns/docs/timeZones.md",
+    "frontend/node_modules/date-fns/docs/release.md",
+    "frontend/node_modules/date-fns/docs/logotype.svg",
+    "frontend/node_modules/date-fns/docs/logo.svg",
+    "frontend/node_modules/date-fns/docs/i18nContributionGuide.md",
+    "frontend/node_modules/date-fns/docs/i18n.md",
+    "frontend/node_modules/date-fns/docs/gettingStarted.md",
+    "frontend/node_modules/date-fns/docs/fp.md",
+    "frontend/node_modules/date-fns/docs/cdn.md",
+    "frontend/node_modules/lucide-react/README.md",
+    "frontend/node_modules/axios/README.md",
+    "frontend/node_modules/axios/MIGRATION_GUIDE.md",
+    "frontend/node_modules/axios/CHANGELOG.md",
+    "frontend/node_modules/vite/README.md",
+    "frontend/node_modules/vite/LICENSE.md",
+    "frontend/node_modules/caniuse-lite/README.md"
   ]
 }
