@@ -40,4 +40,23 @@ test.describe('API Smoke Tests - Render', () => {
     });
     expect(postsRes.status()).toBe(200);
   });
+
+  test('5. Get user profile', async ({ request }) => {
+    const loginRes = await request.post(`${API_BASE}/auth/login`, {
+      data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
+    });
+    const { access_token } = await loginRes.json();
+
+    const profileRes = await request.get(`${API_BASE}/auth/me`, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    expect(profileRes.status()).toBe(200);
+    const body = await profileRes.json();
+    expect(body.email).toBe(TEST_ACCOUNTS.user.email);
+  });
+
+  test('6. Unauthorized access (no token)', async ({ request }) => {
+    const postsRes = await request.get(`${API_BASE}/posts`);
+    expect(postsRes.status()).toBe(401);
+  });
 });
