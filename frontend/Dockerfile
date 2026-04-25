@@ -8,5 +8,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+# Install serve globally
+RUN npm install -g serve
+
 EXPOSE 3000
-CMD ["npx", "serve", "dist", "-p", "3000"]
+CMD ["serve", "-s", "dist", "-p", "3000"]
