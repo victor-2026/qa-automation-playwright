@@ -7,10 +7,6 @@ const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
 test.describe('API Smoke Tests - Render', () => {
   test.setTimeout(60000);
 
-  test.afterAll(async ({ request }) => {
-    await cleanupTestData(request, TEST_ACCOUNTS);
-  });
-
   test('1. Health check', async ({ request }) => {
     const res = await request.get(`${API_BASE}/health`);
     expect(res.status()).toBe(200);
