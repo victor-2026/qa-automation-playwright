@@ -41,6 +41,15 @@ test.describe('API Smoke Tests - Render', () => {
     expect(postsRes.status()).toBe(200);
   });
 
+  // New test: CORS health preflight for Render proxy
+  test('7. CORS health check (Render proxy)', async ({ request }) => {
+    const res = await request.get(`${API_BASE}/health`, {
+      headers: { Origin: 'https://qa-automation-playwright-1.onrender.com' }
+    })
+    const acHeader = res.headers()['access-control-allow-origin'] || res.headers()['Access-Control-Allow-Origin'];
+    expect(acHeader).toBeDefined();
+  });
+
   test('5. Get user profile', async ({ request }) => {
     const loginRes = await request.post(`${API_BASE}/auth/login`, {
       data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
