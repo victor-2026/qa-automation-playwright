@@ -23,13 +23,13 @@ Status: ✅ Running
 
 **Render Dashboard → New → Web Service**
 
-| Setting | Value |
-|--------|-------|
-| Name | `buzzhive-frontend` |
-| Branch | `main` |
-| Build Command | `cd frontend && npm install && npm run build` |
-| Output Directory | `dist` |
-| Start Command | `npx serve dist` |
+| Setting          | Value                                         |
+| ---------------- | --------------------------------------------- |
+| Name             | `buzzhive-frontend`                           |
+| Branch           | `main`                                        |
+| Build Command    | `cd frontend && npm install && npm run build` |
+| Output Directory | `dist`                                        |
+| Start Command    | `npx serve dist`                              |
 
 ### 3. Environment Variables
 
