@@ -416,15 +416,4 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-    const usersRes = await request.get(`${API_BASE}/admin/users`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
-    });
-    const postsRes = await request.get(`${API_BASE}/admin/posts`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
-    });
-
-    expect(statsRes.status()).toBe(200);
-    expect(usersRes.status()).toBe(200);
-    expect(postsRes.status()).toBe(200);
-  });
 });
