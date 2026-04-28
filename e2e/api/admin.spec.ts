@@ -15,7 +15,6 @@ test.describe('API - Admin', () => {
   });
 
   let adminToken: string;
-  let adminToken: string;
   let modToken: string;
   let userToken: string;
 
