@@ -9,11 +9,12 @@ import { getToken, getAdminToken, getModToken } from '../fixtures/tokens';
 import { cleanupTestData } from '../teardown/cleanup';
 import { TEST_ACCOUNTS } from '../setup/credentials';
 
-test.afterAll(async ({ request }) => {
-  await cleanupTestData(request, TEST_ACCOUNTS);
-});
-
 test.describe('API - Admin', () => {
+  test.afterAll(async ({ request }) => {
+    await cleanupTestData(request, TEST_ACCOUNTS);
+  });
+
+  let adminToken: string;
   let adminToken: string;
   let modToken: string;
   let userToken: string;
