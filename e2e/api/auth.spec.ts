@@ -22,17 +22,24 @@ test.describe('API - Auth', () => {
 
   // POST /auth/login - Happy path
   test('AUTH-API-001: Login with valid credentials returns 200 + tokens', async ({ request }) => {
-    const res = await request.post(`${API_BASE}/auth/login`, {
-      data: { email: TEST_USERNAME, password: TEST_PASSWORD },
-    });
-    expect(res.status()).toBe(200);
-    const body = await res.json();
-    expect(body).toHaveProperty('access_token');
-    expect(body).toHaveProperty('refresh_token');
-    // Phase 4: Stronger assertions - check types
-    expect(typeof body.access_token).toBe('string');
-    expect(typeof body.refresh_token).toBe('string');
-    expect(body.access_token.length).toBeGreaterThan(0);
+    try {
+      const res = await request.post(`${API_BASE}/auth/login`, {
+        data: { email: TEST_USERNAME, password: TEST_PASSWORD },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(200);
+      const body = await res.json();
+      expect(body).toHaveProperty('access_token');
+      expect(body).toHaveProperty('refresh_token');
+      expect(body).toHaveProperty('token_type');
+      expect(typeof body.access_token).toBe('string');
+      expect(typeof body.refresh_token).toBe('string');
+      expect(body.access_token.length).toBeGreaterThan(0);
+      expect(body.token_type.toLowerCase()).toBe('bearer');
+    } catch (err) {
+      console.error('AUTH-API-001 error', err);
+      throw err;
+    }
   });
 
   test('AUTH-API-001: Login returns correct token_type', async ({ request }) => {
