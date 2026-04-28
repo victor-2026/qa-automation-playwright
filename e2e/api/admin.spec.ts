@@ -28,6 +28,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-001: GET /admin/stats returns 200 for admin', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
         timeout: 5000,
       });
@@ -45,6 +46,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-001: GET /admin/stats returns stats data', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
         timeout: 5000,
       });
@@ -61,6 +63,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-001: GET /admin/stats returns 403 for regular user', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${userToken}` },
         timeout: 5000,
       });
@@ -73,7 +76,8 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-001: GET /admin/stats returns 401 without auth', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/admin/stats`, { timeout: 5000 });
+      const res = await request.get(`${API_BASE}/admin/stats`, {
+        timeout: 5000, timeout: 5000 });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
       console.error('ADMIN-API-001 no auth error', err);
@@ -85,6 +89,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-002: GET /admin/users returns 200 for admin', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
         timeout: 5000,
       });
@@ -104,6 +109,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-002: GET /admin/users returns 403 for regular user', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -112,6 +118,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-002: GET /admin/users returns 403 for moderator', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${modToken}` },
         timeout: 5000,
       });
@@ -124,6 +131,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-002: GET /admin/users returns array', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const body = await res.json();
@@ -133,6 +141,7 @@ test.describe('API - Admin', () => {
   // PATCH /admin/users/{id}
   test('ADMIN-API-003: PATCH /admin/users/{id} updates user', async ({ request }) => {
     const listRes = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const body = await listRes.json();
@@ -140,6 +149,7 @@ test.describe('API - Admin', () => {
 
     if (users.length > 0) {
       const res = await request.patch(`${API_BASE}/admin/users/${users[0].id}`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
         data: { display_name: 'Updated Name' },
       });
@@ -149,6 +159,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-003: PATCH /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
       data: { display_name: 'Hack' },
     });
@@ -158,6 +169,7 @@ test.describe('API - Admin', () => {
   // PATCH /admin/users/{id}/ban
   test('ADMIN-API-004: PATCH /admin/users/{id}/ban bans user', async ({ request }) => {
     const listRes = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const body = await listRes.json();
@@ -166,6 +178,7 @@ test.describe('API - Admin', () => {
     const regularUser = users.find((u: any) => u.role === 'user' && u.email !== TEST_USERNAME);
     if (regularUser) {
       const res = await request.patch(`${API_BASE}/admin/users/${regularUser.id}/ban`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
       });
       expect([200, 204]).toContain(res.status());
@@ -174,6 +187,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-004: PATCH /admin/users/{id}/ban returns 403 for moderator', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id/ban`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${modToken}` },
     });
     expect(res.status()).toBe(403);
@@ -181,6 +195,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-004: PATCH /admin/users/{id}/ban returns 403 for regular user', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id/ban`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -189,6 +204,7 @@ test.describe('API - Admin', () => {
   // PATCH /admin/users/{id}/unban
   test('ADMIN-API-005: PATCH /admin/users/{id}/unban unbans user', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     expect([200, 204]).toContain(res.status());
@@ -196,6 +212,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-005: PATCH /admin/users/{id}/unban returns 403 for non-admin', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -205,6 +222,7 @@ test.describe('API - Admin', () => {
   test('ADMIN-API-006: DELETE /admin/users/{id} deletes user', async ({ request }) => {
     const ts = Date.now();
     const registerRes = await request.post(`${API_BASE}/auth/register`, {
+        timeout: 5000,
       data: {
         email: `temp${ts}@test.com`,
         username: `tempuser${ts}`,
@@ -215,6 +233,7 @@ test.describe('API - Admin', () => {
     const newUser = await registerRes.json();
 
     const res = await request.delete(`${API_BASE}/admin/users/${newUser.id}`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     expect([200, 204]).toContain(res.status());
@@ -222,6 +241,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-006: DELETE /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
     const res = await request.delete(`${API_BASE}/admin/users/some-id`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -229,6 +249,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-006: DELETE /admin/users/{id} cannot delete admin', async ({ request }) => {
     const listRes = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const body = await listRes.json();
@@ -237,6 +258,7 @@ test.describe('API - Admin', () => {
     const admin = users.find((u: any) => u.role === 'admin');
     if (admin) {
       const res = await request.delete(`${API_BASE}/admin/users/${admin.id}`, {
+        timeout: 5000,
         headers: { Authorization: `Bearer ${adminToken}` },
       });
       expect([400, 403, 409]).toContain(res.status());
@@ -246,6 +268,7 @@ test.describe('API - Admin', () => {
   // GET /admin/posts
   test('ADMIN-API-007: GET /admin/posts returns 200 for admin', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     expect(res.status()).toBe(200);
@@ -253,6 +276,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-007: GET /admin/posts returns 403 for regular user', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -260,6 +284,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-007: GET /admin/posts returns array', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const body = await res.json();
@@ -269,12 +294,14 @@ test.describe('API - Admin', () => {
   // DELETE /admin/posts/{id} - Moderator can delete
   test('ADMIN-API-008: DELETE /admin/posts/{id} by mod returns 200', async ({ request }) => {
     const createRes = await request.post(`${API_BASE}/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
       data: { content: 'Post to moderate' },
     });
     const post = await createRes.json();
 
     const res = await request.delete(`${API_BASE}/admin/posts/${post.id}`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${modToken}` },
     });
     expect([200, 204]).toContain(res.status());
@@ -282,12 +309,14 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-008: DELETE /admin/posts/{id} by admin returns 200', async ({ request }) => {
     const createRes = await request.post(`${API_BASE}/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
       data: { content: 'Post for admin delete' },
     });
     const post = await createRes.json();
 
     const res = await request.delete(`${API_BASE}/admin/posts/${post.id}`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     expect([200, 204]).toContain(res.status());
@@ -295,6 +324,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-008: DELETE /admin/posts/{id} by regular user returns 403', async ({ request }) => {
     const res = await request.delete(`${API_BASE}/admin/posts/some-id`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect(res.status()).toBe(403);
@@ -303,6 +333,7 @@ test.describe('API - Admin', () => {
   // Admin can see all posts including deleted
   test('ADMIN-API-009: GET /admin/posts includes deleted posts', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     expect(res.status()).toBe(200);
@@ -311,12 +342,15 @@ test.describe('API - Admin', () => {
   // Role-based access summary
   test('ADMIN-API-010: Admin has full access', async ({ request }) => {
     const statsRes = await request.get(`${API_BASE}/admin/stats`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const usersRes = await request.get(`${API_BASE}/admin/users`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
     const postsRes = await request.get(`${API_BASE}/admin/posts`, {
+        timeout: 5000,
       headers: { Authorization: `Bearer ${adminToken}` },
     });
 
