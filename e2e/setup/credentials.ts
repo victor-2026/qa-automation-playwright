@@ -11,30 +11,32 @@ export const requireEnv = (name: string): string => {
   return v;
 };
 
-// Required environment variables
-export const APP_BASE_URL = requireEnv('APP_BASE_URL');
-export const TEST_USERNAME = requireEnv('TEST_USERNAME');
-export const TEST_PASSWORD = requireEnv('TEST_PASSWORD');
+// Required environment variables (only for smoke tests)
+export const APP_BASE_URL = process.env.APP_BASE_URL || process.env.API_BASE_URL || 'http://localhost:8000/api';
 
-// Optional with defaults
-export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
-
-// Test account roles
+// Test account roles (optional - use defaults if not set)
 export const TEST_ACCOUNTS = {
   user: {
-    email: TEST_USERNAME,
-    password: TEST_PASSWORD,
+    email: process.env.TEST_USERNAME || 'alice@buzzhive.com',
+    password: process.env.TEST_PASSWORD || 'alice123',
   },
   admin: {
-    email: requireEnv('TEST_ADMIN_EMAIL'),
-    password: requireEnv('TEST_ADMIN_PASSWORD'),
+    email: process.env.TEST_ADMIN_EMAIL || 'admin@buzzhive.com',
+    password: process.env.TEST_ADMIN_PASSWORD || 'admin123',
   },
   mod: {
-    email: requireEnv('TEST_MOD_EMAIL'),
-    password: requireEnv('TEST_MOD_PASSWORD'),
+    email: process.env.TEST_MOD_EMAIL || 'mod@buzzhive.com',
+    password: process.env.TEST_MOD_PASSWORD || 'mod123',
   },
   bob: {
-    email: requireEnv('TEST_BOB_EMAIL'),
-    password: requireEnv('TEST_BOB_PASSWORD'),
+    email: process.env.TEST_BOB_EMAIL || 'bob@buzzhive.com',
+    password: process.env.TEST_BOB_PASSWORD || 'bob123',
+  },
+  frank: {
+    email: process.env.TEST_FRANK_EMAIL || 'frank@buzzhive.com',
+    password: process.env.TEST_FRANK_PASSWORD || 'frank123',
   },
 };
+
+// API Base URL (with fallback)
+export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
