@@ -26,38 +26,80 @@ test.describe('API - Admin', () => {
 
   // GET /admin/stats
   test('ADMIN-API-001: GET /admin/stats returns 200 for admin', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/stats`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
-    });
-    expect(res.status()).toBe(200);
+    try {
+      const res = await request.get(`${API_BASE}/admin/stats`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(200);
+      const body = await res.json();
+      const keys = Object.keys(body);
+      expect(keys.includes('users_count') || keys.includes('users') || keys.includes('posts')).toBeTruthy();
+      if (body.users_count !== undefined) expect(typeof body.users_count).toBe('number');
+    } catch (err) {
+      console.error('ADMIN-API-001 error', err);
+      throw err;
+    }
   });
 
   test('ADMIN-API-001: GET /admin/stats returns stats data', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/stats`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
-    });
-    const body = await res.json();
-    expect(body).toHaveProperty('users_count' || 'users' || 'posts');
+    try {
+      const res = await request.get(`${API_BASE}/admin/stats`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(200);
+      const body = await res.json();
+      const keys = Object.keys(body);
+      expect(keys.includes('users_count') || keys.includes('users') || keys.includes('posts')).toBeTruthy();
+    } catch (err) {
+      console.error('ADMIN-API-001 stats data error', err);
+      throw err;
+    }
   });
 
   test('ADMIN-API-001: GET /admin/stats returns 403 for regular user', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/stats`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    });
-    expect(res.status()).toBe(403);
+    try {
+      const res = await request.get(`${API_BASE}/admin/stats`, {
+        headers: { Authorization: `Bearer ${userToken}` },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(403);
+    } catch (err) {
+      console.error('ADMIN-API-001 regular user error', err);
+      throw err;
+    }
   });
 
   test('ADMIN-API-001: GET /admin/stats returns 401 without auth', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/stats`);
-    expect(res.status()).toBeGreaterThanOrEqual(401);
+    try {
+      const res = await request.get(`${API_BASE}/admin/stats`, { timeout: 5000 });
+      expect(res.status()).toBeGreaterThanOrEqual(401);
+    } catch (err) {
+      console.error('ADMIN-API-001 no auth error', err);
+      throw err;
+    }
   });
 
   // GET /admin/users
   test('ADMIN-API-002: GET /admin/users returns 200 for admin', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/users`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
-    });
-    expect(res.status()).toBe(200);
+    try {
+      const res = await request.get(`${API_BASE}/admin/users`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(200);
+      const body = await res.json();
+      const users = body.items || body;
+      expect(Array.isArray(users)).toBeTruthy();
+      if (users.length > 0) {
+        expect(users[0]).toHaveProperty('id');
+        expect(users[0]).toHaveProperty('email');
+      }
+    } catch (err) {
+      console.error('ADMIN-API-002 error', err);
+      throw err;
+    }
   });
 
   test('ADMIN-API-002: GET /admin/users returns 403 for regular user', async ({ request }) => {
@@ -68,10 +110,16 @@ test.describe('API - Admin', () => {
   });
 
   test('ADMIN-API-002: GET /admin/users returns 403 for moderator', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/admin/users`, {
-      headers: { Authorization: `Bearer ${modToken}` },
-    });
-    expect(res.status()).toBe(403);
+    try {
+      const res = await request.get(`${API_BASE}/admin/users`, {
+        headers: { Authorization: `Bearer ${modToken}` },
+        timeout: 5000,
+      });
+      expect(res.status()).toBe(403);
+    } catch (err) {
+      console.error('ADMIN-API-002 moderator error', err);
+      throw err;
+    }
   });
 
   test('ADMIN-API-002: GET /admin/users returns array', async ({ request }) => {
