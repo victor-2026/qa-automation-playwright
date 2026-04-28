@@ -400,20 +400,4 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-      const usersRes = await request.get(`${API_BASE}/admin/users`, {
-        headers: { Authorization: `Bearer ${adminToken}` },
-        timeout: 5000,
-      });
-      const postsRes = await request.get(`${API_BASE}/admin/posts`, {
-        headers: { Authorization: `Bearer ${adminToken}` },
-        timeout: 5000,
-      });
-      expect(statsRes.status()).toBe(200);
-      expect(usersRes.status()).toBe(200);
-      expect(postsRes.status()).toBe(200);
-    } catch (err) {
-      console.error('ADMIN-API-024 error', err);
-      throw err;
-    }
-  });
 });
