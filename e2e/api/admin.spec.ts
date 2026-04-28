@@ -199,8 +199,6 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-    expect([200, 204]).toContain(res.status());
-  });
 
   test('ADMIN-API-015: PATCH /admin/users/{id}/unban returns 403 for non-admin', async ({ request }) => {
     try {
