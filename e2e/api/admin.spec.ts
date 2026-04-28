@@ -303,9 +303,6 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-    const body = await res.json();
-    expect(Array.isArray(body.items || body)).toBeTruthy();
-  });
 
   // DELETE /admin/posts/{id} - Moderator can delete
   test('ADMIN-API-020: DELETE /admin/posts/{id} by mod returns 200', async ({ request }) => {
