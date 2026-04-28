@@ -387,7 +387,6 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-
   test('ADMIN-API-026: Moderator has limited access', async ({ request }) => {
     try {
       const statsRes = await request.get(`${API_BASE}/admin/stats`, {
