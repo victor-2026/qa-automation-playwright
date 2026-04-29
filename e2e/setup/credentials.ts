@@ -11,8 +11,8 @@ export const requireEnv = (name: string): string => {
   return v;
 };
 
-// Required environment variables (only for smoke tests)
-export const APP_BASE_URL = process.env.APP_BASE_URL || process.env.API_BASE_URL || 'http://localhost:8000/api';
+// Optional with defaults
+export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'https://buzzhive-test.onrender.com/api';
 
 // Test account roles (optional - use defaults if not set)
 export const TEST_ACCOUNTS = {
@@ -37,6 +37,3 @@ export const TEST_ACCOUNTS = {
     password: process.env.TEST_FRANK_PASSWORD || 'frank123',
   },
 };
-
-// API Base URL (with fallback)
-export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
