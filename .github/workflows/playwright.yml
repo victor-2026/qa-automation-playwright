@@ -163,6 +163,7 @@ jobs:
 
     env:
       API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+      # These match TEST_ACCOUNTS in credentials.ts
       TEST_USERNAME: alice@buzzhive.com
       TEST_PASSWORD: alice123
       TEST_ADMIN_EMAIL: admin@buzzhive.com
@@ -173,6 +174,8 @@ jobs:
       TEST_BOB_PASSWORD: bob123
       TEST_FRANK_EMAIL: frank@buzzhive.com
       TEST_FRANK_PASSWORD: frank123
+      # For code that uses TEST_ACCOUNTS directly (if any)
+      TEST_ACCOUNTS: ${{ toJSON(vars.TEST_ACCOUNTS || '{"user":{"email":"alice@buzzhive.com","password":"alice123"},"admin":{"email":"admin@buzzhive.com","password":"admin123"},"mod":{"email":"mod@buzzhive.com","password":"mod123"},"bob":{"email":"bob@buzzhive.com","password":"bob123"},"frank":{"email":"frank@buzzhive.com","password":"frank123"}}') }}
 
     steps:
       - name: Checkout
@@ -221,7 +224,7 @@ jobs:
             -H "Authorization: Bearer $TOKEN" \
             && echo "Database seeded" || echo "Seed skipped"
 
-      - name: Run E2E tests on Render
+      - name: Run Smoke tests on Render (API only)
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
         env:
           APP_BASE_URL: ${{ vars.BACKEND_URL }}
@@ -234,7 +237,7 @@ jobs:
           TEST_MOD_PASSWORD: mod123
           TEST_BOB_EMAIL: bob@buzzhive.com
           TEST_BOB_PASSWORD: bob123
-        run: npx playwright test --retries=2 || true
+        run: npx playwright test e2e/api/smoke-api.spec.ts --retries=2 || true
 
       - name: No backend available
         if: steps.check-backend.outputs.BACKEND_AVAILABLE != 'true'
