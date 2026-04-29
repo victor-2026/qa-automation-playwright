@@ -163,6 +163,7 @@ jobs:
 
     env:
       API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+      # These match TEST_ACCOUNTS in credentials.ts
       TEST_USERNAME: alice@buzzhive.com
       TEST_PASSWORD: alice123
       TEST_ADMIN_EMAIL: admin@buzzhive.com
@@ -173,6 +174,8 @@ jobs:
       TEST_BOB_PASSWORD: bob123
       TEST_FRANK_EMAIL: frank@buzzhive.com
       TEST_FRANK_PASSWORD: frank123
+      # For code that uses TEST_ACCOUNTS directly (if any)
+      TEST_ACCOUNTS: ${{ toJSON(vars.TEST_ACCOUNTS || '{"user":{"email":"alice@buzzhive.com","password":"alice123"},"admin":{"email":"admin@buzzhive.com","password":"admin123"},"mod":{"email":"mod@buzzhive.com","password":"mod123"},"bob":{"email":"bob@buzzhive.com","password":"bob123"},"frank":{"email":"frank@buzzhive.com","password":"frank123"}}') }}
 
     steps:
       - name: Checkout
