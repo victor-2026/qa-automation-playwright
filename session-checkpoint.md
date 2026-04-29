@@ -1,18 +1,37 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-04-24
-**Status:** SESSION 8 COMPLETE - TC MAPPING + IMPLEMENTATION DONE
+**Date:** 2026-04-25
+**Status:** SESSION COMPLETE - CI + OpenCode Ready
 
 ---
 
-## Session 8 Complete
+## Today's Progress
 
 | Action | Status |
 |--------|--------|
-| TC Mapping analysis | ✅ 60 Frontend TC → 90 e2e/ tests |
-| TC_MAPPING.md created | ✅ Full mapping table |
-| TEST_CASES.md updated | ✅ Added mapping status |
-| Missing TC implemented | ✅ TC-FOL-002 + TC-EDGE-010 |
+| TC mapping analysis | ✅ 60 Frontend → 90 e2e tests |
+| Missing TC implementation | ✅ 6 tests (TC-FOL-002, TC-EDGE-010, TC-FOL-004/5, TC-COM-002/004) |
+| DB seeding fix | ✅ /api/reset works |
+| CI workflow update | ✅ Docker services + seed + tests |
+| Test usernames fixed | ✅ alice_dev, bob_photo, dave_quiet |
+| OpenCode Desktop | ✅ gpt-5-nano available |
+
+---
+
+## CI Status
+
+- **GitHub Actions:** Docker not available on ubuntu-runner
+- **Fallback:** Tests gracefully skip if no Docker
+- **Solution:** Self-hosted runner OR external deployment
+
+---
+
+## OpenCode Setup
+
+- **Path:** /Applications/OpenCode.app/Contents/MacOS/opencode-cli
+- **Model:** opencode/gpt-5-nano available
+- **CLI:** Complex - requires Desktop app running
+- **Usage:** Desktop app → select gpt-5-nano in dropdown
 
 ---
 

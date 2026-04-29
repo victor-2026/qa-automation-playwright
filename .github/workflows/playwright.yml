@@ -161,6 +161,19 @@ jobs:
       name: production
       url: ${{ vars.BACKEND_URL }}
 
+    env:
+      API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+      TEST_USERNAME: alice@buzzhive.com
+      TEST_PASSWORD: alice123
+      TEST_ADMIN_EMAIL: admin@buzzhive.com
+      TEST_ADMIN_PASSWORD: admin123
+      TEST_MOD_EMAIL: mod@buzzhive.com
+      TEST_MOD_PASSWORD: mod123
+      TEST_BOB_EMAIL: bob@buzzhive.com
+      TEST_BOB_PASSWORD: bob123
+      TEST_FRANK_EMAIL: frank@buzzhive.com
+      TEST_FRANK_PASSWORD: frank123
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
