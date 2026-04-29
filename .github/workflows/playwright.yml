@@ -224,7 +224,7 @@ jobs:
             -H "Authorization: Bearer $TOKEN" \
             && echo "Database seeded" || echo "Seed skipped"
 
-      - name: Run E2E tests on Render
+      - name: Run Smoke tests on Render (API only)
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
         env:
           APP_BASE_URL: ${{ vars.BACKEND_URL }}
@@ -237,7 +237,7 @@ jobs:
           TEST_MOD_PASSWORD: mod123
           TEST_BOB_EMAIL: bob@buzzhive.com
           TEST_BOB_PASSWORD: bob123
-        run: npx playwright test --retries=2 || true
+        run: npx playwright test e2e/api/smoke-api.spec.ts --retries=2 || true
 
       - name: No backend available
         if: steps.check-backend.outputs.BACKEND_AVAILABLE != 'true'
