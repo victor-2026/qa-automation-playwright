@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { API_BASE, TEST_USERNAME, TEST_PASSWORD } from '../setup/credentials';
+import { API_BASE, TEST_ACCOUNTS } from '../setup/credentials';
 import { getAliceToken } from '../fixtures/tokens';
 import { cleanupTestData } from '../teardown/cleanup';
 import { TEST_ACCOUNTS } from '../setup/credentials';

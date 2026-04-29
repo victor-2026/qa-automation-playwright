@@ -4,10 +4,9 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { API_BASE, TEST_USERNAME, TEST_PASSWORD } from '../setup/credentials';
+import { API_BASE, TEST_ACCOUNTS } from '../setup/credentials';
 import { getToken, getAliceToken } from '../fixtures/tokens';
 import { cleanupTestData } from '../teardown/cleanup';
-import { TEST_ACCOUNTS } from '../setup/credentials';
 
 test.afterAll(async ({ request }) => {
   await cleanupTestData(request, TEST_ACCOUNTS);
@@ -24,7 +23,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-001: Login with valid credentials returns 200 + tokens', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: TEST_PASSWORD },
+        data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
         timeout: 5000,
       });
       expect(res.status()).toBe(200);
@@ -45,7 +44,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-002: Login returns correct token_type', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: TEST_PASSWORD },
+        data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
         timeout: 5000,
       });
       expect(res.status()).toBe(200);
@@ -62,7 +61,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-003: Login with wrong password returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: 'wrongpassword' },
+        data: { email: TEST_ACCOUNTS.user.email, password: 'wrongpassword' },
         timeout: 5000,
       });
       expect(res.status()).toBe(401);
@@ -102,7 +101,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-006: Login with very long password (1000 chars)', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: 'a'.repeat(1000) },
+        data: { email: TEST_ACCOUNTS.user.email, password: 'a'.repeat(1000) },
         timeout: 5000,
       });
       expect(res.status()).toBe(401);
@@ -135,7 +134,7 @@ test.describe('API - Auth', () => {
       expect(res.status()).toBe(200);
       const body = await res.json();
       expect(body).toHaveProperty('email');
-      expect(body.email).toBe(TEST_USERNAME);
+      expect(body.email).toBe(TEST_ACCOUNTS.user.email);
     } catch (err) {
       console.error('AUTH-API-008 error', err);
       throw err;
@@ -229,7 +228,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/register`, {
         data: {
-          email: TEST_USERNAME,
+          email: TEST_ACCOUNTS.user.email,
           username: 'anotheruser',
           password: 'password123',
           display_name: 'Test',
@@ -362,7 +361,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-021: Refresh with valid token returns 200', async ({ request }) => {
     try {
       const loginRes = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: TEST_PASSWORD },
+        data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
         timeout: 5000,
       });
       const tokens = await loginRes.json();
@@ -408,7 +407,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-024: Logout with valid token returns 200', async ({ request }) => {
     try {
       const loginRes = await request.post(`${API_BASE}/auth/login`, {
-        data: { email: TEST_USERNAME, password: TEST_PASSWORD },
+        data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
         timeout: 5000,
       });
       const tokens = await loginRes.json();

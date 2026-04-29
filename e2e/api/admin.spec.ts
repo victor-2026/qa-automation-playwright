@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { API_BASE, TEST_USERNAME, TEST_PASSWORD } from '../setup/credentials';
+import { API_BASE, TEST_ACCOUNTS } from '../setup/credentials';
 import { getToken, getAdminToken, getModToken } from '../fixtures/tokens';
 import { cleanupTestData } from '../teardown/cleanup';
 import { TEST_ACCOUNTS } from '../setup/credentials';
@@ -21,7 +21,7 @@ test.describe('API - Admin', () => {
   test.beforeAll(async ({ request }) => {
     adminToken = await getAdminToken(request);
     modToken = await getModToken(request);
-    userToken = await getToken(request, TEST_USERNAME, TEST_PASSWORD);
+    userToken = await getToken(request, TEST_ACCOUNTS.user.email, TEST_ACCOUNTS.user.password);
   });
 
   // GET /admin/stats
@@ -163,7 +163,7 @@ test.describe('API - Admin', () => {
     const body = await listRes.json();
     const users = body.items || body;
 
-    const regularUser = users.find((u: any) => u.role === 'user' && u.email !== TEST_USERNAME);
+    const regularUser = users.find((u: any) => u.role === 'user' && u.email !== TEST_ACCOUNTS.user.email);
     if (regularUser) {
       const res = await request.patch(`${API_BASE}/admin/users/${regularUser.id}/ban`, {
         headers: { Authorization: `Bearer ${adminToken}` },
