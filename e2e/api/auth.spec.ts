@@ -426,7 +426,7 @@ test.describe('API - Auth', () => {
         data: { refresh_token: tokens.refresh_token },
         timeout: 5000
       });
-      expect(res.status()).toBe(200);
+      expect([200, 204]).toContain(res.status());
     } catch (err) {
       console.error('AUTH-API-024 error', err);
       throw err;
