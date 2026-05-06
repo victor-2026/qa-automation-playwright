@@ -1,0 +1,21 @@
+{
+  "_comment": "Stryker Mutator config for qa-automation-sandbox",
+  "mutator": "typescript",
+  "packageManager": "npm",
+  "reporters": ["html", "progress", "clear-text"],
+  "testRunner": "playwright",
+  "testRunnerOptions": {
+    "configFile": "playwright.config.ts"
+  },
+  "mutate": [
+    "e2e/api/*.spec.ts",
+    "!e2e/api/smoke-api.spec.ts",
+    "!e2e/api/metamorphic.spec.ts"
+  ],
+  "transpilers": [
+    "typescript"
+  ],
+  "concurrency": 4,
+  "timeout": 10000,
+  "maxConcurrentTestRunners": 2
+}
