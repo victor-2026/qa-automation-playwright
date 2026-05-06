@@ -34,11 +34,9 @@ test.describe('API - Auth', () => {
         });
       }
       expect(res.status()).toBe(200);
-      const body = await res.json().catch(() => null);
-      if (body) {
-        expect(body).toHaveProperty('access_token');
-        expect(body).toHaveProperty('refresh_token');
-      }
+      const body = await res.json();
+      expect(body).toHaveProperty('access_token');
+      expect(body).toHaveProperty('refresh_token');
     } catch (err) {
       console.error('AUTH-API-001 error', err);
       throw err;
