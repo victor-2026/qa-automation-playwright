@@ -14,6 +14,10 @@ export const requireEnv = (name: string): string => {
 // Optional with defaults
 export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'https://buzzhive-test.onrender.com/api';
 
+// Legacy exports for backward compatibility
+export const TEST_USERNAME = process.env.TEST_USERNAME || 'alice@buzzhive.com';
+export const TEST_PASSWORD = process.env.TEST_PASSWORD || 'alice123';
+
 // Test account roles (optional - use defaults if not set)
 export const TEST_ACCOUNTS = {
   user: {
