@@ -1417,7 +1417,7 @@ test.describe('API Expanded - Other Endpoints (6 → 30 tests)', () => {
   test('OTHER-API-001: GET /health returns healthy status', async ({ request }) => {
     const res = await request.get(`${API_BASE}/health`);
     const body = await res.json();
-    expect(body).toHaveProperty('status' || 'healthy');
+    expect(body).toHaveProperty('status', 'healthy');
   });
 
   // GET /api/bookmarks
