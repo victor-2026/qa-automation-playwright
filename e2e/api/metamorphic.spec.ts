@@ -45,11 +45,9 @@ test.describe('Metamorphic API Tests', () => {
         expect(status).toBe(200); // All should succeed with valid credentials
         
         // Additionally verify we can get a token for successful logins
-        if (status === 200) {
-          // Note: We don't re-fetch to avoid extra load, but in a real implementation
-          // we might want to validate the token is properly returned
-          # we might want to validate the token is properly returned
-        }
+// Note: We don't re-fetch to avoid extra load, but in a real implementation
+// we might want to validate the token is properly returned
+expect(status).toBe(200);
       }
     }
   });
