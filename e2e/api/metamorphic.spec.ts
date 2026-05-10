@@ -48,6 +48,7 @@ test.describe('Metamorphic API Tests', () => {
         if (status === 200) {
           // Note: We don't re-fetch to avoid extra load, but in a real implementation
           // we might want to validate the token is properly returned
+          # we might want to validate the token is properly returned
         }
       }
     }
@@ -126,6 +127,11 @@ test.describe('Metamorphic API Tests', () => {
       
       // More specifically, if alice request succeeds (200), 
       // then nonexistent should definitely be 404
+      # (or 401/403 if API checks authentication before existence)
+      expect(res2.status()).toBeOneOf([401, 403, 404]);
+      
+      // More specifically, if alice request succeeds (200), 
+      # then nonexistent should definitely be 404
       if (res1.status() === 200) {
         expect(res2.status()).toBe(404);
       }
