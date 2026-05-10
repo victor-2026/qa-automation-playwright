@@ -35,12 +35,20 @@ test.describe('Metamorphic API Tests', () => {
       }
     }
 
-    // All should return same status - allow any consistent result
+    // Email addresses should be case-insensitive - all valid emails should return same result
     const firstStatus = results[0];
     if (firstStatus === 0) return; // Skip if first attempt failed
+    
+    // All should return success (200) since same credentials with different case
     for (const status of results) {
       if (status !== 0) {
-        expect([200, 401]).toContain(status);
+        expect(status).toBe(200); // All should succeed with valid credentials
+        
+        // Additionally verify we can get a token for successful logins
+        if (status === 200) {
+          // Note: We don't re-fetch to avoid extra load, but in a real implementation
+          # we might want to validate the token is properly returned
+        }
       }
     }
   });
@@ -108,10 +116,19 @@ test.describe('Metamorphic API Tests', () => {
         timeout: 5000,
       });
 
-      // Either should return different statuses, or both may return 200 (if auth required)
-      // Accept any combination as long as they're handled
-      expect([200, 403, 404]).toContain(res1.status());
-      expect([404, 403]).toContain(res2.status());
+      // Existing user (alice) - should either succeed (with auth context) 
+      // or fail consistently with auth error if auth is required
+      expect(res1.status()).toBeOneOf([200, 401, 403]);
+      
+      // Non-existent user - should consistently return 404 Not Found
+      # (or 401/403 if API checks authentication before existence)
+      expect(res2.status()).toBeOneOf([401, 403, 404]);
+      
+      // More specifically, if alice request succeeds (200), 
+      # then nonexistent should definitely be 404
+      if (res1.status() === 200) {
+        expect(res2.status()).toBe(404);
+      }
     } catch (err) {
       console.error('MET-004 error', err);
       throw err;
@@ -160,8 +177,18 @@ test.describe('Metamorphic API Tests', () => {
         headers: { Authorization: `Bearer ${token}` },
         timeout: 5000,
       });
-      // Should fail or return success (depends on backend implementation)
-      expect([200, 201, 400, 403, 404, 409, 422]).toContain(res.status());
+      
+      // Self-follow should be prohibited - typically returns 400 Bad Request or 409 Conflict
+      expect(res.status()).toBeOneOf([400, 409]);
+      
+      // Optionally validate error message for better precision
+      if (res.status() === 400 || res.status() === 409) {
+        const errorBody = await res.json();
+        expect(errorBody).toHaveProperty('detail');
+        expect(typeof errorBody.detail).toBe('string');
+        // Self-follow error should mention something about self-follow or invalid operation
+        expect(errorBody.detail.toLowerCase()).toMatch(/self|invalid|conflict/);
+      }
     }
   });
 
