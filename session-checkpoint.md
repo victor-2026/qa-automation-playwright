@@ -1,214 +1,68 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-04-25
-**Status:** SESSION COMPLETE - CI + OpenCode Ready
+**Date:** 2026-05-13
+**Status:** COMPLETE
 
----
+## Work Completed
 
-## Today's Progress
+### Perplexity Agent Skills Implementation
+- Updated 10 skills in `.config/opencode/skills/` with Perplexity structure
+- Added `references/`, `gotchas.md`, `config.json` to each skill
+- Rewrote all descriptions to "Load when..." format (English)
+- Skills: rest-api-qa, load-stress-qa, universal-qa-expert, java-qa, go-qa
+- Obsidian skills: defuddle, json-canvas, obsidian-bases, obsidian-cli, obsidian-markdown
 
-| Action | Status |
-|--------|--------|
-| TC mapping analysis | ✅ 60 Frontend → 90 e2e tests |
-| Missing TC implementation | ✅ 6 tests (TC-FOL-002, TC-EDGE-010, TC-FOL-004/5, TC-COM-002/004) |
-| DB seeding fix | ✅ /api/reset works |
-| CI workflow update | ✅ Docker services + seed + tests |
-| Test usernames fixed | ✅ alice_dev, bob_photo, dave_quiet |
-| OpenCode Desktop | ✅ gpt-5-nano available |
+### MAS Enhancement
+- Added gotchas field to MAS reports in `scripts/mas-quality-check.py`
+- Reports now include issue details: {issue, severity, line, category, date}
 
----
+### Wiki Article
+- Created `wiki/perplexity-agent-skills.md` in ai-qa-wiki
+- Added to ai-qa-wiki repo
 
-## CI Status
+### PR #8
+- Fixed lint errors in metamorphic.spec.ts
+- All quality gates passing
 
-- **GitHub Actions:** Docker not available on ubuntu-runner
-- **Fallback:** Tests gracefully skip if no Docker
-- **Solution:** Self-hosted runner OR external deployment
+### Job Search Vault (New Project)
+- Created `/Users/victor/Private/Positions-CV-CL/`
+- Added LLM Wiki structure: raw/, wiki/, outputs/, skills/, scripts/
+- Created jobs-tracker.base for application tracking
+- Added CV template and Paysend application materials
+- Generated wiki articles: qa-interview-questions, resume-ats-optimization
+- Created LLM scripts: wiki_llm.py, linkedin_post.py, generate_all.py
 
----
+## Modified Files
 
-## OpenCode Setup
+- `scripts/mas-quality-check.py` - Added gotchas to reports
+- `.config/opencode/skills/*/SKILL.md` - Updated descriptions
+- `.config/opencode/skills/*/gotchas.md` - NEW
+- `.config/opencode/skills/*/config.json` - NEW
+- `.config/opencode/skills/*/references/links.md` - NEW
+- `.opencode/skills/obsidian-skills/skills/*/` - Same structure
+- `/Users/victor/Projects/ai-qa-wiki/wiki/perplexity-agent-skills.md` - NEW
 
-- **Path:** /Applications/OpenCode.app/Contents/MacOS/opencode-cli
-- **Model:** opencode/gpt-5-nano available
-- **CLI:** Complex - requires Desktop app running
-- **Usage:** Desktop app → select gpt-5-nano in dropdown
+## Verification Results
 
----
+- PR #8 lint: ✅ PASS
+- MAS quality check: ✅ PASS (80/100)
+- Smoke tests: ✅ 7 passed
 
-## Today's Progress
+## Blockers
 
-| Phase | Focus | Score | Status |
-|-------|-------|-------|--------|
-| 1 | Credentials → ENV | 8/10 | ✅ PASS |
-| 2 | Cleanup/Teardown | 7.5/10 | ✅ PASS |
-| 3 | Module Split | 8/10 | ✅ PASS |
-| 4 | Assertions | 9/10 | ✅ PASS |
-| 5 | CI Gates | 8.5/10 | ✅ PASS |
+- None
 
-**Session 8 Progress:**
-- ✅ Docker running (backend, frontend, db, pgweb)
-- ✅ Analyzed Swagger TC (60 from frontend/docs)
-- ✅ Analyzed e2e/ tests (~90, different naming)
-- ✅ Created TC_MAPPING.md table
-- ✅ Identified 10+ missing edge cases
+## Next Steps
 
-**Overall Score:** 8.5/10
+1. Continue with FinTech portfolio (Alvor Bank fork)
+2. Add more job applications to tracker
+3. Generate more wiki content with LLM
 
----
+## GitHub
 
-## Key Discoveries
+- PR #8: https://github.com/victor-2026/qa-automation-playwright/pull/8
+- Repo: https://github.com/victor-2026/qa-automation-playwright
 
-1. **Two naming schemes:**
-   - Frontend `/docs`: `TC-AUTH-001`
-   - e2e/ code: `AUTH-API-001`
+## Time Spent
 
-2. **Test counts:**
-   - Frontend TC (from DocsPage.tsx): **60**
-   - e2e/ tests: **~90**
-
-3. **Missing tests:**
-   - TC-EDGE-010: Private account post visibility
-   - TC-EDGE-011: Private account following
-   - TC-FOL-002: Follow request to private account
-   - And 7 more edge cases
-
----
-
-## Files Created/Modified
-
-```
-e2e/
-├── setup/credentials.ts          (NEW)
-├── teardown/cleanup.ts           (NEW)
-├── fixtures/tokens.ts            (NEW)
-├── api/
-│   ├── auth.spec.ts             (NEW)
-│   ├── posts.spec.ts             (NEW)
-│   ├── users.spec.ts             (NEW)
-│   ├── conversations.spec.ts     (NEW)
-│   ├── notifications.spec.ts     (NEW)
-│   ├── admin.spec.ts             (NEW)
-│   └── health.spec.ts             (NEW)
-├── smoke.spec.ts                (MODIFIED)
-└── sanity.spec.ts                (MODIFIED)
-
-.github/workflows/playwright.yml (NEW)
-playwright.config.ts             (MODIFIED)
-TEST_CASES.md                   (MODIFIED)
-RUN_TESTS.md                    (NEW)
-TC_MAPPING.md                   (NEW)
-```
-
----
-
-## Key Changes
-
-1. **Phase 1:** Hardcoded credentials → ENV variables
-2. **Phase 2:** Added test data cleanup (posts, users, conversations, likes)
-3. **Phase 3:** Split 1467-line file into 7 modules (~200 tests)
-4. **Phase 4:** Added type checks, specific UI elements
-5. **Phase 5:** GitHub Actions with matrix browsers + quality gates
-6. **Session 8:** TC mapping analysis (Swagger vs e2e/)
-
----
-
-## GitHub Secrets Required
-
-| Secret | Purpose |
-|--------|---------|
-| APP_BASE_URL | Frontend URL |
-| API_BASE_URL | API URL |
-| TEST_USERNAME | Test user email |
-| TEST_PASSWORD | Test user password |
-| TEST_ADMIN_EMAIL | Admin email |
-| TEST_ADMIN_PASSWORD | Admin password |
-| TEST_MOD_EMAIL | Moderator email |
-| TEST_MOD_PASSWORD | Moderator password |
-| TEST_BOB_EMAIL | Bob email |
-| TEST_BOB_PASSWORD | Bob password |
-
----
-
-## Ollama Config (Windows)
-
-- Host: 192.168.1.31:11434
-- Models: deepseek-r1:7b, qwen2.5:3b
-
----
-
-## Next Actions
-
-1. Update TEST_CASES.md with TC mapping status
-2. Implement missing edge cases (TC-EDGE-010, TC-FOL-002)
-3. Add GitHub secrets (if not done)
-4. Push to main → CI runs
-
----
-
-## Test Accounts
-
-| Email | Password | Role |
-|-------|----------|------|
-| alice@buzzhive.com | alice123 | user |
-| bob@buzzhive.com | bob123 | user |
-| admin@buzzhive.com | admin123 | admin |
-| mod@buzzhive.com | mod123 | moderator |
-| frank@buzzhive.com | frank123 | banned |
-
----
-
-## Session 10 (2026-05-08) ✅ Complete
-
-| Metric | Value |
-|--------|-------|
-| Total | 628 tests |
-| Passed | 616 (84%) |
-| Failed | 4 (mobile) |
-| Flaky | 8 |
-
-**Files:** api-expanded.spec.ts исправлен Cursor (157 passed locally, 616 in CI)
-
-**Key fixes from Cursor:**
-- Protected endpoints без JWT → 401 (not 200/422)
-- Seed users: alice_dev, bob_photo, frank_banned, eve_new
-- Likes: 201 status (not 200)
-- Follow: 409 for duplicate, 201 for new
-- DELETE /conversations → 405 (route doesn't exist)
-
-**CI status:** Render E2E passed, Docker skipped
-
----
-
-## PR #7 (2026-05-08) ✅ Merged
-
-| Field | Value |
-|-------|-------|
-| Title | fix: admin.spec.ts token retry + flexible status assertions |
-| Branch | feat/admin-api-improvements-admin-spec |
-| Commit | b4727ba |
-| Files | admin.spec.ts, playwright.config.ts, tokens.ts |
-| CI | Quality Gates ✅, Render E2E ✅ |
-
-**Changes:**
-- Retry loop in beforeAll for token acquisition
-- Increased test timeout 30s → 60s
-- Added 5s timeout to token login
-- Replaced strict toBe(200/403) with [200,403,404,500] arrays
-- Status check before .json() to prevent crash on 500
-
----
-
-## PR #6 (2026-05-07) ✅ Merged
-
-| Field | Value |
-|-------|-------|
-| Title | Fix flaky auth login token_type test |
-| Branch | feat/admin-api-improvements-admin-spec |
-| Commit | a35dae8 |
-| Checks | 9 passed |
-
-**Description:** Retry auth/login responses and verify token_type only after successful JSON response to reduce transient failures in API-expanded suite.
-
----
-
-*Checkpoint saved: 2026-05-07*
+~3 hours
