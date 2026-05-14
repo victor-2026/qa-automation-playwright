@@ -5,41 +5,49 @@
 
 ## Work Completed
 
-### Obsidian Templates
-- Created `~/Obsidian-Templates/` for new vault setup
-- Added: core-plugins.json, community-plugins.json, daily-notes.json, templates.json
-- Created: setup-obsidian-vault.sh script
-- Included: Excalidraw plugin
+### Self-Review Loop
+- Added to AGENTS.md: "After generating code/tests, ask 'Am I 100% confident?'"
+- Created wiki article: wiki/self-review-loop.md
+
+### Agent Teams Architecture
+- Created: wiki/agent-teams-architecture.md
+- Documented: Sequential, Parallel, Hierarchical, Adversarial patterns
+- Model selection options (fast + slow combination)
 
 ### Job Search Vault
-- Created `/Users/victor/Private/Positions-CV-CL/`
-- Structure: raw/, wiki/, outputs/, skills/, scripts/, _templates/
-- Jobs tracker: Added Paysend (now Rejected)
-- Mermaid diagrams: workflow, sequence, mindmap
-- Scripts: wiki_llm.py, linkedin_post.py, generate_all.py
+- Paysend status updated: Rejected
+- Added lessons learned to wiki/paysend-rejected.md
 
-### Paysend Update
-- Updated jobs-tracker.base: Status → Rejected
-- Added: date, response notes
-- Created wiki/paysend-rejected.md with lessons learned
+### Wiki Articles (AI QA)
+- agent-teams-architecture.md
+- self-review-loop.md
+- gpt-image-research-mode.md
+- lee-robinson-job-tips.md
+- All pushed to GitHub
 
-## Files Created/Modified
+## GitHub Updates
 
-- `~/Obsidian-Templates/.obsidian/*` - NEW
-- `~/Obsidian-Templates/_templates/daily-note.md` - NEW
-- `~/Obsidian-Templates/setup-obsidian-vault.sh` - NEW
-- `/Users/victor/Private/Positions-CV-CL/wiki/paysend-rejected.md` - NEW
+| Repo | Commit | Status |
+|------|--------|--------|
+| qa-automation-sandbox | feat: Add self-review rule to AGENTS.md | ✅ Pushed |
+| ai-qa-wiki | feat: Add AI agent patterns articles | ✅ Pushed |
+
+## Obsidian Templates
+- Created ~/Obsidian-Templates/ with setup script
+- Ready for new vaults
 
 ## Next Steps
 
 1. Continue FinTech portfolio (Alvor Bank fork)
-2. Apply to more positions
+2. Apply to more jobs
 3. Follow up earlier on applications
 
-## GitHub
+## Links
 
 - PR #8: https://github.com/victor-2026/qa-automation-playwright/pull/8
+- ai-qa-wiki: https://github.com/victor-2026/ai-qa-wiki
+- Job Search Vault: /Users/victor/Private/Positions-CV-CL/
 
 ## Time Spent
 
-~30 minutes
+~45 minutes
