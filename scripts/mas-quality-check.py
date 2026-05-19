@@ -264,6 +264,18 @@ def run_cycle(filepath: str, enable_fix: bool = True, enable_test: bool = False)
 
     # Save results
     status = "PASS" if score >= THRESHOLD else "FAIL"
+
+    # Convert issues to gotchas format
+    gotchas = []
+    for issue in result.get("issues", []):
+        gotchas.append({
+            "issue": issue.get("description", ""),
+            "severity": issue.get("severity", "low"),
+            "line": issue.get("line", 0),
+            "category": issue.get("category", "unknown"),
+            "date": get_timestamp()
+        })
+
     final = {
         "filename": filepath,
         "score": score,
@@ -272,7 +284,8 @@ def run_cycle(filepath: str, enable_fix: bool = True, enable_test: bool = False)
         "breakdown": breakdown,
         "fixes_applied": result.get("fixes_applied", 0),
         "test_result": result.get("test_result"),
-        "report_dir": str(report_dir)
+        "report_dir": str(report_dir),
+        "gotchas": gotchas
     }
 
     save_json(report_dir, "analysis.json", result)

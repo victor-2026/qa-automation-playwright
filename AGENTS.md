@@ -80,6 +80,11 @@ Minimum sections to keep updated:
 2. ...
 ```
 
+## Self-Review Rule
+- After generating code/tests, ask: "Am I 100% confident?"
+- If not — find all possible holes, propose fixes, repeat until confident
+- This applies to: code generation, test creation, documentation, reviews
+
 ## End-of-Session Report Template (chat/PR)
 Use this short repeatable format:
 
