@@ -1,0 +1,7 @@
+title: QA Automation Sandbox
+description: Buzzhive test project — zero-budget AI-assisted testing
+baseurl: /qa-automation-playwright
+include:
+  - ENHANCEMENT_REPORT
+  - ru
+  - docs
