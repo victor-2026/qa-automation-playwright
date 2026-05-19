@@ -1,0 +1,37 @@
+{
+  "filename": "e2e/api/metamorphic.spec.ts",
+  "score": 80,
+  "threshold": 80,
+  "status": "PASS",
+  "result": {
+    "filename": "metamorphic.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": true,
+      "timeout": true,
+      "safe_json": false,
+      "cleanup": false
+    },
+    "issues": [
+      {
+        "severity": "medium",
+        "description": "No cleanup after tests",
+        "line": 0
+      },
+      {
+        "severity": "low",
+        "description": "No safe JSON parsing",
+        "line": 0
+      }
+    ],
+    "recommendations": [
+      "Add cleanup after tests",
+      "Implement safe JSON parsing",
+      "Consider adding more retry mechanisms"
+    ],
+    "coverage": {
+      "endpoints": 5,
+      "edge_cases": 3
+    }
+  }
+}

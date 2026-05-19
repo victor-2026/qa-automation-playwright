@@ -1,0 +1,48 @@
+{
+  "score": 80,
+  "stability": {
+    "retry": true,
+    "timeout": true,
+    "safe_json": false,
+    "cleanup": true
+  },
+  "issues": [
+    {
+      "severity": "medium",
+      "description": "No error handling for JSON parsing",
+      "line": 53
+    },
+    {
+      "severity": "low",
+      "description": "Potential issue with concurrent requests",
+      "line": 120
+    }
+  ],
+  "recommendations": [
+    "Add try-catch blocks for JSON parsing",
+    "Consider using a more robust retry mechanism",
+    "Add more comprehensive error handling"
+  ],
+  "coverage": {
+    "endpoints": 5,
+    "edge_cases": 3
+  },
+  "timestamp": "2026-05-10T00:11:41Z",
+  "issues_classified": {
+    "critical": [],
+    "medium": [
+      {
+        "severity": "medium",
+        "description": "No error handling for JSON parsing",
+        "line": 53
+      }
+    ],
+    "low": [
+      {
+        "severity": "low",
+        "description": "Potential issue with concurrent requests",
+        "line": 120
+      }
+    ]
+  }
+}

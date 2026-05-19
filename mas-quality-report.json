@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-05-09T23:35:15.492979Z",
+  "files": [
+    {
+      "filename": "metamorphic.spec.ts",
+      "score": 80,
+      "stability": {
+        "retry": true,
+        "timeout": true,
+        "safe_json": false,
+        "cleanup": false
+      },
+      "issues": [
+        {
+          "severity": "medium",
+          "description": "No cleanup after tests",
+          "test": "All tests"
+        },
+        {
+          "severity": "low",
+          "description": "No safe JSON parsing",
+          "test": "All tests"
+        }
+      ],
+      "recommendations": [
+        "Add cleanup after tests to ensure resources are released",
+        "Implement safe JSON parsing to handle potential errors",
+        "Consider adding retry mechanism for tests that are not using loginWithRetry"
+      ],
+      "coverage": {
+        "endpoints": 7,
+        "edge_cases": 6
+      }
+    }
+  ],
+  "average_score": 80.0
+}

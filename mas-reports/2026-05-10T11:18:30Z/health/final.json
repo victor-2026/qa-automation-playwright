@@ -1,0 +1,42 @@
+{
+  "filename": "e2e/api/health.spec.ts",
+  "score": 80,
+  "threshold": 80,
+  "status": "PASS",
+  "result": {
+    "filename": "health.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": true,
+      "timeout": true,
+      "safe_json": true,
+      "cleanup": true
+    },
+    "issues": [
+      {
+        "severity": "medium",
+        "description": "Test HEALTH-API-003 is skipped and requires test setup to simulate health endpoint returning 500",
+        "line": 73
+      },
+      {
+        "severity": "medium",
+        "description": "Test HEALTH-API-004 is skipped and requires test setup to simulate health endpoint returning 503",
+        "line": 81
+      },
+      {
+        "severity": "medium",
+        "description": "Test HEALTH-API-005 is skipped and requires specialized test setup for timeout testing",
+        "line": 89
+      }
+    ],
+    "recommendations": [
+      "Implement test setup to simulate health endpoint returning 500 and 503 for tests HEALTH-API-003 and HEALTH-API-004",
+      "Implement specialized test setup for timeout testing in test HEALTH-API-005",
+      "Consider adding more test cases for edge cases and error handling"
+    ],
+    "coverage": {
+      "endpoints": 2,
+      "edge_cases": 2
+    }
+  }
+}

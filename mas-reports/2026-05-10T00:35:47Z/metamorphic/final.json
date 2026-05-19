@@ -1,0 +1,15 @@
+{
+  "filename": "e2e/api/metamorphic.spec.ts",
+  "score": 20,
+  "threshold": 85,
+  "status": "FAIL",
+  "breakdown": {
+    "stability": 5,
+    "assertions": 5,
+    "coverage": 5,
+    "edge_cases": 5
+  },
+  "fixes_applied": 1,
+  "test_result": null,
+  "report_dir": "mas-reports/2026-05-10T00:35:47Z/metamorphic"
+}

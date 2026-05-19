@@ -1,0 +1,37 @@
+{
+  "filename": "e2e/api/health.spec.ts",
+  "score": 80,
+  "threshold": 80,
+  "status": "PASS",
+  "result": {
+    "filename": "health.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": true,
+      "timeout": true,
+      "safe_json": true,
+      "cleanup": true
+    },
+    "issues": [
+      {
+        "severity": "low",
+        "description": "Duplicate code in test cases",
+        "line": 50
+      },
+      {
+        "severity": "medium",
+        "description": "No test case for edge case where health endpoint returns non-200 status",
+        "line": 0
+      }
+    ],
+    "recommendations": [
+      "Remove duplicate code in test cases",
+      "Add test case for edge case where health endpoint returns non-200 status",
+      "Consider adding more test cases for different scenarios"
+    ],
+    "coverage": {
+      "endpoints": 1,
+      "edge_cases": 0
+    }
+  }
+}

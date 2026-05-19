@@ -1,0 +1,37 @@
+{
+  "filename": "e2e/api/users.spec.ts",
+  "score": 80,
+  "threshold": 80,
+  "status": "PASS",
+  "result": {
+    "filename": "users.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": false,
+      "timeout": true,
+      "safe_json": false,
+      "cleanup": true
+    },
+    "issues": [
+      {
+        "severity": "medium",
+        "description": "No retry mechanism for failed requests",
+        "line": 0
+      },
+      {
+        "severity": "low",
+        "description": "No safe JSON parsing for responses",
+        "line": 0
+      }
+    ],
+    "recommendations": [
+      "Implement retry mechanism for failed requests",
+      "Use safe JSON parsing for responses",
+      "Add more test cases for edge cases"
+    ],
+    "coverage": {
+      "endpoints": 7,
+      "edge_cases": 2
+    }
+  }
+}

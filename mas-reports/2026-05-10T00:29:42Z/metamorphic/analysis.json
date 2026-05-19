@@ -1,0 +1,49 @@
+{
+  "score": 80,
+  "stability": {
+    "retry": true,
+    "timeout": true,
+    "safe_json": false,
+    "cleanup": true
+  },
+  "issues": [
+    {
+      "severity": "medium",
+      "description": "JSON parsing is not safe, it may throw an error if the response is not a valid JSON",
+      "line": 73
+    },
+    {
+      "severity": "low",
+      "description": "Some tests do not handle errors properly, they just log the error and continue",
+      "line": 104
+    }
+  ],
+  "recommendations": [
+    "Use a safe JSON parsing method, such as using a try-catch block and checking the response status code",
+    "Handle errors properly in all tests, do not just log the error and continue"
+  ],
+  "coverage": {
+    "endpoints": 5,
+    "edge_cases": 3
+  },
+  "timestamp": "2026-05-10T00:29:43Z",
+  "issues_classified": {
+    "critical": [],
+    "medium": [
+      {
+        "severity": "medium",
+        "description": "JSON parsing is not safe, it may throw an error if the response is not a valid JSON",
+        "line": 73
+      }
+    ],
+    "low": [
+      {
+        "severity": "low",
+        "description": "Some tests do not handle errors properly, they just log the error and continue",
+        "line": 104
+      }
+    ]
+  },
+  "fixes_applied": 1,
+  "score_after_fix": 80
+}

@@ -1,0 +1,36 @@
+{
+  "filename": "e2e/api/metamorphic.spec.ts",
+  "score": 80,
+  "threshold": 85,
+  "status": "FAIL",
+  "result": {
+    "filename": "metamorphic.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": true,
+      "timeout": true,
+      "safe_json": false,
+      "cleanup": false
+    },
+    "issues": [
+      {
+        "severity": "medium",
+        "description": "No error handling for JSON parsing",
+        "line": 45
+      },
+      {
+        "severity": "low",
+        "description": "No cleanup after tests",
+        "line": 10
+      }
+    ],
+    "recommendations": [
+      "Add try-catch blocks for JSON parsing",
+      "Implement cleanup after tests"
+    ],
+    "coverage": {
+      "endpoints": 5,
+      "edge_cases": 3
+    }
+  }
+}

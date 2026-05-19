@@ -1,0 +1,49 @@
+{
+  "score": 80,
+  "stability": {
+    "retry": true,
+    "timeout": true,
+    "safe_json": false,
+    "cleanup": true
+  },
+  "issues": [
+    {
+      "severity": "medium",
+      "description": "No safe JSON parsing handling",
+      "line": 55
+    },
+    {
+      "severity": "low",
+      "description": "Potential unhandled promise rejection in MET-004",
+      "line": 173
+    }
+  ],
+  "recommendations": [
+    "Implement safe JSON parsing handling",
+    "Add more comprehensive error handling for unhandled promise rejections"
+  ],
+  "coverage": {
+    "endpoints": 5,
+    "edge_cases": 3
+  },
+  "timestamp": "2026-05-10T00:11:50Z",
+  "issues_classified": {
+    "critical": [],
+    "medium": [
+      {
+        "severity": "medium",
+        "description": "No safe JSON parsing handling",
+        "line": 55
+      }
+    ],
+    "low": [
+      {
+        "severity": "low",
+        "description": "Potential unhandled promise rejection in MET-004",
+        "line": 173
+      }
+    ]
+  },
+  "fixes_applied": 1,
+  "score_after_fix": 80
+}

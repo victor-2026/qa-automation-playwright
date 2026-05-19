@@ -1,0 +1,9 @@
+{
+  "filename": "e2e/api/metamorphic.spec.ts",
+  "iterations": 3,
+  "score": 0,
+  "threshold": 85,
+  "status": "FAIL",
+  "test_verification": null,
+  "report_dir": "mas-reports/2026-05-10T00:11:10Z/metamorphic"
+}

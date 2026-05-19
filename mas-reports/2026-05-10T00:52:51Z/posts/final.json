@@ -1,0 +1,36 @@
+{
+  "filename": "e2e/api/posts.spec.ts",
+  "score": 80,
+  "threshold": 80,
+  "status": "PASS",
+  "result": {
+    "filename": "posts.spec.ts",
+    "score": 80,
+    "stability": {
+      "retry": false,
+      "timeout": true,
+      "safe_json": false,
+      "cleanup": true
+    },
+    "issues": [
+      {
+        "severity": "medium",
+        "description": "No retry mechanism for failed requests",
+        "line": 0
+      },
+      {
+        "severity": "low",
+        "description": "No safe JSON parsing, may throw errors for invalid JSON",
+        "line": 0
+      }
+    ],
+    "recommendations": [
+      "Implement retry mechanism for failed requests",
+      "Use safe JSON parsing to handle invalid JSON responses"
+    ],
+    "coverage": {
+      "endpoints": 2,
+      "edge_cases": 5
+    }
+  }
+}

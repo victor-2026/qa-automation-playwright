@@ -1,0 +1,58 @@
+{
+  "filename": "metamorphic.spec.ts",
+  "score": 80,
+  "stability": {
+    "retry": true,
+    "timeout": true,
+    "safe_json": false,
+    "cleanup": false
+  },
+  "issues": [
+    {
+      "severity": "medium",
+      "description": "No cleanup after tests",
+      "line": 0
+    },
+    {
+      "severity": "low",
+      "description": "No safe JSON parsing",
+      "line": 0
+    }
+  ],
+  "recommendations": [
+    "Add cleanup after tests",
+    "Implement safe JSON parsing",
+    "Consider adding more retry logic for flaky tests"
+  ],
+  "coverage": {
+    "endpoints": 7,
+    "edge_cases": 6
+  },
+  "iteration": 1,
+  "timestamp": "2026-05-10T00:11:11Z",
+  "status": "IN_PROGRESS",
+  "issues_classified": {
+    "critical": [],
+    "medium": [
+      {
+        "severity": "medium",
+        "description": "No cleanup after tests",
+        "line": 0
+      }
+    ],
+    "low": [
+      {
+        "severity": "low",
+        "description": "No safe JSON parsing",
+        "line": 0
+      }
+    ]
+  },
+  "fixed_issues": [
+    {
+      "severity": "medium",
+      "description": "No cleanup after tests",
+      "line": 0
+    }
+  ]
+}
