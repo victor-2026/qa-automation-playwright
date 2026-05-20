@@ -18,6 +18,9 @@ async function ensureAuthHeader(request: any) {
 
 test.describe('API Smoke Tests - Render', () => {
   test.setTimeout(30000);
+  test.beforeEach(() => {
+    cachedAccessToken = undefined;
+  });
 
   test('1. Health check', async ({ request }) => {
     const res = await request.get(`${API_BASE}/health`);

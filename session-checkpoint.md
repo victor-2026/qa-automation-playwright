@@ -1,53 +1,47 @@
-# Session Checkpoint - 2026-05-14
+# Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-05-14
-**Status:** COMPLETE
+**Date:** 2026-05-20
+**Status:** IN PROGRESS
 
 ## Work Completed
 
-### Self-Review Loop
-- Added to AGENTS.md: "After generating code/tests, ask 'Am I 100% confident?'"
-- Created wiki article: wiki/self-review-loop.md
+### Docs created
+- `docs/PYTHON_PLANS_AND_FACTS.md` — Python testing layer overview
+- `docs/PLAYWRIGHT_PLANS_AND_FACTS.md` — Playwright architecture, issues, roadmap
 
-### Agent Teams Architecture
-- Created: wiki/agent-teams-architecture.md
-- Documented: Sequential, Parallel, Hierarchical, Adversarial patterns
-- Model selection options (fast + slow combination)
+### GitHub Pages fixed
+- Root cause: sparse checkout in `pages.yml` → 404 on all links
+- Fixed: removed sparse checkout, switched to Jekyll (`_config.yml`), bare links, `.md` renders as HTML
+- Merged to `main`, deployed successfully
 
-### Job Search Vault
-- Paysend status updated: Rejected
-- Added lessons learned to wiki/paysend-rejected.md
+### CI
+- Added `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `pages.yml`
 
-### Wiki Articles (AI QA)
-- agent-teams-architecture.md
-- self-review-loop.md
-- gpt-image-research-mode.md
-- lee-robinson-job-tips.md
-- All pushed to GitHub
+### Cline agent work
+- Improved `health.spec.ts` (32 tests, 20 pass, 12 skip)
+- Added `trace: 'on-first-retry'` to `playwright.config.ts`
+- Created `e2e/ui/` folder
 
-## GitHub Updates
+### .clinerules created
+12 sections: stack, POM, locators, self-correction, security, session checklist, self-review, runbook, selectors, business logic, branches, references
 
-| Repo | Commit | Status |
-|------|--------|--------|
-| qa-automation-sandbox | feat: Add self-review rule to AGENTS.md | ✅ Pushed |
-| ai-qa-wiki | feat: Add AI agent patterns articles | ✅ Pushed |
+## Paused — Next Session
 
-## Obsidian Templates
-- Created ~/Obsidian-Templates/ with setup script
-- Ready for new vaults
+### What's done
+- [x] Duplicate API test detection (`buzzhive` = 100% dupes of `e2e/api/`)
+- [x] `trace: 'on-first-retry'` in config
+- [x] `e2e/ui/` folder created
 
-## Next Steps
-
-1. Continue FinTech portfolio (Alvor Bank fork)
-2. Apply to more jobs
-3. Follow up earlier on applications
-
-## Links
-
-- PR #8: https://github.com/victor-2026/qa-automation-playwright/pull/8
-- ai-qa-wiki: https://github.com/victor-2026/ai-qa-wiki
-- Job Search Vault: /Users/victor/Private/Positions-CV-CL/
-
-## Time Spent
-
-~45 minutes
+### What remains
+- [ ] Split UI tests from `buzzhive.spec.ts` into `e2e/ui/` (login, registration, navigation, performance, security, posts, messages, notifications, moderator, admin)
+- [ ] Add header comment to UI files (local-only)
+- [ ] Update imports to `import { test, expect } from '../fixtures'`
+- [ ] Add shared `beforeEach`/`afterEach` hooks
+- [ ] Run lint + fix imports
+- [ ] Execute API + UI suites
+- [ ] Delete `buzzhive.spec.ts`
+- [ ] Update documentation
+- [ ] Remove `api-expanded.spec.ts` (also mostly duplicated by `e2e/api/`)
+- [ ] Fix refresh token race condition
+- [ ] Switch spec files to use `fixtures.ts`
+- [ ] Add Python CI
