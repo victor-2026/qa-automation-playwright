@@ -3,7 +3,7 @@
  * Phase 3: Module Split
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { API_BASE, TEST_ACCOUNTS } from '../setup/credentials';
 import { getToken, getAliceToken, getAdminToken, getBobToken } from '../fixtures/tokens';
 import { cleanupTestData } from '../teardown/cleanup';

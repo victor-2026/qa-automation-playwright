@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { TEST_ACCOUNTS } from '../setup/credentials';
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';

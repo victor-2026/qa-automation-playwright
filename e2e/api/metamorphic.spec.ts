@@ -3,7 +3,7 @@
  * Tests relationships between inputs/outputs
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { API_BASE, TEST_ACCOUNTS } from '../setup/credentials';
 import { getAliceToken, getBobToken } from '../fixtures/tokens';
 import { loginWithRetry } from '../utils/auth_retry';
