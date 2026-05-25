@@ -4,7 +4,7 @@
  */
 
 import type { APIRequestContext } from '@playwright/test';
-import { API_BASE, TEST_USERNAME, TEST_PASSWORD, TEST_ACCOUNTS } from '../setup/credentials';
+import { API_BASE, TEST_PASSWORD, TEST_ACCOUNTS } from '../setup/credentials';
 
 /**
  * Get token for given email/password
@@ -35,7 +35,7 @@ export async function getToken(
  * Get Alice (user) token
  */
 export async function getAliceToken(request: APIRequestContext): Promise<string> {
-  return getToken(request, TEST_USERNAME, TEST_PASSWORD);
+  return getToken(request, TEST_ACCOUNTS.user.email, TEST_PASSWORD);
 }
 
 /**
