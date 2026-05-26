@@ -1,0 +1,49 @@
+name: Uptime Monitor
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Render health endpoint
+        id: health
+        run: |
+          BACKEND_URL="${{ vars.BACKEND_URL || 'https://buzzhive-test.onrender.com' }}"
+          echo "Checking $BACKEND_URL/api/health ..."
+
+          RESPONSE=$(curl -s -o /tmp/health.json -w "%{http_code}" --max-time 10 "$BACKEND_URL/api/health")
+          echo "HTTP Status: $RESPONSE"
+          echo "status=$RESPONSE" >> $GITHUB_OUTPUT
+
+          if [ "$RESPONSE" != "200" ]; then
+            echo "❌ Health check failed with status $RESPONSE"
+            cat /tmp/health.json
+            exit 1
+          fi
+
+          BODY=$(cat /tmp/health.json)
+          echo "Response: $BODY"
+
+          if ! echo "$BODY" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+assert data.get('status') == 'healthy', f\"Expected 'healthy', got '${data.get('status')}'\"
+assert data.get('database') == 'connected', f\"Expected 'connected', got '${data.get('database')}'\"
+print('✅ Backend healthy, database connected')
+"; then
+            echo "❌ Health payload validation failed"
+            exit 1
+          fi
+
+      - name: Check history on failure
+        if: failure()
+        run: |
+          echo "❌ Uptime check failed at $(date -u)"
+          echo "Check Render dashboard: https://dashboard.render.com"
