@@ -21,7 +21,11 @@
 - All 14 `e2e/ui/*.spec.ts` → same import from `../fixtures`
 - Fixed `fixtures/tokens.ts` — removed dead `TEST_USERNAME` import
 
-### Cline Cleanup
+### Refresh Token Race Condition Fix
+- **Root cause:** `create_refresh_token()` used `datetime.now()` as JWT `exp` — same microsecond → same JWT → same SHA256 hash → `unique_violation` on `refresh_tokens.token_hash`
+- **Backend fix:** Added `jti: uuid.uuid4()` to refresh token payload — guarantees unique JWT per call
+- **Test fix:** Added `cleanupRefreshTokens()` to `e2e/teardown/cleanup.ts` — calls `/api/reset` for clean DB state
+- **Verified:** Two parallel logins produce different tokens ✅
 - Deleted `mcp-playwright-server.js` (Cline trash file)
 - Cline repeatedly failed on large refactoring (OpenRouter free empty responses, Groq TPM limit 12K/min)
 - Sessions: OpenRouter free → Groq (`llama-3.3-70b-versatile`) → back to OpenRouter
@@ -47,12 +51,10 @@
 - Tech debt: 37 items documented in `docs/PLAYWRIGHT_PLANS_AND_FACTS.md`
 
 ## Blockers
-- Cline (both OpenRouter free and Groq free) unsuitable for refactoring files >2000 lines
-- Refresh token race condition persists (4 workers)
+- ~~Refresh token race condition~~ ✅ Fixed (jti + pre-cleanup)
 
 ## Next Steps
-1. Fix refresh token race condition (pre-test cleanup for `refresh_tokens` table)
-2. Stabilize backend (500 errors on Render)
-3. Dockerize CI for full suite runs
-4. Page Objects for Profile/Admin/Search
-5. API Client layer (`apiClient.ts` with auto-token)
+1. Stabilize backend (500 errors on Render)
+2. Dockerize CI for full suite runs
+3. Page Objects for Profile/Admin/Search
+4. API Client layer (`apiClient.ts` with auto-token)

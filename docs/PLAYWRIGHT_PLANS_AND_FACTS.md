@@ -242,7 +242,7 @@ Retry-стратегия: мягкие ассерты (flexible status codes) в
 
 ## Известные проблемы
 
-1. **refresh token race condition** — 4 workers → duplicate key ошибка
+1. ~~**refresh token race condition** — 4 workers → duplicate key ошибка~~ ✅ Fixed (jti + pre-cleanup)
 2. **Playwright не читает `.env`** — переменные окружения нужно передавать явно
 3. **Backend нестабилен** — 500 ошибки на Render, требуется `expectStatus` с fallback-статусами
 4. **cleanup — только после тестов** — нет pre-cleanup
