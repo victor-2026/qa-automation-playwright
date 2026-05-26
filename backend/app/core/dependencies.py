@@ -23,7 +23,10 @@ async def get_current_user(
     user_id = payload.get("sub")
     if user_id is None:
         raise UnauthorizedException("Invalid token payload")
-    result = await db.execute(select(User).where(User.id == UUID(user_id)))
+    try:
+        result = await db.execute(select(User).where(User.id == UUID(user_id)))
+    except ValueError:
+        raise UnauthorizedException("Invalid user ID in token")
     user = result.scalar_one_or_none()
     if user is None:
         raise UnauthorizedException("User not found")
