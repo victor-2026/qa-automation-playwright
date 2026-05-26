@@ -55,15 +55,18 @@ export async function cleanupRefreshTokens(request: APIRequestContext): Promise<
  * Simple cleanup - skip on CI to avoid timeout issues
  */
 export async function cleanupTestData(request: APIRequestContext, accounts?: Accounts): Promise<void> {
-  // Skip cleanup on CI to avoid timeout
-  if (process.env.CI) {
-    console.log('[teardown] Skipped in CI');
-    return;
-  }
+   // Skip cleanup on CI to avoid timeout
+   if (process.env.CI) {
+     console.log('[teardown] Skipped in CI');
+     return;
+   }
 
-  const adminToken = accounts?.admin
-    ? await loginAndGetToken(request, accounts.admin.email, accounts.admin.password)
-    : null;
+   // First, reset the database to clean refresh_tokens and other tables
+   await cleanupRefreshTokens(request);
+
+   const adminToken = accounts?.admin
+     ? await loginAndGetToken(request, accounts.admin.email, accounts.admin.password)
+     : null;
 
   if (!adminToken) {
     console.log('[teardown] No admin token, skipping cleanup');
