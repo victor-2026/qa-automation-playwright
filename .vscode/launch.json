@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🎯 Run Tests: LOCALHOST",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/go-backend/login_test.go",
+      "env": {
+        "APP_TARGET_URL": "http://localhost:3000",
+        "DB_CONNECTION": "Host=127.0.0.1;Port=5432;Database=buzzhive;"
+      }
+    },
+    {
+      "name": "🌍 Run Tests: RENDER STAGING",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/go-backend/login_test.go",
+      "env": {
+        "APP_TARGET_URL": "https://buzzhive-test.onrender.com",
+        "DB_CONNECTION": "REMOTE_STAGING_CONNECTION_STRING"
+      }
+    }
+  ]
+}

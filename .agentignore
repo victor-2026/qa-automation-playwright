@@ -1,0 +1,11 @@
+# Block massive frontend dependency trees
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Block compiled .NET assemblies
+csharp-backend/obj/
+csharp-backend/bin/
+
+# Block global Mac cache components
+.DS_Store

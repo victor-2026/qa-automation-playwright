@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Start Infra (Docker)",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "options": {
+        // Change this line to target the exact workspace root directory
+        "cwd": "${workspaceFolder}" 
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
