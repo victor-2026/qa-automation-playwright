@@ -30,6 +30,28 @@ async function loginAndGetToken(request: APIRequestContext, email: string, passw
 }
 
 /**
+ * Clean up refresh_tokens by resetting the DB via /api/reset.
+ * Resets all tables and re-seeds test accounts.
+ * Safe to call once before test suite starts.
+ */
+export async function cleanupRefreshTokens(request: APIRequestContext): Promise<void> {
+  if (process.env.CI) {
+    console.log('[cleanup] Skipped in CI');
+    return;
+  }
+  try {
+    const res = await request.post(`${API_BASE}/reset`);
+    if (res.status() === 200) {
+      console.log('[cleanup] DB reset complete — refresh_tokens cleaned');
+    } else {
+      console.log(`[cleanup] DB reset returned ${res.status()}`);
+    }
+  } catch (e) {
+    console.log(`[cleanup] DB reset failed: ${e}`);
+  }
+}
+
+/**
  * Simple cleanup - skip on CI to avoid timeout issues
  */
 export async function cleanupTestData(request: APIRequestContext, accounts?: Accounts): Promise<void> {
