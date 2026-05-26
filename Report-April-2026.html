@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QA Automation Sandbox — Отчёт на Май 2026</title>
+    <title>QA Automation Sandbox — Отчёт на Апрель 2026</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; padding: 40px 20px; }
         .container { max-width: 900px; margin: 0 auto; }
         h1 { font-size: 2.5em; color: #58a6ff; margin-bottom: 10px; }
         .subtitle { color: #8b949e; margin-bottom: 40px; font-size: 1.1em; }
-        .whatsnew { background: #161b22; border: 1px solid #a371f7; border-radius: 8px; padding: 16px 20px; margin-bottom: 40px; }
-        .whatsnew h3 { color: #a371f7; margin-bottom: 8px; }
-        .whatsnew ul { color: #8b949e; padding-left: 20px; font-size: 0.9em; }
-        .whatsnew li { margin-bottom: 4px; }
         .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .metric { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; text-align: center; }
         .metric-value { font-size: 2em; font-weight: bold; color: #58a6ff; }
@@ -31,24 +27,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>🧪 QA Automation Sandbox</h1>
-        <p class="subtitle">Buzzhive Social Network — Zero-Budget AI-Assisted Testing — Май 2026</p>
-
-        <div class="whatsnew">
-            <h3>🚀 Что нового в Мае</h3>
-            <ul>
-                <li>Монолиты удалены: <code>buzzhive.spec.ts</code> (2349 строк) + <code>api-expanded.spec.ts</code> (1559 строк) → 14 модульных UI-файлов</li>
-                <li>Все spec-файлы используют <code>import { test, expect } from '../fixtures'</code></li>
-                <li>GitHub Pages: Jekyll build, все ссылки работают без расширения</li>
-                <li>CI/CD: quality gates + Render smoke</li>
-                <li><a href="Report-May-2026" style="color: #58a6ff;">Полный отчёт за Май →</a></li>
-            </ul>
+        <div style="background:#a371f7; color:white; padding:12px 20px; border-radius:8px; margin-bottom:30px; text-align:center; font-weight:600;">
+            📅 Архив: Отчёт на Апрель 2026 • <a href="." style="color:white;">Актуальная версия →</a>
         </div>
+        <h1>🧪 QA Automation Sandbox</h1>
+        <p class="subtitle">Buzzhive Social Network — Zero-Budget AI-Assisted Testing — Апрель 2026</p>
 
         <div class="metrics">
             <div class="metric">
-                <div class="metric-value">2000+</div>
-                <div class="metric-label">Tests (JS)</div>
+                <div class="metric-value">489+</div>
+                <div class="metric-label">Tests (JS/Python/Go)</div>
             </div>
             <div class="metric">
                 <div class="metric-value">94%</div>
@@ -62,16 +50,6 @@
                 <div class="metric-value">$0</div>
                 <div class="metric-label">Budget</div>
             </div>
-        </div>
-
-        <h2>📊 Monthly Reports</h2>
-        <div class="doc-card">
-            <a href="Report-May-2026">📈 Отчёт на Май 2026</a> <span class="badge new">New</span>
-            <div class="doc-desc">2000+ тестов, 14 UI + 9 API модулей, монолиты удалены</div>
-        </div>
-        <div class="doc-card">
-            <a href="Report-April-2026">📈 Отчёт на Апрель 2026</a>
-            <div class="doc-desc">Архив: 489 тестов, 94% API, первые результаты</div>
         </div>
 
         <h2>📊 Reports</h2>
@@ -95,7 +73,7 @@
         <h2>📋 Specifications</h2>
         <div class="doc-card">
             <a href="TEST_REPORT">📊 Test Breakdown</a>
-            <div class="doc-desc">E2E: 14 UI + 9 API modules | API: 280 | DB: 18 | PBT: 46 | Python: 22</div>
+            <div class="doc-desc">E2E: 122 | API: 280 | DB: 18 | PBT: 46 | Python: 22</div>
         </div>
         <div class="doc-card">
             <a href="AI_READY_DOR">🤖 AI-Ready DOR</a> <span class="badge new">For AI Agents</span>
@@ -153,6 +131,7 @@
         </div>
 
         <footer>
+            <p>📅 Архив: Апрель 2026 • <a href="Report-May-2026" style="color: #58a6ff;">Отчёт на Май 2026 →</a></p>
             <p>Built with Playwright, Jest, fast-check, Cucumber • AI: Groq Llama 3.3 70B, Ollama</p>
             <p>GitHub: <a href="https://github.com/victor-2026/qa-automation-playwright" style="color: #58a6ff;">victor-2026/qa-automation-playwright</a></p>
         </footer>

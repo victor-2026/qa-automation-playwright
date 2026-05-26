@@ -13,21 +13,36 @@
 ### Структура тестов (`e2e/`)
 
 ```
-e2e/
-├── api/                    # Модульные API тесты (8 файлов)
+                e2e/
+├── api/                    # Модульные API тесты (9 файлов)
 │   ├── auth.spec.ts        # 25 тестов (AUTH-API-001..025)
 │   ├── posts.spec.ts       # 30 тестов (POST-API-001..030)
 │   ├── users.spec.ts       # 25 тестов (USER-API-001..025)
 │   ├── admin.spec.ts       # ~18 тестов (ADMIN-API-001..026)
 │   ├── conversations.spec.ts # 16 тестов (MSG-API-001..016)
 │   ├── notifications.spec.ts # 16 тестов (NOTIF-API-001..016)
-│   ├── health.spec.ts      # 8 тестов (HEALTH-API-001..008)
+│   ├── health.spec.ts      # 32 теста (HEALTH-API-001..008, expanded)
 │   ├── metamorphic.spec.ts # 7 тестов (MET-001..007)
-│   ├── smoke-api.spec.ts   # 7 тестов (Render CI)
+│   ├── smoke-api.spec.ts   # 12 тестов (Render CI)
 │   ├── helpers.ts          # expectStatus, expectStatusAtLeast
 │   └── metamorphic-helpers.ts
+├── ui/                     # Модульные UI тесты (14 файлов, ~1000+ тестов)
+│   ├── auth.spec.ts        # 26 тестов (AUTH-001..026)
+│   ├── posts.spec.ts       # Посты
+│   ├── profile.spec.ts     # Профиль
+│   ├── comments.spec.ts    # Комментарии
+│   ├── navigation.spec.ts  # Навигация
+│   ├── messages.spec.ts    # Сообщения
+│   ├── notifications.spec.ts # Уведомления
+│   ├── follows.spec.ts     # Подписки
+│   ├── search.spec.ts      # Поиск
+│   ├── moderator.spec.ts   # Модератор
+│   ├── admin.spec.ts       # Админ
+│   ├── logout.spec.ts      # Выход
+│   ├── performance.spec.ts # Производительность
+│   └── ...
 ├── pages/                  # Page Objects (4 файла)
-│   ├── BasePage.ts         # Базовый класс: goto, waitForSelector, isVisible
+│   ├── BasePage.ts         # goto, waitForSelector, isVisible
 │   ├── LoginPage.ts        # login(email, password), getErrorText, isErrorVisible
 │   ├── FeedPage.ts         # createPost(content), getFirstPostContent
 │   ├── NavPage.ts          # isLoggedIn, logout, notificationsBadge
@@ -42,18 +57,15 @@ e2e/
 │   └── cleanup.ts          # cleanupTestData — admin-driven чистка
 ├── utils/
 │   └── auth_retry.ts       # loginWithRetry (retry + backoff)
-├── fixtures.ts             # Центральный test.extend (page objects + tokens)
-├── smoke.spec.ts           # 7 smoke тестов
+├── fixtures.ts             # Центральный test.extend (page objects + tokens) — ВСЕ файлы его используют
+├── smoke.spec.ts           # 28 smoke тестов
 ├── sanity.spec.ts          # 12 sanity тестов
-├── buzzhive.spec.ts        # ~60 E2E тестов (монолит)
-├── api-expanded.spec.ts    # ~100+ API тестов (расширенные)
 ├── mobile.spec.ts          # 3 mobile-теста (gestures)
 ├── visual.spec.ts          # 3 visual regression теста
 ├── load/                   # Load/стресс тесты (4 файла)
 └── mas-*.spec.ts           # 3 MAS-сгенерированных теста
-```
 
-**Всего: ~2000+ тестов.**
+**Всего: ~2000+ тестов. Монолиты удалены — `buzzhive.spec.ts` и `api-expanded.spec.ts` заменены на модульные файлы.**
 
 ### Архитектура
 
@@ -62,7 +74,7 @@ e2e/
 │
 ├─ config: playwright.config.ts
 │   ├─ projects: chromium, Mobile Safari, Mobile Safari Plus, Mobile Chrome
-│   ├─ retries: 2, workers: 4
+│   ├─ retries: 2, workers: 4, trace: 'on-first-retry'
 │   ├─ reporters: html + junit
 │   └─ use: baseURL, headless, screenshots, video
 │
@@ -75,8 +87,9 @@ e2e/
 ├─ teardown/cleanup.ts  ← cleanupTestData() (admin-driven)
 │
 ├─ api/*.spec.ts        ← request fixture, token in beforeAll, flexible status
-├─ buzzhive.spec.ts     ← page.request, монолитный E2E
-├─ api-expanded.spec.ts ← request fixture, расширенный API
+│                        ← import { test, expect } from '../fixtures' ✅
+├─ ui/*.spec.ts         ← page fixture, beforeEach/afterEach hooks
+│                        ← import { test, expect } from '../fixtures' ✅
 ├─ smoke.spec.ts        ← UI + API smoke
 ├─ visual.spec.ts       ← toHaveScreenshot()
 ├─ mobile.spec.ts       ← touch gestures
@@ -98,7 +111,7 @@ e2e/
 
 Также экспортирует `expect`, `accounts`, `loginAs()`.
 
-⚠️ Большинство spec-файлов **не используют** этот `test` — импортят напрямую из `@playwright/test`.
+✅ Все spec-файлы (`api/*.spec.ts` и `ui/*.spec.ts`) используют `import { test, expect } from '../fixtures'`.
 
 ### Page Object Model
 
@@ -129,25 +142,14 @@ NavPage extends BasePage
 
 ### API Testing in Playwright
 
-Два стиля:
-
-**1. request fixture (модульные тесты в `api/`):**
+Используется `request` fixture (модульные тесты в `api/`):
 ```ts
-import { test, expect } from '@playwright/test';
-import { getToken } from '../fixtures/tokens';
+import { test, expect } from '../fixtures';
 
 test('AUTH-API-001: Login with valid credentials', async ({ request }) => {
   const res = await request.post(`${API_BASE}/auth/login`, {
     data: { email: 'alice@buzzhive.com', password: 'alice123' }
   });
-  expect(res.status()).toBe(200);
-});
-```
-
-**2. page.request (монолитные тесты в `buzzhive.spec.ts`):**
-```ts
-test('login test', async ({ page }) => {
-  const res = await page.request.post(`${API_BASE}/auth/login`, { data });
   expect(res.status()).toBe(200);
 });
 ```
@@ -185,9 +187,9 @@ Retry-стратегия: мягкие ассерты (flexible status codes) в
 
 ### Trace Viewer
 
-- Не включён в `playwright.config.ts` (нет `trace: 'on-first-retry'`)
-- При падении: скриншот + видео (`screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`)
-- HTML-репорт: `npx playwright show-report` показывает скриншоты и видео
+- Включён в `playwright.config.ts` (`trace: 'on-first-retry'`)
+- При падении: скриншот + видео + трассировка (`screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`)
+- HTML-репорт: `npx playwright show-report` показывает скриншоты, видео и трассировку
 - Trace можно включить вручную: `PWDEBUG=1 npx playwright test --project=chromium`
 
 ## Что можно сделать
@@ -196,18 +198,14 @@ Retry-стратегия: мягкие ассерты (flexible status codes) в
 
 | Задача | Описание |
 |--------|----------|
-| **Trace в конфиге** | `trace: 'on-first-retry'` — трассировка при первом перезапуске |
-| **fix fixtures import** | Перевести `api/*.spec.ts` на `test` из `fixtures.ts` (сейчас импорт из `@playwright/test`) |
-| **fix tokens.ts creds** | `tokens.ts` строка 7 импортирует `TEST_USERNAME` (deprecated) — заменить на `TEST_ACCOUNTS.user.email` |
-| **Докеризация CI** | Тесты на Render (без Docker) — 12 API smoke-тестов; full suite — только локально |
 | **cleanup перед тестом** | Очистка `refresh_tokens` в БД перед запуском для избегания race condition |
+| **Докеризация CI** | Full suite в CI (сейчас только 12 smoke-тестов на Render) |
+| **Стабилизация backend** | 500 ошибки на Render, нужен fallback или health check перед тестами |
 
 ### Средний приоритет
 
 | Задача | Описание |
 |--------|----------|
-| **Разделить buzzhive.spec.ts** | 2349 строк — вынести в модульные файлы `api/` |
-| **Разделить api-expanded.spec.ts** | 2300+ строк — часть тестов дублирует модульные файлы |
 | **Page Objects расширение** | Добавить POM для ProfilePage, AdminPage, SearchPage |
 | **API Client слой** | Аналог Python `api_client` — `apiClient.ts` с авто-токеном |
 | **Sharding в CI** | `--shard=x/y` — разделение тестов на несколько CI-джоб |
@@ -245,8 +243,7 @@ Retry-стратегия: мягкие ассерты (flexible status codes) в
 ## Известные проблемы
 
 1. **refresh token race condition** — 4 workers → duplicate key ошибка
-2. **buzzhive.spec.ts + api-expanded.spec.ts** — 4600+ строк монолитов, сложно поддерживать
-3. **Playwright не читает `.env`** — переменные окружения нужно передавать явно
-4. **Token fixtures не используются** — `fixtures.ts` работает вхолостую, spec-файлы импортят `@playwright/test` напрямую
-5. **Backend нестабилен** — 500 ошибки на Render, требуется `expectStatus` с fallback-статусами
-6. **cleanup — только после тестов** — нет pre-cleanup
+2. **Playwright не читает `.env`** — переменные окружения нужно передавать явно
+3. **Backend нестабилен** — 500 ошибки на Render, требуется `expectStatus` с fallback-статусами
+4. **cleanup — только после тестов** — нет pre-cleanup
+5. **Health.spec.ts: 12 skipped tests** — тесты падают на `page.request`, нужно переписать на `request`

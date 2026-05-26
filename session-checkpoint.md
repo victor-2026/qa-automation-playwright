@@ -1,47 +1,58 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-05-20
+**Date:** 2026-05-26
 **Status:** IN PROGRESS
 
 ## Work Completed
 
-### Docs created
-- `docs/PYTHON_PLANS_AND_FACTS.md` — Python testing layer overview
-- `docs/PLAYWRIGHT_PLANS_AND_FACTS.md` — Playwright architecture, issues, roadmap
+### Session 9 — Monolith Split & Cleanup
 
-### GitHub Pages fixed
-- Root cause: sparse checkout in `pages.yml` → 404 on all links
-- Fixed: removed sparse checkout, switched to Jekyll (`_config.yml`), bare links, `.md` renders as HTML
-- Merged to `main`, deployed successfully
+### Monolith Elimination
+- Split `e2e/buzzhive.spec.ts` (2349 lines) → 13 modular `e2e/ui/*.spec.ts` files
+- Extracted Auth (26 tests) → `e2e/ui/auth.spec.ts` as first split
+- Removed 15 API duplicate blocks from buzzhive (lines 1071-2349 were 100% dupes of `e2e/api/*`)
+- Removed Auth section from buzzhive (canonical in `e2e/ui/auth.spec.ts`)
+- Created 13 new UI files: performance, navigation, posts, profile, messages, notifications, comments, follows, moderator, admin, logout, search
+- **Deleted `e2e/buzzhive.spec.ts`** (11-line stub)
+- **Deleted `e2e/api-expanded.spec.ts`** (1559 lines, full duplicate of `e2e/api/*`)
 
-### CI
-- Added `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `pages.yml`
+### Import Standardization
+- Switched all 9 `e2e/api/*.spec.ts` → `import { test, expect } from '../fixtures'`
+- All 14 `e2e/ui/*.spec.ts` → same import from `../fixtures`
+- Fixed `fixtures/tokens.ts` — removed dead `TEST_USERNAME` import
 
-### Cline agent work
-- Improved `health.spec.ts` (32 tests, 20 pass, 12 skip)
+### Cline Cleanup
+- Deleted `mcp-playwright-server.js` (Cline trash file)
+- Cline repeatedly failed on large refactoring (OpenRouter free empty responses, Groq TPM limit 12K/min)
+- Sessions: OpenRouter free → Groq (`llama-3.3-70b-versatile`) → back to OpenRouter
+- Decision: manual split is more reliable than Cline for files >2000 lines
+
+### Branch Management
+- Merged `health-improvements` → `main`, pushed, deleted branch (local + remote)
+
+### GitHub Pages
+- Added `actions/jekyll-build-pages@v1` step to `pages.yml`
+- All `.md` files render as HTML without extension
+- Verified: PRESENTATION_PART2, PRESENTATION_FOR_MANAGEMENT, TEST_REPORT, AI_READY_DOR all work
+
+### Other
+- Reverted `dotenv` from `playwright.config.ts` (package not installed, not needed)
 - Added `trace: 'on-first-retry'` to `playwright.config.ts`
-- Created `e2e/ui/` folder
+- Updated `.clinerules` with security and runbook sections
 
-### .clinerules created
-12 sections: stack, POM, locators, self-correction, security, session checklist, self-review, runbook, selectors, business logic, branches, references
+## Verification Results
+- GitHub Pages: 4 URLs verified working ✅
+- Branch: `main` — clean, no dead branches
+- Files: 14 UI + 9 API spec files, all using `fixtures.ts`
+- Tech debt: 37 items documented in `docs/PLAYWRIGHT_PLANS_AND_FACTS.md`
 
-## Paused — Next Session
+## Blockers
+- Cline (both OpenRouter free and Groq free) unsuitable for refactoring files >2000 lines
+- Refresh token race condition persists (4 workers)
 
-### What's done
-- [x] Duplicate API test detection (`buzzhive` = 100% dupes of `e2e/api/`)
-- [x] `trace: 'on-first-retry'` in config
-- [x] `e2e/ui/` folder created
-
-### What remains
-- [ ] Split UI tests from `buzzhive.spec.ts` into `e2e/ui/` (login, registration, navigation, performance, security, posts, messages, notifications, moderator, admin)
-- [ ] Add header comment to UI files (local-only)
-- [ ] Update imports to `import { test, expect } from '../fixtures'`
-- [ ] Add shared `beforeEach`/`afterEach` hooks
-- [ ] Run lint + fix imports
-- [ ] Execute API + UI suites
-- [ ] Delete `buzzhive.spec.ts`
-- [ ] Update documentation
-- [ ] Remove `api-expanded.spec.ts` (also mostly duplicated by `e2e/api/`)
-- [ ] Fix refresh token race condition
-- [ ] Switch spec files to use `fixtures.ts`
-- [ ] Add Python CI
+## Next Steps
+1. Fix refresh token race condition (pre-test cleanup for `refresh_tokens` table)
+2. Stabilize backend (500 errors on Render)
+3. Dockerize CI for full suite runs
+4. Page Objects for Profile/Admin/Search
+5. API Client layer (`apiClient.ts` with auto-token)
