@@ -1,9 +1,13 @@
+import logging
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import Base, engine, get_db
 from app.services.seed import seed_data
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["System"])
 
@@ -19,10 +23,14 @@ async def health_check(db: AsyncSession = Depends(get_db)) -> dict:
 
 @router.post("/reset")
 async def reset_database() -> dict:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-    async with AsyncSession(engine) as session:
-        await seed_data(session)
-        await session.commit()
-    return {"status": "reset", "message": "Database reset and re-seeded successfully"}
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+        async with AsyncSession(engine) as session:
+            await seed_data(session)
+            await session.commit()
+        return {"status": "reset", "message": "Database reset and re-seeded successfully"}
+    except Exception as e:
+        logger.exception("Database reset failed")
+        return {"status": "error", "message": str(e)}

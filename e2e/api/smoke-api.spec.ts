@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures';
 import { TEST_ACCOUNTS } from '../setup/credentials';
+import { safeJson } from './helpers';
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
 
@@ -10,8 +11,8 @@ async function ensureAuthHeader(request: any) {
     const loginRes = await request.post(`${API_BASE}/auth/login`, {
       data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
     });
-    const loginBody = await loginRes.json();
-    cachedAccessToken = loginBody.access_token;
+    const loginBody = await safeJson(loginRes);
+    cachedAccessToken = (loginBody?.access_token as string) || '';
   }
   return `Bearer ${cachedAccessToken}`;
 }
@@ -25,8 +26,9 @@ test.describe('API Smoke Tests - Render', () => {
   test('1. Health check', async ({ request }) => {
     const res = await request.get(`${API_BASE}/health`);
     expect(res.status()).toBe(200);
-    const body = await res.json();
-    expect(body.status).toBe('healthy');
+    const body = await safeJson(res);
+    expect(body).not.toBeNull();
+    expect(body?.status).toBe('healthy');
   });
 
   test('2. Login with user', async ({ request }) => {
@@ -34,8 +36,9 @@ test.describe('API Smoke Tests - Render', () => {
       data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
     });
     expect(res.status()).toBe(200);
-    const body = await res.json();
-    expect(body.access_token).toBeDefined();
+    const body = await safeJson(res);
+    expect(body).not.toBeNull();
+    expect(body?.access_token).toBeDefined();
   });
 
   test('3. Login with invalid credentials', async ({ request }) => {
@@ -51,19 +54,17 @@ test.describe('API Smoke Tests - Render', () => {
       headers: { Authorization: authHeader },
     });
     expect(postsRes.status()).toBe(200);
-    const postsBody = await postsRes.json();
-    // Accept both array or object with posts array
-    const posts = Array.isArray(postsBody) ? postsBody : (postsBody.posts || postsBody.data || []);
+    const postsBody = await safeJson(postsRes);
+    expect(postsBody).not.toBeNull();
+    const posts = Array.isArray(postsBody) ? postsBody : (postsBody?.posts || postsBody?.data || []);
     expect(Array.isArray(posts)).toBeTruthy();
   });
 
-  // New test: CORS health preflight for Render proxy
   test('7. CORS health check (Render proxy)', async ({ request }) => {
     const res = await request.get(`${API_BASE}/health`, {
       headers: { Origin: 'https://qa-automation-playwright-1.onrender.com' }
     })
     const acHeader = res.headers()['access-control-allow-origin'] || res.headers()['Access-Control-Allow-Origin'];
-    // CORS headers may not be present on Render (proxy issue) - make test soft
     if (acHeader) {
       expect(acHeader).toBeDefined();
     }
@@ -75,13 +76,13 @@ test.describe('API Smoke Tests - Render', () => {
       headers: { Authorization: authHeader },
     });
     expect(profileRes.status()).toBe(200);
-    const body = await profileRes.json();
-    expect(body.email).toBe(TEST_ACCOUNTS.user.email);
+    const body = await safeJson(profileRes);
+    expect(body).not.toBeNull();
+    expect(body?.email).toBe(TEST_ACCOUNTS.user.email);
   });
 
   test('6. Unauthorized access (no token)', async ({ request }) => {
     const postsRes = await request.get(`${API_BASE}/posts`);
-    // API returns 403 (Forbidden) for missing token
     expect([401, 403]).toContain(postsRes.status());
   });
 });
