@@ -1,60 +1,57 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-05-26
+**Date:** 2026-05-27
 **Status:** COMPLETE
 
 ## Work Completed
 
-### Session 9 — Monolith Split & Cleanup
+### Session 10 — Article Kit + Render Stabilization + Honest Metrics
 
-### Monolith Elimination
-- Split `e2e/buzzhive.spec.ts` (2349 lines) → 13 modular `e2e/ui/*.spec.ts` files
-- Extracted Auth (26 tests) → `e2e/ui/auth.spec.ts` as first split
-- Removed 15 API duplicate blocks from buzzhive (lines 1071-2349 were 100% dupes of `e2e/api/*`)
-- Removed Auth section from buzzhive (canonical in `e2e/ui/auth.spec.ts`)
-- Created 13 new UI files: performance, navigation, posts, profile, messages, notifications, comments, follows, moderator, admin, logout, search
-- **Deleted `e2e/buzzhive.spec.ts`** (11-line stub)
-- **Deleted `e2e/api-expanded.spec.ts`** (1559 lines, full duplicate of `e2e/api/*`)
+### Phase 2 Article Kit (`phase2-article-kit.md`)
+- Created comprehensive 341-line working document for Phase 2 LinkedIn article
+- **Real numbers established:** ~3,908 lines deleted (not 4,600), ~1,204 tests (not 2,000+)
+- 6 headline variants with honest metrics (selected: *"I Spent 2 Months Refactoring 4,000 Lines of AI-Generated Tests. Here's What Survived."*)
+- **Narrative correction:** Technical debt = my fault. I started without a strong prompt, AI amplified the lack of direction.
+- **Language correction:** Everywhere "monoliths deleted" → "monoliths split into 23 modules"
+- Full Render timeline added (25 Apr → 27 May, 10+ commits)
+- AI tools matrix: 17 models/instruments over 2 months, 5 still free
+- Fact-check table with 9 assertions + verdicts
 
-### Import Standardization
-- Switched all 9 `e2e/api/*.spec.ts` → `import { test, expect } from '../fixtures'`
-- All 14 `e2e/ui/*.spec.ts` → same import from `../fixtures`
-- Fixed `fixtures/tokens.ts` — removed dead `TEST_USERNAME` import
+### Backend Stabilization on Render (3 commits today)
+- `5fb86f2` (00:44) — Global exception handlers (all errors → JSON, not HTML), connection pool (pool_size=10, pool_pre_ping), URL transform (sslmode=require), reset safety, smoke test JSON safety
+- `6354a32` (01:06) — UUID ValueError → UnauthorizedException, removed unused Pillow/slowapi
+- `ecdd852` (01:25) — Uptime monitor: checks Render health every 15 min, failure → GitHub email alert
 
-### Refresh Token Race Condition Fix
-- **Root cause:** `create_refresh_token()` used `datetime.now()` as JWT `exp` — same microsecond → same JWT → same SHA256 hash → `unique_violation` on `refresh_tokens.token_hash`
-- **Backend fix:** Added `jti: uuid.uuid4()` to refresh token payload — guarantees unique JWT per call
-- **Test fix:** Added `cleanupRefreshTokens()` to `e2e/teardown/cleanup.ts` — calls `/api/reset` for clean DB state
-- **Verified:** Two parallel logins produce different tokens ✅
-- Deleted `mcp-playwright-server.js` (Cline trash file)
-- Cline repeatedly failed on large refactoring (OpenRouter free empty responses, Groq TPM limit 12K/min)
-- Sessions: OpenRouter free → Groq (`llama-3.3-70b-versatile`) → back to OpenRouter
-- Decision: manual split is more reliable than Cline for files >2000 lines
+### Render Smoke Tests
+- Expanded from 6 → 12 endpoints
+- All tests use `safeJson()` — no crash on HTML responses
+- 12 tests covering: health, login (valid/invalid/register), users, posts (create/get), refresh token, profile, unauthorized, admin stats, CORS
 
-### Branch Management
-- Merged `health-improvements` → `main`, pushed, deleted branch (local + remote)
-
-### GitHub Pages
-- Added `actions/jekyll-build-pages@v1` step to `pages.yml`
-- All `.md` files render as HTML without extension
-- Verified: PRESENTATION_PART2, PRESENTATION_FOR_MANAGEMENT, TEST_REPORT, AI_READY_DOR all work
-
-### Other
-- Reverted `dotenv` from `playwright.config.ts` (package not installed, not needed)
-- Added `trace: 'on-first-retry'` to `playwright.config.ts`
-- Updated `.clinerules` with security and runbook sections
+### Memory & Artifacts
+- Updated `~/.opencode-memory.md` with session date and Render stabilization
+- `.phase2-article-kit.md` → `phase2-article-kit.md` (visible in Obsidian)
+- Renamed global memory start marker issue
 
 ## Verification Results
-- GitHub Pages: 4 URLs verified working ✅
-- Branch: `main` — clean, no dead branches
-- Files: 14 UI + 9 API spec files, all using `fixtures.ts`
-- Tech debt: 37 items documented in `docs/PLAYWRIGHT_PLANS_AND_FACTS.md`
+- Render health: `{"status":"healthy","database":"connected"}` ✅
+- Smoke tests: 12 endpoints, all with safe JSON parsing
+- Uptime monitor: workflow created, runs every 15 min
+- Article kit: 341 lines, all numbers verified against git log and file system
+
+## Key Corrections Documented
+| Old Claim | Real Number | Fix |
+|-----------|------------|-----|
+| "4,600 lines deleted" | ~3,908 (2349+1559) | Пиши "~4,000" |
+| "2,000+ tests" | ~1,204 (1057 PW + 147 non-PW) | Пиши "1,200+" |
+| "AI generated debt" | I started without a prompt | Моя вина |
+| "Monoliths deleted" | Split into 23 modules | Нет удаления |
 
 ## Blockers
-- ~~Refresh token race condition~~ ✅ Fixed (jti + pre-cleanup)
+- None
 
 ## Next Steps
-1. Stabilize backend (500 errors on Render)
-2. Dockerize CI for full suite runs
-3. Page Objects for Profile/Admin/Search
-4. API Client layer (`apiClient.ts` with auto-token)
+1. Choose final headline for Phase 2 article
+2. Write Round 2 full article text
+3. Take screenshots (tree e2e/, Copilot $50 bill if exists)
+4. Create NotebookLM infographics (spaghetti→modules, Phase 1 vs Phase 2)
+5. Optionally add Technical Achievement Generator to career-mentor skill
