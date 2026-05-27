@@ -237,7 +237,7 @@ jobs:
           TEST_MOD_PASSWORD: mod123
           TEST_BOB_EMAIL: bob@buzzhive.com
           TEST_BOB_PASSWORD: bob123
-        run: npx playwright test e2e/api/smoke-api.spec.ts --retries=2
+        run: npx playwright test e2e/api/smoke-api.spec.ts --project=chromium --retries=2
 
       - name: No backend available
         if: steps.check-backend.outputs.BACKEND_AVAILABLE != 'true'
