@@ -7,5 +7,9 @@ frontend/build/
 csharp-backend/obj/
 csharp-backend/bin/
 
+# Block Obsidian workspace (personal state, not project config)
+.obsidian/workspace.json
+.obsidian/workspace/
+
 # Block global Mac cache components
 .DS_Store
