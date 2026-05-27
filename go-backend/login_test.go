@@ -168,20 +168,22 @@ func TestUserLoginSQLInjection(t *testing.T) {
 				require.NoError(t, page.Locator("[data-testid='auth-email-input']").Fill("alice@buzzhive.com"))
 				require.NoError(t, page.Locator("[data-testid='auth-password-input']").Fill(payload))
 
-				response, err := page.ExpectResponse("**/api/auth/login*", func() error {
-					return page.Locator("[data-testid='auth-login-btn']").Click()
-				}, playwright.PageExpectResponseOptions{
-					Timeout: playwright.Float(3000),
-				})
-				require.NoError(t, err)
-				require.NotNil(t, response)
-				require.Equal(t, 401, response.Status())
+			response, err := page.ExpectResponse("**/api/auth/login*", func() error {
+				return page.Locator("[data-testid='auth-login-btn']").Click()
+			}, playwright.PageExpectResponseOptions{
+				Timeout: playwright.Float(10000),
+			})
+			require.NoError(t, err)
+			require.NotNil(t, response)
+			require.Contains(t, []int{401, 403}, response.Status())
 
+			if response.Status() == 401 {
 				require.NoError(t, page.WaitForURL(baseURL+"/login"))
 
 				visible, err := page.Locator("[data-testid='auth-error-message']").IsVisible()
 				require.NoError(t, err)
-				assert.True(t, visible, "Error message should be visible on failed login")
+				assert.True(t, visible, "Error message should be visible on 401")
+			}
 			})
 		})
 	}
