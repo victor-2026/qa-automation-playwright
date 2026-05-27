@@ -1,13 +1,32 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/playwright-community/playwright-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func warmUp(url string) {
+	client := &http.Client{Timeout: 30 * time.Second}
+	for i := 0; i < 3; i++ {
+		resp, err := client.Get(url)
+		if err == nil {
+			resp.Body.Close()
+			if resp.StatusCode < 500 {
+				fmt.Printf("  warm-up %s OK (status %d)\n", url, resp.StatusCode)
+				return
+			}
+		}
+		fmt.Printf("  warm-up %s attempt %d: %v\n", url, i+1, err)
+		time.Sleep(3 * time.Second)
+	}
+}
 
 // Helper function to manage page setup and teardown for Go Playwright tests
 func runTestWithPage(t *testing.T, testFunc func(playwright.Page, string)) {
@@ -15,6 +34,8 @@ func runTestWithPage(t *testing.T, testFunc func(playwright.Page, string)) {
 	if baseURL == "" {
 		baseURL = "http://localhost:3000"
 	}
+
+	warmUp(baseURL + "/login")
 
 	pw, err := playwright.Run()
 	if err != nil {

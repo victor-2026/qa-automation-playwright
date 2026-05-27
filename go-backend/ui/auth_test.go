@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -11,6 +12,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func warmUp(url string) {
+	client := &http.Client{Timeout: 30 * time.Second}
+	for i := 0; i < 3; i++ {
+		resp, err := client.Get(url)
+		if err == nil {
+			resp.Body.Close()
+			if resp.StatusCode < 500 {
+				fmt.Printf("  warm-up %s OK (status %d)\n", url, resp.StatusCode)
+				return
+			}
+		}
+		fmt.Printf("  warm-up %s attempt %d: %v\n", url, i+1, err)
+		time.Sleep(3 * time.Second)
+	}
+}
+
 func uiBaseURL() string {
 	if u := os.Getenv("APP_TARGET_URL"); u != "" {
 		return u
@@ -19,6 +36,9 @@ func uiBaseURL() string {
 }
 
 func runUITest(t *testing.T, fn func(playwright.Page, string)) {
+	baseURL := uiBaseURL()
+	warmUp(baseURL + "/login")
+
 	pw, err := playwright.Run()
 	require.NoError(t, err)
 	defer pw.Stop()
@@ -32,7 +52,6 @@ func runUITest(t *testing.T, fn func(playwright.Page, string)) {
 	page, err := browser.NewPage()
 	require.NoError(t, err)
 
-	baseURL := uiBaseURL()
 	_, err = page.Goto(baseURL+"/login", playwright.PageGotoOptions{
 		WaitUntil: playwright.WaitUntilStateNetworkidle,
 	})
