@@ -20,9 +20,16 @@ allure-results/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
-coverage/
+coverage/lcov.info
+coverage/lcov-report/
+coverage/clover.xml
+coverage/coverage-final.json
+coverage/pbt/
 htmlcov/
 .coverage
+coverage/go/coverage.out
+coverage/go/coverage.html
+!coverage/go/.gitkeep
 
 # Playwright
 node_modules/
