@@ -16,13 +16,19 @@ SAMPLE_FILES = {
 
 
 def ensure_sample_images() -> None:
-    upload_dir = Path(settings.UPLOAD_DIR)
-    upload_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        upload_dir = Path(settings.UPLOAD_DIR)
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        logger.info("Upload dir: %s", upload_dir)
 
-    for filepath_rel, (width, height, color) in SAMPLE_FILES.items():
-        filepath = upload_dir / filepath_rel
-        if not filepath.exists():
-            filepath.parent.mkdir(parents=True, exist_ok=True)
-            img = Image.new("RGB", (width, height), color)
-            img.save(filepath, "JPEG", quality=85)
-            logger.info("Created %s (%dx%d)", filepath_rel, width, height)
+        for filepath_rel, (width, height, color) in SAMPLE_FILES.items():
+            filepath = upload_dir / filepath_rel
+            if not filepath.exists():
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+                img = Image.new("RGB", (width, height), color)
+                img.save(filepath, "JPEG", quality=85)
+                logger.info("Created %s (%dx%d)", filepath_rel, width, height)
+            else:
+                logger.info("Already exists: %s", filepath)
+    except Exception:
+        logger.exception("Failed to create sample images")
