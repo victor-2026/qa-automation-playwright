@@ -3,6 +3,14 @@
 **Date:** 2026-05-27
 **Status:** COMPLETE
 
+## Session 10 Final Verification
+- Frontend `https://qa-automation-playwright-front.onrender.com` — 200 ✅
+- Backend `https://buzzhive-test.onrender.com` — health OK ✅
+- nginx proxy: `/api/` и `/uploads/` прокидываются ✅
+- Sample images: `/uploads/images/sample1.jpg` → 200 ✅
+- Smoke tests: 12/12 через фронтенд-прокси ✅
+- CI: `BACKEND_URL=...` прописан в Actions vars, `--project=chromium` для скорости
+
 ## Work Completed
 
 ### Session 10 — Backend Stabilization + Frontend Deploy + Sample Images (3 sessions)
