@@ -1,10 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 type LoginResponse struct {
@@ -13,9 +13,17 @@ type LoginResponse struct {
 	TokenType    string `json:"token_type"`
 }
 
+type loginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func Login(email, password string) (*http.Response, *LoginResponse, error) {
-	body := strings.NewReader(fmt.Sprintf(`{"email":"%s","password":"%s"}`, email, password))
-	resp, err := HTTPClient().Post(BaseURL()+"/auth/login", "application/json", body)
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(loginRequest{Email: email, Password: password}); err != nil {
+		return nil, nil, fmt.Errorf("encode login body: %w", err)
+	}
+	resp, err := HTTPClient().Post(BaseURL()+"/auth/login", "application/json", &buf)
 	if err != nil {
 		return nil, nil, fmt.Errorf("login request: %w", err)
 	}

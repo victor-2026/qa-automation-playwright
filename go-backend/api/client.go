@@ -7,7 +7,13 @@ import (
 	"time"
 )
 
-const DefaultBaseURL = "http://localhost:8000/api"
+const (
+	DefaultBaseURL = "http://localhost:8000/api"
+	HTTPTimeout    = 15 * time.Second
+	WarmUpTimeout  = 30 * time.Second
+	WarmUpRetries  = 3
+	WarmUpDelay    = 2 * time.Second
+)
 
 func BaseURL() string {
 	if u := os.Getenv("API_BASE_URL"); u != "" {
@@ -20,7 +26,7 @@ func BaseURL() string {
 }
 
 func HTTPClient() *http.Client {
-	return &http.Client{Timeout: 15 * time.Second}
+	return &http.Client{Timeout: HTTPTimeout}
 }
 
 func BearerHeader(token string) http.Header {
@@ -30,9 +36,9 @@ func BearerHeader(token string) http.Header {
 }
 
 func WarmUp(urls ...string) {
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: WarmUpTimeout}
 	for _, u := range urls {
-		for i := 0; i < 3; i++ {
+		for i := range WarmUpRetries {
 			resp, err := client.Get(u)
 			if err == nil {
 				resp.Body.Close()
@@ -41,7 +47,7 @@ func WarmUp(urls ...string) {
 				}
 			}
 			fmt.Printf("  warm-up %s attempt %d: %v\n", u, i+1, err)
-			time.Sleep(2 * time.Second)
+			time.Sleep(WarmUpDelay)
 		}
 	}
 }

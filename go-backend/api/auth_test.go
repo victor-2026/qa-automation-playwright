@@ -1,10 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"testing"
 	"time"
 
@@ -40,11 +40,11 @@ func TestAuthLoginNonexistentEmail(t *testing.T) {
 }
 
 func TestAuthLoginEmptyBody(t *testing.T) {
-	resp, err := HTTPClient().Post(BaseURL()+"/auth/login", "application/json", strings.NewReader(`{}`))
+	resp, err := HTTPClient().Post(BaseURL()+"/auth/login", "application/json", bytes.NewReader([]byte(`{}`)))
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	assert.Contains(t, []int{http.StatusBadRequest, http.StatusUnprocessableEntity}, resp.StatusCode)
+	requireHTTPStatus(t, resp, http.StatusBadRequest, http.StatusUnprocessableEntity)
 }
 
 func TestAuthMeValidToken(t *testing.T) {
@@ -77,13 +77,18 @@ func TestAuthMeNoToken(t *testing.T) {
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	assert.Contains(t, []int{http.StatusUnauthorized, http.StatusForbidden}, resp.StatusCode)
+	requireHTTPStatus(t, resp, http.StatusUnauthorized, http.StatusForbidden)
 }
 
 func TestAuthRegisterNewUser(t *testing.T) {
 	username := fmt.Sprintf("gotest_%d", time.Now().UnixNano())
-	body := strings.NewReader(fmt.Sprintf(`{"email":"%s@test.com","password":"test123","username":"%s","display_name":"Go Test"}`, username, username))
-	resp, err := HTTPClient().Post(BaseURL()+"/auth/register", "application/json", body)
+	regBody, _ := json.Marshal(map[string]string{
+		"email":        username + "@test.com",
+		"password":     "test123",
+		"username":     username,
+		"display_name": "Go Test",
+	})
+	resp, err := HTTPClient().Post(BaseURL()+"/auth/register", "application/json", bytes.NewReader(regBody))
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
@@ -96,8 +101,13 @@ func TestAuthRegisterNewUser(t *testing.T) {
 }
 
 func TestAuthRegisterDuplicate(t *testing.T) {
-	body := strings.NewReader(`{"email":"bob@buzzhive.com","password":"bob123","username":"bob","display_name":"Bob"}`)
-	resp, err := HTTPClient().Post(BaseURL()+"/auth/register", "application/json", body)
+	regBody, _ := json.Marshal(map[string]string{
+		"email":        "bob@buzzhive.com",
+		"password":     "bob123",
+		"username":     "bob",
+		"display_name": "Bob",
+	})
+	resp, err := HTTPClient().Post(BaseURL()+"/auth/register", "application/json", bytes.NewReader(regBody))
 	require.NoError(t, err)
 	defer resp.Body.Close()
 

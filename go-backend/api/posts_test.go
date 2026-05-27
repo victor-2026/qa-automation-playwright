@@ -1,22 +1,22 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func createAuthRequest(t *testing.T, method, url, token string, body *strings.Reader) *http.Request {
+func createAuthRequest(t *testing.T, method, url, token string, body []byte) *http.Request {
 	t.Helper()
 	var req *http.Request
 	var err error
 	if body != nil {
-		req, err = http.NewRequest(method, url, body)
+		req, err = http.NewRequest(method, url, bytes.NewReader(body))
 	} else {
 		req, err = http.NewRequest(method, url, nil)
 	}
@@ -33,7 +33,7 @@ func TestPostsListPublic(t *testing.T) {
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	assert.Contains(t, []int{http.StatusOK, http.StatusUnauthorized, http.StatusForbidden}, resp.StatusCode)
+	requireHTTPStatus(t, resp, http.StatusOK, http.StatusUnauthorized, http.StatusForbidden)
 
 	var result map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&result)
@@ -82,7 +82,7 @@ func TestPostsCreate(t *testing.T) {
 	require.NoError(t, err)
 	resp.Body.Close()
 
-	body := strings.NewReader(`{"title":"Go Test Post","content":"Created by Go test"}`)
+	body, _ := json.Marshal(map[string]string{"title": "Go Test Post", "content": "Created by Go test"})
 	req := createAuthRequest(t, "POST", BaseURL()+"/posts", loginResp.AccessToken, body)
 
 	createResp, err := HTTPClient().Do(req)
@@ -104,12 +104,12 @@ func TestPostsCreate(t *testing.T) {
 }
 
 func TestPostsCreateUnauthorized(t *testing.T) {
-	body := strings.NewReader(`{"title":"Hack","content":"No token"}`)
-	resp, err := HTTPClient().Post(BaseURL()+"/posts", "application/json", body)
+	body, _ := json.Marshal(map[string]string{"title": "Hack", "content": "No token"})
+	resp, err := HTTPClient().Post(BaseURL()+"/posts", "application/json", bytes.NewReader(body))
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	assert.Contains(t, []int{http.StatusUnauthorized, http.StatusForbidden}, resp.StatusCode)
+	requireHTTPStatus(t, resp, http.StatusUnauthorized, http.StatusForbidden)
 }
 
 func TestPostsGetByID(t *testing.T) {
