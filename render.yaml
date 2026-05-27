@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: buzzhive-backend
+    runtime: docker
+    repo: https://github.com/victor-2026/qa-automation-playwright
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: CORS_ORIGINS
+        value: "*"
+
+  - type: web
+    name: buzzhive-frontend
+    runtime: docker
+    repo: https://github.com/victor-2026/qa-automation-playwright
+    branch: main
+    dockerfilePath: ./frontend/Dockerfile
+    envVars:
+      - key: API_PROXY_URL
+        value: https://buzzhive-test.onrender.com
