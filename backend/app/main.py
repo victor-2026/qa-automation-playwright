@@ -16,6 +16,7 @@ from app.core.exceptions import AppException
 from app.database import Base, engine
 from app.models import *  # noqa: F401, F403 — ensure all models are registered
 from app.services.seed import seed_data
+from app.services.uploads import ensure_sample_images
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ async def lifespan(app: FastAPI):
         else:
             logger.info("Data already exists, skipping seed")
 
+    ensure_sample_images()
     yield
     logger.info("Shutting down QA Sandbox API...")
 
