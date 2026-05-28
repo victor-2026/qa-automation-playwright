@@ -88,7 +88,7 @@ e2e/
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                    npx playwright test                            │
-│              ~900 tests × 4 browser projects                     │
+│              1157 runs (292 unique × 4 projects)                 │
 ├─────────────┬──────────────┬──────────┬──────────────┬──────────┤
 │   api/      │    ui/       │  load/   │  mutation/   │ pages/   │
 │   9 specs   │   14 specs   │  4 specs │  3 specs     │ POM      │
@@ -119,7 +119,7 @@ Playwright configured for 4 browser projects in `playwright.config.ts`:
 | Mobile Safari Plus | iPhone 15 Pro Max | all | Large iOS Safari |
 | Mobile Chrome | Pixel 5 | all | Android Chrome |
 
-Total: each `test()` call runs ×4 (one per project), except `mobile.spec.ts` which runs only on mobile projects, and chromium-exclusive tests like smoke and mutation.
+Total: **1157 runs** (292 unique test cases × 4 browser projects). Chromium runs 281 (excludes mobile-only). Mobile projects run all 292 each.
 
 ## Test Patterns
 
@@ -294,18 +294,19 @@ npm run test:pbt
 
 | Domain | Spec Files | Test Calls | × Projects | Total Runs | API Endpoints |
 |--------|------------|------------|------------|------------|---------------|
-| API | 9 | ~250 | 1-4 | ~500 | 52 (94%) |
-| UI | 14 | ~100 | 4 | ~400 | — |
-| Load | 4 | ~25 | 1 | ~25 | — |
+| API | 9 | 146 | 1-4 | 583 | 52 (94%) |
+| UI | 14 | 101 | 4 | 404 | — |
+| Load | 4 | 23 | 1 | 23 | — |
 | Mutation | 3 | 15 | 1 | 15 | — |
-| Standalone | 7 | ~30 | 1-4 | ~60 | — |
-| **Total** | **37** | **~420** | — | **~900** | **94%** |
+| Standalone | 7 | 7 | 1-4 | 28 | — |
+| Smoke | 2 | 17 | 1 | 17 | — |
+| **Total** | **39** | **292** | — | **1157** | **94%** |
 
 ## Related Test Suites
 
 | Suite | Language | Tests | Framework |
 |-------|----------|-------|-----------|
-| **E2E (this)** | TypeScript | ~900 | Playwright (×4 browsers) |
+| **E2E (this)** | TypeScript | 1157 (292 unique × 4) | Playwright (×4 browsers) |
 | PBT | TypeScript | 56 | Jest + fast-check |
 | DB | TypeScript | ~20 | Jest + pg |
 | Go API + UI | Go | 33 | playwright-go + net/http |
@@ -320,7 +321,7 @@ npm run test:pbt
 | `route.fulfill({ response, json })` → gzip mismatch | Use `{ json }` without `response` |
 | `page.request` doesn't inherit browser auth | Explicit `Authorization: Bearer` |
 | `tid()` truncates UUID to last 12 hex | Data-testid must match |
-| 4 browser projects × 227 test() = ~900 | Not ~2000 as previously thought |
+| 4 browser projects × 292 unique = 1157 runs | Not ~2000 as previously thought |
 | Monolith split (2349 lines → 14 UI files) | Maintainability |
 
 ## Limitations

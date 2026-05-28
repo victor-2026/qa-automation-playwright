@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Automation Sandbox — Отчёт за Май 2026</title>
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    color: #1a1a2e;
+    line-height: 1.6;
+}
+h1 { font-size: 2.2em; color: #16213e; border-bottom: 3px solid #0f3460; padding-bottom: 10px; margin-top: 40px; }
+h2 { font-size: 1.5em; color: #0f3460; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px; margin-top: 36px; }
+h3 { font-size: 1.2em; color: #1a5276; margin-top: 28px; }
+table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 0.95em; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+th { background: #0f3460; color: white; font-weight: 600; padding: 10px 14px; text-align: left; }
+td { padding: 8px 14px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) { background: #f0f4f8; }
+tr:hover { background: #e3eaf0; }
+code { background: #eef2f7; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; font-family: 'SF Mono', 'Fira Code', monospace; }
+pre { background: #1a1a2e; color: #e8e8e8; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88em; line-height: 1.5; }
+pre code { background: transparent; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid #0f3460; margin: 16px 0; padding: 10px 20px; background: #f0f4f8; border-radius: 0 6px 6px 0; }
+ul, ol { padding-left: 24px; }
+li { margin: 4px 0; }
+a { color: #0f3460; text-decoration: none; }
+a:hover { text-decoration: underline; }
+hr { border: none; border-top: 2px solid #e0e0e0; margin: 30px 0; }
+</style>
+</head>
+<body>
+<h1>QA Automation Sandbox — Сводный отчёт за Май 2026</h1>
+<p><strong>Проект:</strong> Buzzhive QA Sandbox<br />
+<strong>Бюджет:</strong> $0 (бесплатные инструменты)<br />
+<strong>Репозиторий:</strong> <a href="https://github.com/victor-2026/qa-automation-playwright">victor-2026/qa-automation-playwright</a><br />
+<strong>Render стенд:</strong> <a href="https://buzzhive-test.onrender.com">buzzhive-test.onrender.com</a></p>
+<hr />
+<h2>Executive Summary</h2>
+<p>Май стал месяцем <strong>архитектуры и честных цифр</strong>. Ни одного нового теста — только рефакторинг, стабилизация, документация.</p>
+<table>
+<thead>
+<tr>
+<th>Метрика</th>
+<th>Апрель</th>
+<th>Май</th>
+<th>Комментарий</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Уникальных тестов</td>
+<td>~489</td>
+<td><strong>292</strong> (×4 браузера = <strong>1157</strong> runs)</td>
+<td>Честная цифра, не «2000+»</td>
+</tr>
+<tr>
+<td>API покрытие</td>
+<td>94%</td>
+<td><strong>94%</strong> (стабильно)</td>
+<td>49/52 endpoints</td>
+</tr>
+<tr>
+<td>Монолиты</td>
+<td>2 (~4,000 строк)</td>
+<td><strong>0</strong></td>
+<td>Разделены на 23 модуля</td>
+</tr>
+<tr>
+<td>Языки тестов</td>
+<td>3 (TS + Go + Python)</td>
+<td><strong>5 (TS + Go + C# + Python + k6)</strong></td>
+<td>+C#, +k6</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>Render smoke</td>
+<td><strong>Render smoke + quality gates + uptime monitor</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Документация</td>
+<td>—</td>
+<td><strong>5 TEST_ARCHITECTURE.md, 3 Canvas схемы</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Архитектурных схем</td>
+<td>0</td>
+<td><strong>3 (Go, C#, Mutation)</strong></td>
+<td>Obsidian Canvas</td>
+</tr>
+<tr>
+<td>Найдено багов</td>
+<td>0</td>
+<td><strong>6 (1 race + 2 mutation + 3 fuzzer)</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🏗️ Архитектура тестов (5 слоёв)</h2>
+<div class="codehilite"><pre><span></span><code><span class="w">                        </span><span class="n">npx</span><span class="w"> </span><span class="n">playwright</span><span class="w"> </span><span class="n">test</span>
+<span class="w">                   </span><span class="mi">1157</span><span class="w"> </span><span class="n">runs</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="n">browser</span><span class="w"> </span><span class="n">projects</span>
+<span class="w">                           </span><span class="err">│</span>
+<span class="w">        </span><span class="err">┌──────────────────┼──────────────────┐</span>
+<span class="w">        </span><span class="err">│</span><span class="w">                  </span><span class="err">│</span><span class="w">                   </span><span class="err">│</span>
+<span class="w">   </span><span class="err">┌────┴────┐</span><span class="w">       </span><span class="err">┌────┴────┐</span><span class="w">        </span><span class="err">┌────┴────┐</span>
+<span class="w">   </span><span class="err">│</span><span class="w">  </span><span class="n">api</span><span class="o">/</span><span class="w">   </span><span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">  </span><span class="n">ui</span><span class="o">/</span><span class="w">    </span><span class="err">│</span><span class="w">        </span><span class="err">│</span><span class="w">  </span><span class="nb">load</span><span class="o">/</span><span class="w">  </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="err">файлов│</span><span class="w">       </span><span class="err">│</span><span class="mi">14</span><span class="w"> </span><span class="err">файлов│</span><span class="w">        </span><span class="err">│</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="err">файла</span><span class="w"> </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="err">│</span><span class="w">        </span><span class="err">│</span><span class="w">  </span><span class="n">page</span><span class="w">   </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="p">(</span><span class="n">HTTP</span><span class="p">)</span><span class="w">  </span><span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">   </span><span class="n">POM</span><span class="w">   </span><span class="err">│</span><span class="w">        </span><span class="err">│</span><span class="w"> </span><span class="p">(</span><span class="n">timing</span><span class="p">)</span><span class="err">│</span>
+<span class="w">   </span><span class="err">└────┬────┘</span><span class="w">       </span><span class="err">└────┬────┘</span><span class="w">        </span><span class="err">└────┬────┘</span>
+<span class="w">        </span><span class="err">│</span><span class="w">                  </span><span class="err">│</span><span class="w">                   </span><span class="err">│</span>
+<span class="w">   </span><span class="err">┌────┴──────────────────┴──────────────────┴────┐</span>
+<span class="w">   </span><span class="err">│</span><span class="w">              </span><span class="n">mutation</span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="err">стадии</span><span class="p">)</span><span class="w">              </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w">     </span><span class="n">API</span><span class="w"> </span><span class="n">Response</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">DB</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">Chaos</span><span class="w"> </span><span class="p">(</span><span class="n">Docker</span><span class="p">)</span><span class="w">    </span><span class="err">│</span>
+<span class="w">   </span><span class="err">└──────────────────────┬────────────────────────┘</span>
+<span class="w">                          </span><span class="err">│</span>
+<span class="w">   </span><span class="err">┌──────────────────────┴────────────────────────┐</span>
+<span class="w">   </span><span class="err">│</span><span class="w">  </span><span class="n">Shared</span><span class="p">:</span><span class="w"> </span><span class="n">fixtures</span><span class="o">.</span><span class="n">ts</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pages</span><span class="o">/</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">teardown</span><span class="o">/</span><span class="w">     </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w">  </span><span class="n">POM</span><span class="p">:</span><span class="w"> </span><span class="n">BasePage</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">LoginPage</span><span class="p">,</span><span class="w"> </span><span class="n">NavPage</span><span class="p">,</span><span class="w"> </span><span class="n">FeedPage</span><span class="w"> </span><span class="err">│</span>
+<span class="w">   </span><span class="err">└───────────────────────────────────────────────┘</span>
+</code></pre></div>
+
+<h3>23 модуля вместо 2 монолитов</h3>
+<p><strong>Апрель (было):</strong></p>
+<div class="codehilite"><pre><span></span><code>e2e/
+  ├── buzzhive.spec.ts       ← 2349 строк, монолит (UI + API)
+  └── api-expanded.spec.ts   ← 1559 строк, дубликат
+</code></pre></div>
+
+<p><strong>Май (стало):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">e2e</span><span class="o">/</span>
+<span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">api</span><span class="o">/</span><span class="w">     </span><span class="p">(</span><span class="mi">9</span><span class="w"> </span><span class="err">файлов</span><span class="p">,</span><span class="w"> </span><span class="mi">2906</span><span class="w"> </span><span class="err">строк</span><span class="p">)</span><span class="w">  </span><span class="err">—</span><span class="w"> </span><span class="n">Auth</span><span class="p">,</span><span class="w"> </span><span class="n">Posts</span><span class="p">,</span><span class="w"> </span><span class="n">Users</span><span class="p">,</span><span class="w"> </span><span class="n">Admin</span><span class="p">,</span>
+<span class="w">  </span><span class="err">│</span><span class="w">                                        </span><span class="n">Conversations</span><span class="p">,</span><span class="w"> </span><span class="n">Notifications</span><span class="p">,</span>
+<span class="w">  </span><span class="err">│</span><span class="w">                                        </span><span class="n">Health</span><span class="p">,</span><span class="w"> </span><span class="n">Metamorphic</span><span class="p">,</span><span class="w"> </span><span class="n">Smoke</span>
+<span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">ui</span><span class="o">/</span><span class="w">      </span><span class="p">(</span><span class="mi">14</span><span class="w"> </span><span class="err">файлов</span><span class="p">,</span><span class="w"> </span><span class="mi">1270</span><span class="w"> </span><span class="err">строк</span><span class="p">)</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="n">Auth</span><span class="p">,</span><span class="w"> </span><span class="n">Posts</span><span class="p">,</span><span class="w"> </span><span class="n">Profile</span><span class="p">,</span><span class="w"> </span><span class="n">Admin</span><span class="p">,</span>
+<span class="w">  </span><span class="err">│</span><span class="w">                                        </span><span class="n">Comments</span><span class="p">,</span><span class="w"> </span><span class="n">Navigation</span><span class="p">,</span><span class="w"> </span><span class="n">Messages</span><span class="p">,</span>
+<span class="w">  </span><span class="err">│</span><span class="w">                                        </span><span class="n">Notifications</span><span class="p">,</span><span class="w"> </span><span class="n">Follows</span><span class="p">,</span><span class="w"> </span><span class="n">Search</span><span class="p">,</span>
+<span class="w">  </span><span class="err">│</span><span class="w">                                        </span><span class="n">Moderator</span><span class="p">,</span><span class="w"> </span><span class="n">Logout</span><span class="p">,</span><span class="w"> </span><span class="n">Performance</span>
+<span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="nb">load</span><span class="o">/</span><span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="err">файла</span><span class="p">)</span><span class="w">               </span><span class="err">—</span><span class="w"> </span><span class="n">Smoke</span><span class="p">,</span><span class="w"> </span><span class="n">Basic</span><span class="p">,</span><span class="w"> </span><span class="n">Stress</span><span class="p">,</span><span class="w"> </span><span class="n">Network</span>
+<span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">mutation</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="err">файла</span><span class="p">)</span><span class="w">               </span><span class="err">—</span><span class="w"> </span><span class="n">API</span><span class="p">,</span><span class="w"> </span><span class="n">DB</span><span class="p">,</span><span class="w"> </span><span class="n">Chaos</span>
+<span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">pages</span><span class="o">/</span><span class="w">   </span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="err">класса</span><span class="p">)</span><span class="w">              </span><span class="err">—</span><span class="w"> </span><span class="n">BasePage</span><span class="p">,</span><span class="w"> </span><span class="n">LoginPage</span><span class="p">,</span><span class="w"> </span><span class="n">NavPage</span><span class="p">,</span><span class="w"> </span><span class="n">FeedPage</span>
+<span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">fixtures</span><span class="o">.</span><span class="n">ts</span><span class="w">                      </span><span class="err">—</span><span class="w"> </span><span class="n">test</span><span class="o">.</span><span class="n">extend</span><span class="w"> </span><span class="p">(</span><span class="err">единый</span><span class="w"> </span><span class="err">для</span><span class="w"> </span><span class="err">всех</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h2>🌐 Multi-Browser стратегия</h2>
+<p>Каждый <code>test()</code> автоматически запускается ×4:</p>
+<table>
+<thead>
+<tr>
+<th>Проект</th>
+<th>Устройство</th>
+<th>Тестов</th>
+<th>Исключения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chromium</td>
+<td>Desktop</td>
+<td><strong>281</strong></td>
+<td><code>mobile.spec.ts</code> исключён</td>
+</tr>
+<tr>
+<td>Mobile Safari</td>
+<td>iPhone 15 Pro</td>
+<td><strong>292</strong></td>
+<td>Все</td>
+</tr>
+<tr>
+<td>Mobile Safari Plus</td>
+<td>iPhone 15 Pro Max</td>
+<td><strong>292</strong></td>
+<td>Все</td>
+</tr>
+<tr>
+<td>Mobile Chrome</td>
+<td>Pixel 5</td>
+<td><strong>292</strong></td>
+<td>Все</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total: 1157 runs (292 unique × 4 projects)</strong></p>
+<hr />
+<h2>🗂️ Архитектурная документация (новая в мае)</h2>
+<p>За май созданы <strong>5 документов TEST_ARCHITECTURE.md</strong> и <strong>3 визуальные схемы (Canvas)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Документ</th>
+<th>Строк</th>
+<th>О чём</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>e2e/TEST_ARCHITECTURE.md</code></td>
+<td>334</td>
+<td>Главный TS-стек: 23 модуля, 5 слоёв, CI, паттерны</td>
+</tr>
+<tr>
+<td><code>e2e/mutation/TEST_ARCHITECTURE.md</code></td>
+<td>214</td>
+<td>3 стадии мутации (API/DB/Chaos), gzip fix, BUG-005, BUG-006</td>
+</tr>
+<tr>
+<td><code>go-backend/TEST_ARCHITECTURE.md</code></td>
+<td>105</td>
+<td>Go: Users + Follows, error handling, race detection</td>
+</tr>
+<tr>
+<td><code>csharp-backend/TEST_ARCHITECTURE.md</code></td>
+<td>185</td>
+<td>C#: Fuzzer + PBT + Schema + Race + Meta, porting rules</td>
+</tr>
+<tr>
+<td><code>e2e/mutation/MUTATION_PLAN.md</code></td>
+<td>225</td>
+<td>План мутационного тестирования</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Canvas</th>
+<th>Нод</th>
+<th>Рёбер</th>
+<th>Визуализирует</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Go-Test-Architecture.canvas</code></td>
+<td>7</td>
+<td>9</td>
+<td>Go API + UI layer diagram</td>
+</tr>
+<tr>
+<td><code>CSharp-Test-Architecture.canvas</code></td>
+<td>8</td>
+<td>10</td>
+<td>C# module diagram (цветной)</td>
+</tr>
+<tr>
+<td><code>Mutation-Test-Architecture.canvas</code></td>
+<td>7</td>
+<td>9</td>
+<td>3 стадии + patterns + bugs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🧪 Многоязычный тестовый стек</h2>
+<p>Май расширил проект с 3 до 5 языков:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">                   </span><span class="err">┌──────────────────────┐</span>
+<span class="w">                   </span><span class="err">│</span><span class="w">   </span><span class="n">QA</span><span class="w"> </span><span class="n">Automation</span><span class="w">       </span><span class="err">│</span>
+<span class="w">                   </span><span class="err">│</span><span class="w">   </span><span class="mi">5</span><span class="w"> </span><span class="n">языков</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="n">фрейм</span><span class="o">-</span><span class="w">  </span><span class="err">│</span>
+<span class="w">                   </span><span class="err">│</span><span class="w">   </span><span class="n">ворков</span><span class="w">              </span><span class="err">│</span>
+<span class="w">                   </span><span class="err">└──────┬───────────────┘</span>
+<span class="w">          </span><span class="err">┌────────────────┼────────────────┐</span>
+<span class="w">          </span><span class="err">▼</span><span class="w">                </span><span class="err">▼</span><span class="w">                 </span><span class="err">▼</span>
+<span class="w">   </span><span class="err">┌──────────┐</span><span class="w">    </span><span class="err">┌──────────┐</span><span class="w">     </span><span class="err">┌──────────┐</span>
+<span class="w">   </span><span class="err">│</span><span class="n">TypeScript</span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w">    </span><span class="k">Go</span><span class="w">    </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w">    </span><span class="n">C</span><span class="err">#</span><span class="w">    </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">Playwr</span><span class="p">.</span><span class="w">  </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="n">net</span><span class="o">/</span><span class="n">http</span><span class="w"> </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w"> </span><span class="n">xUnit</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">Jest</span><span class="w">     </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="n">testify</span><span class="w">  </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w"> </span><span class="n">FsCheck</span><span class="w">  </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">fast</span><span class="o">-</span><span class="n">ch</span><span class="p">.</span><span class="w"> </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w">          </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w"> </span><span class="n">Newton</span><span class="p">.</span><span class="w">  </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">Cucumber</span><span class="w"> </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w">          </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w">          </span><span class="err">│</span>
+<span class="w">   </span><span class="err">├──────────┤</span><span class="w">    </span><span class="err">├──────────┤</span><span class="w">     </span><span class="err">├──────────┤</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="mi">1157</span><span class="w"> </span><span class="n">runs</span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w"> </span><span class="mi">41</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="err">×</span><span class="mi">4</span><span class="w"> </span><span class="n">brows</span><span class="p">.</span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">files</span><span class="w">  </span><span class="err">│</span><span class="w">     </span><span class="err">│</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">modules</span><span class="err">│</span>
+<span class="w">   </span><span class="err">└──────────┘</span><span class="w">    </span><span class="err">└──────────┘</span><span class="w">     </span><span class="err">└──────────┘</span>
+<span class="w">          </span><span class="err">│</span>
+<span class="w">          </span><span class="err">▼</span>
+<span class="w">   </span><span class="err">┌──────────┐</span><span class="w">    </span><span class="err">┌──────────┐</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">Python</span><span class="w">   </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w">   </span><span class="n">k6</span><span class="w">     </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="n">Pytest</span><span class="w">   </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="k">Load</span><span class="w">     </span><span class="err">│</span>
+<span class="w">   </span><span class="err">│</span><span class="w"> </span><span class="mi">28</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="err">│</span><span class="w">    </span><span class="err">│</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">scripts</span><span class="err">│</span>
+<span class="w">   </span><span class="err">└──────────┘</span><span class="w">    </span><span class="err">└──────────┘</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Язык</th>
+<th>Тестов</th>
+<th>Фреймворк</th>
+<th>Что покрывает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TypeScript</strong></td>
+<td>1157 (×4)</td>
+<td>Playwright + Jest</td>
+<td>E2E API + UI + Load + Mutation</td>
+</tr>
+<tr>
+<td><strong>TypeScript (PBT)</strong></td>
+<td>56</td>
+<td>fast-check</td>
+<td>Property-based для 7 методов</td>
+</tr>
+<tr>
+<td><strong>TypeScript (DB)</strong></td>
+<td>~20</td>
+<td>Jest + pg</td>
+<td>PostgreSQL прямыми запросами</td>
+</tr>
+<tr>
+<td><strong>TypeScript (Gherkin)</strong></td>
+<td>42</td>
+<td>Cucumber</td>
+<td>BDD-сценарии</td>
+</tr>
+<tr>
+<td><strong>Go</strong></td>
+<td>11</td>
+<td>net/http + testify</td>
+<td>Users + Follows API</td>
+</tr>
+<tr>
+<td><strong>C#</strong></td>
+<td>41</td>
+<td>xUnit + FsCheck</td>
+<td>Fuzzer + PBT + Schema + Race + Metamorphic</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td>28</td>
+<td>Pytest</td>
+<td>API smoke + ad-hoc</td>
+</tr>
+<tr>
+<td><strong>k6</strong></td>
+<td>5</td>
+<td>k6</td>
+<td>Load + stress</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~1351</strong></td>
+<td>7 фреймворков</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🎯 Ключевые изменения в мае</h2>
+<h3>1. Монолиты → Модули</h3>
+<ul>
+<li><code>buzzhive.spec.ts</code> (2349 строк) → 14 UI модулей</li>
+<li><code>api-expanded.spec.ts</code> (1559 строк) → 9 API модулей (удалён как дубликат)</li>
+<li>Все файлы переведены на <code>import { test, expect } from '../fixtures'</code></li>
+</ul>
+<h3>2. Найден и исправлен Race Condition</h3>
+<ul>
+<li><strong>Root cause:</strong> <code>datetime.now()</code> как JWT <code>exp</code> → одинаковый timestamp → одинаковый JWT → <code>unique_violation</code></li>
+<li><strong>Fix:</strong> <code>jti: uuid.uuid4()</code> в refresh token payload</li>
+<li><strong>Когда жил:</strong> с запуска API (апрель)</li>
+</ul>
+<h3>3. Render Stabilization (27 мая, 3 коммита за час)</h3>
+<ul>
+<li>Глобальные exception handlers (все ошибки → JSON, не HTML)</li>
+<li>Connection pool (pool_size=10, pool_pre_ping)</li>
+<li>URL transformation (sslmode=require)</li>
+<li>UUID safe parsing (ValueError → UnauthorizedException)</li>
+<li>Удалены неиспользуемые Pillow/slowapi</li>
+</ul>
+<h3>4. Uptime Monitor</h3>
+<ul>
+<li>GitHub Actions workflow — проверка Render health каждые 15 мин</li>
+<li>Failure → GitHub email alert</li>
+</ul>
+<h3>5. Smoke-тесты расширены</h3>
+<ul>
+<li>6 → 12 эндпойнтов</li>
+<li>safeJson() — не падают на HTML-ответах</li>
+<li>12 tests: health, login, register, posts, users, admin, CORS</li>
+</ul>
+<h3>6. GitHub Pages</h3>
+<ul>
+<li>Jekyll build step: <code>.md</code> → <code>.html</code> без расширения</li>
+<li>Monthly reports (April archive + May report)</li>
+<li>5 страниц: presentations, test report, AI-ready DOR, API contract, bugs</li>
+</ul>
+<hr />
+<h2>🧬 Mutation Testing (новое в мае)</h2>
+<p>Три подхода мутационного тестирования без доступа к исходному коду:</p>
+<div class="codehilite"><pre><span></span><code>Stage 1 — API Response (8 тестов)    Stage 2 — DB Data (4 теста)
+─────────────────────────────        ─────────────────────────
+page.route() intercept              pg direct SQL mutation
+likes→0, null username,             is_active→false (banned)
+500 login, empty feed,              DELETE post (not found)
+unverified, missing avatar,         XSS injection → BUG-005
+401 redirect, XSS escape            negative likes → BUG-006
+        │                                    │
+        └────────────────┬───────────────────┘
+                         ▼
+              Stage 3 — Chaos (3 теста)
+              ─────────────────────────
+              Docker stop/restart
+              db down, backend down,
+              restart recovery
+              Guard: DOCKER_CHAOS=1
+</code></pre></div>
+
+<h3>Баги, найденные мутацией</h3>
+<table>
+<thead>
+<tr>
+<th>Bug</th>
+<th>Severity</th>
+<th>Что</th>
+<th>Где</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BUG-005</td>
+<td>🔴 Critical</td>
+<td>Post content рендерит HTML как есть — XSS</td>
+<td><code>PostCard.tsx</code></td>
+</tr>
+<tr>
+<td>BUG-006</td>
+<td>🟡 Low</td>
+<td>Отрицательный likes_count = -5, не 0</td>
+<td><code>PostCard.tsx</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🐛 Все баги, найденные в проекте</h2>
+<table>
+<thead>
+<tr>
+<th>Bug</th>
+<th>Где</th>
+<th>Нашёл</th>
+<th>Месяц</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Refresh token race condition</td>
+<td>Auth API</td>
+<td>Рефакторинг</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-001: Unicode control chars → 500</td>
+<td>Posts</td>
+<td>C# Fuzzer</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-002: Concurrent follow/unfollow → 500</td>
+<td>Follows</td>
+<td>C# Race</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-003: Parallel register → duplicates</td>
+<td>Auth</td>
+<td>C# PBT</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-004: Parallel register → 500</td>
+<td>Auth</td>
+<td>C# PBT</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-005: Post content XSS (HTML rendering)</td>
+<td>UI</td>
+<td>Mutation</td>
+<td>Май</td>
+</tr>
+<tr>
+<td>BUG-006: Negative likes displayed as -5</td>
+<td>UI</td>
+<td>Mutation</td>
+<td>Май</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🤖 AI Tools Landscape (динамика за 2 месяца)</h2>
+<div class="codehilite"><pre><span></span><code>Phase 1 (апрель)                          Phase 2 (май)
+─────────────────                        ──────────────
+GPT-5.0 Mini (OpenCode)   ──заменён──→   GPT-5 Nano
+Groq Llama 3.3 70B                       Groq Llama 3.3 70B
+Ollama qwen2.5:3b                        Ollama qwen2.5:3b
+GitHub Copilot                           GitHub Copilot
+                    ──новые──→           MiniMax M2.5 free (акция кончилась)
+                    ──новые──→           Cursor Hobby (лимит 50 req)
+                    ──новые──→           Cline (не справилась с &gt;2000 строк)
+</code></pre></div>
+
+<p><strong>За 2 месяца сменилось 17 AI-моделей/инструментов. 5 остались бесплатными, 7 ушли.</strong></p>
+<h3>Бесплатные сейчас</h3>
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Модель</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenCode Desktop</td>
+<td><code>glm-5-free</code>, <code>minimax-m2.7-free</code>, <code>gpt-5-nano</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>GitHub Copilot</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Ollama</td>
+<td><code>qwen2.5:3b</code> (1.9GB local)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Groq</td>
+<td><code>Llama 3.3 70B</code> (500 tok/s)</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>📊 CI/CD Pipeline</h2>
+<div class="codehilite"><pre><span></span><code><span class="nx">Push</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">main</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">├──►</span><span class="w"> </span><span class="nx">render</span><span class="o">-</span><span class="nx">e2e</span><span class="w"> </span><span class="p">(</span><span class="mi">30</span><span class="nx">m</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span><span class="w">      </span><span class="nx">API</span><span class="w"> </span><span class="nx">smoke</span><span class="w"> </span><span class="p">(</span><span class="mi">12</span><span class="w"> </span><span class="nx">tests</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span><span class="w">      </span><span class="nx">UI</span><span class="w"> </span><span class="nx">smoke</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="nx">tests</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span><span class="w">      </span><span class="nx">Render</span><span class="w"> </span><span class="nx">staging</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">├──►</span><span class="w"> </span><span class="nx">quality</span><span class="o">-</span><span class="nx">gates</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="nx">m</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span><span class="w">      </span><span class="nx">lint</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">typecheck</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">audit</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">└──►</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Pages</span>
+<span class="w">            </span><span class="nx">Jekyll</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nx">gh</span><span class="o">-</span><span class="nx">pages</span>
+
+<span class="nx">Nightly</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="nx">AM</span><span class="w"> </span><span class="nx">UTC</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">└──►</span><span class="w"> </span><span class="nx">smoke</span><span class="w"> </span><span class="p">(</span><span class="mi">30</span><span class="nx">m</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">API</span><span class="w"> </span><span class="nx">smoke</span><span class="w"> </span><span class="p">(</span><span class="mi">12</span><span class="w"> </span><span class="nx">tests</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">UI</span><span class="w"> </span><span class="nx">smoke</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="nx">tests</span><span class="p">)</span>
+
+<span class="nx">Uptime</span><span class="w"> </span><span class="nx">Monitor</span><span class="w"> </span><span class="p">(</span><span class="nx">каждые</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="nx">мин</span><span class="p">)</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">└──►</span><span class="w"> </span><span class="nx">Render</span><span class="w"> </span><span class="nx">health</span><span class="w"> </span><span class="nx">check</span>
+<span class="w">            </span><span class="nx">Failure</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">email</span><span class="w"> </span><span class="nx">alert</span>
+</code></pre></div>
+
+<hr />
+<h2>📋 Известные ограничения</h2>
+<table>
+<thead>
+<tr>
+<th>Ограничение</th>
+<th>Причина</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full suite только локально</td>
+<td>Требует Docker (PostgreSQL + backend + frontend)</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>CI Docker отключён</td>
+<td>GHA ubuntu-latest не имеет Docker socket</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Render только smoke</td>
+<td>Cold start 503 + таймауты</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Mobile — эмуляторы</td>
+<td>Не реальные устройства</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>Load — single-threaded</td>
+<td>Не распределённый</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>Go — без helpers</td>
+<td><code>client.go</code> утерян, тесты не компилируются</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Нет Page Objects для всех страниц</td>
+<td>Profile, Admin, Search — голый page</td>
+<td>⚠️</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🔜 План на июнь</h2>
+<ol>
+<li><strong>Go:</strong> восстановить helper-файлы + добавить <code>-race</code> + <code>t.Cleanup</code></li>
+<li><strong>C#:</strong> добавить CI-прогон C# тестов</li>
+<li><strong>TS:</strong> Page Objects для Profile, Admin, Search</li>
+<li><strong>Infra:</strong> Docker CI в GitHub Actions</li>
+<li><strong>Article:</strong> опубликовать Phase 2 статью на LinkedIn</li>
+<li><strong>Docs:</strong> 1-pager по AI Tools Landscape для портфолио</li>
+</ol>
+<hr />
+<div style="background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:24px;margin:30px 0">
+<h2 style="margin-top:0;border-bottom:2px solid #0f3460;padding-bottom:8px">📐 Визуальные схемы архитектуры</h2>
+<p style="color:#555;margin:-8px 0 16px 0">Диаграммы из Obsidian Canvas — цветные блоки = модули, пунктир = связи, подписи = тип отношения</p>
+<figure style="margin:24px 0"><figcaption style="font-weight:bold;font-size:1.1em;margin-bottom:8px;color:#0f3460;text-align:center">Go Test Architecture</figcaption><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1180" style="width:100%;max-width:1240px;background:#f8f9fa;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin:8px 0">
+<line x1="670.0" y1="150" x2="230.0" y2="250" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="230.0,250 236.49482811727938,245.32911060642655 237.87568128176306,251.40486453015473" fill="#999"/>
+<text x="450.0" y="192.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="670.0" y1="150" x2="670.0" y2="250" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="670.0,250 666.8846532615308,242.6315120479769 673.1153467384692,242.6315120479769" fill="#999"/>
+<text x="670.0" y="192.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="670.0" y1="150" x2="1080.0" y2="250" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="1080.0,250 1072.103163425413,251.28061395988968 1073.5795647516493,245.22736852232063" fill="#999"/>
+<text x="875.0" y="192.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="670.0" y1="430" x2="670.0" y2="530" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="670.0,530 666.8846532615308,522.6315120479769 673.1153467384692,522.6315120479769" fill="#999"/>
+<text x="670.0" y="472.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="230.0" y1="430" x2="290.0" y2="860" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="290.0,860 285.8962495433022,853.1327420181594 292.06715886438377,852.27168490359" fill="#999"/>
+<text x="260.0" y="637.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">targets</text>
+<line x1="530" y1="340.0" x2="290.0" y2="860" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="290.0,860 290.25921682465764,852.0042006879978 295.9164334389896,854.6152237407664" fill="#999"/>
+<text x="410.0" y="592.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">targets</text>
+<line x1="1080.0" y1="430" x2="1070.0" y2="700" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="1070.0,700 1067.1595077664722,692.5212565312569 1073.3859321826305,692.7518648429664" fill="#999"/>
+<text x="1075.0" y="557.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">warm-up</text>
+<line x1="830" y1="640.0" x2="1070.0" y2="700" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="1070.0,700 1062.095934107514,701.2352094426615 1063.607099244353,695.1905488953053" fill="#999"/>
+<text x="950.0" y="662.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">warm-up</text>
+<line x1="670.0" y1="750" x2="950" y2="1015.0" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="950,1015.0 942.5068737617918,1012.1976689741797 946.7897579059439,1007.6723574256415" fill="#999"/>
+<text x="810.0" y="874.5" text-anchor="middle" fill="#666" font-size="11" font-style="italic">traceable to</text>
+<line x1="1080.0" y1="430" x2="290.0" y2="860" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="290.0,860 294.9825281228962,853.7410533230784 297.9612542940378,859.2135967537803" fill="#999"/>
+<text x="685.0" y="637.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">targets</text>
+<rect x="570" y="50" width="200" height="100" rx="8" ry="8" fill="#c678dd" opacity="0.92"/>
+<text x="584" y="74" fill="#ffffff" font-size="15" font-weight="bold">## Go Tests</text>
+<text x="584" y="96" fill="#ffffff" font-size="12" font-weight="500">go test ./...</text>
+<rect x="530" y="250" width="280" height="180" rx="8" ry="8" fill="#56b6c2" opacity="0.92"/>
+<text x="544" y="274" fill="#1a1a2e" font-size="15" font-weight="bold">### api/</text>
+<text x="544" y="296" fill="#1a1a2e" font-size="12" font-weight="500">auth_test.go + posts_test.go</text>
+<text x="544" y="313" fill="#1a1a2e" font-size="12" font-weight="500">users_test.go + follows_test.go</text>
+<text x="544" y="330" fill="#1a1a2e" font-size="12" font-weight="500">24 tests</text>
+<text x="544" y="347" fill="#1a1a2e" font-size="12" font-weight="500">API via net/http</text>
+<text x="544" y="364" fill="#1a1a2e" font-size="12" font-weight="500">AUTH + POST + USERS + FOLLOW</text>
+<rect x="970" y="250" width="220" height="180" rx="8" ry="8" fill="#98c379" opacity="0.92"/>
+<text x="984" y="274" fill="#1a1a2e" font-size="15" font-weight="bold">### ui/</text>
+<text x="984" y="296" fill="#1a1a2e" font-size="12" font-weight="500">auth_test.go</text>
+<text x="984" y="313" fill="#1a1a2e" font-size="12" font-weight="500">4 tests</text>
+<text x="984" y="330" fill="#1a1a2e" font-size="12" font-weight="500">UI Auth via playwright-go</text>
+<text x="984" y="347" fill="#1a1a2e" font-size="12" font-weight="500">AUTH-001, 004</text>
+<rect x="950" y="700" width="240" height="180" rx="8" ry="8" fill="#e5c07b" opacity="0.92"/>
+<text x="964" y="724" fill="#1a1a2e" font-size="15" font-weight="bold">### Warm-Up</text>
+<text x="964" y="746" fill="#1a1a2e" font-size="12" font-weight="500">Render cold start fix:</text>
+<text x="964" y="763" fill="#1a1a2e" font-size="12" font-weight="500">GET /api/health × 3</text>
+<text x="964" y="780" fill="#1a1a2e" font-size="12" font-weight="500">GET /login × 3</text>
+<text x="964" y="797" fill="#1a1a2e" font-size="12" font-weight="500">30s timeout, 2s delay</text>
+<rect x="110" y="250" width="240" height="180" rx="8" ry="8" fill="#98c379" opacity="0.92"/>
+<text x="124" y="274" fill="#1a1a2e" font-size="15" font-weight="bold">### Root</text>
+<text x="124" y="296" fill="#1a1a2e" font-size="12" font-weight="500">login_test.go</text>
+<text x="124" y="313" fill="#1a1a2e" font-size="12" font-weight="500">5 tests (9 subtests)</text>
+<text x="124" y="330" fill="#1a1a2e" font-size="12" font-weight="500">UI Auth via playwright-go</text>
+<text x="124" y="347" fill="#1a1a2e" font-size="12" font-weight="500">AUTH-001, 002, 009, 010</text>
+<rect x="510" y="530" width="320" height="220" rx="8" ry="8" fill="#e5c07b" opacity="0.92"/>
+<text x="524" y="554" fill="#1a1a2e" font-size="15" font-weight="bold">### api/ shared</text>
+<text x="524" y="576" fill="#1a1a2e" font-size="12" font-weight="500">client.go — BaseURL, HTTPClient, WarmUp</text>
+<text x="524" y="593" fill="#1a1a2e" font-size="12" font-weight="500">helpers.go — Login(), LoginResponse</text>
+<text x="524" y="610" fill="#1a1a2e" font-size="12" font-weight="500">helpers_test.go — requireHTTPStatus</text>
+<text x="524" y="627" fill="#1a1a2e" font-size="12" font-weight="500">warmup_test.go — TestMain</text>
+<rect x="950" y="900" width="240" height="230" rx="8" ry="8" fill="#e06c75" opacity="0.92"/>
+<text x="964" y="924" fill="#ffffff" font-size="15" font-weight="bold">### Test Cases (TS)</text>
+<text x="964" y="946" fill="#ffffff" font-size="12" font-weight="500">E2E API: ~900 tests (×4 browsers)</text>
+<text x="964" y="963" fill="#ffffff" font-size="12" font-weight="500">PBT: 56 tests (fast-check)</text>
+<text x="964" y="980" fill="#ffffff" font-size="12" font-weight="500">Metamorphic: 7 tests</text>
+<text x="964" y="997" fill="#ffffff" font-size="12" font-weight="500">DB: Jest + pg</text>
+<text x="964" y="1014" fill="#ffffff" font-size="12" font-weight="500">Go: 33 tests ← here</text>
+<rect x="50" y="860" width="480" height="270" rx="8" ry="8" fill="#d19a66" opacity="0.92"/>
+<text x="64" y="884" fill="#ffffff" font-size="15" font-weight="bold">### Targets</text>
+<text x="64" y="906" fill="#ffffff" font-size="12" font-weight="500">Local Docker:</text>
+<text x="64" y="923" fill="#ffffff" font-size="12" font-weight="500">APP_TARGET_URL=http://localhost:3000</text>
+<text x="64" y="940" fill="#ffffff" font-size="12" font-weight="500">API_BASE_URL=http://localhost:8000/api</text>
+<text x="64" y="957" fill="#ffffff" font-size="12" font-weight="500">Render staging:</text>
+<text x="64" y="974" fill="#ffffff" font-size="12" font-weight="500">APP_TARGET_URL=https://qa-automation-playwright-front.onrender.com</text>
+<text x="64" y="991" fill="#ffffff" font-size="12" font-weight="500">API_BASE_URL=https://buzzhive-test.onrender.com/api</text>
+</svg></figure><figure style="margin:24px 0"><figcaption style="font-weight:bold;font-size:1.1em;margin-bottom:8px;color:#0f3460;text-align:center">C# Test Architecture</figcaption><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 977 1160" style="width:100%;max-width:977px;background:#f8f9fa;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin:8px 0">
+<line x1="465.0" y1="130" x2="157.0" y2="275" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="157.0,275 162.3397089777046,269.04286075087873 164.99360119542183,274.6800938754091" fill="#999"/>
+<text x="311.0" y="194.5" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="465.0" y1="130" x2="465.0" y2="470" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,470 461.8846532615308,462.6315120479769 468.1153467384692,462.6315120479769" fill="#999"/>
+<text x="465.0" y="292.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="465.0" y1="130" x2="810.0" y2="275" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="810.0,275 802.0000180734154,275.0170051262568 804.4141601861957,269.2730118234348" fill="#999"/>
+<text x="637.5" y="194.5" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="465.0" y1="130" x2="153.5" y2="690" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="153.5,690 154.3593706627458,682.0462913012851 159.8043706868147,685.0750725646735" fill="#999"/>
+<text x="309.25" y="402.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="465.0" y1="130" x2="800.0" y2="690" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="800.0,690 793.543758584614,685.2759184187553 798.8907419849477,682.0772765631986" fill="#999"/>
+<text x="632.5" y="402.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="157.0" y1="445" x2="465.0" y2="970" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,970 458.58437328045045,965.220906592731 463.9585015845051,962.0680846543523" fill="#999"/>
+<text x="311.0" y="699.5" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="465.0" y1="640" x2="465.0" y2="970" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,970 461.8846532615308,962.6315120479769 468.1153467384692,962.6315120479769" fill="#999"/>
+<text x="465.0" y="797.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="810.0" y1="445" x2="465.0" y2="970" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,970 466.4430983008697,962.1312347033332 471.65012298188606,965.5529937794297" fill="#999"/>
+<text x="637.5" y="699.5" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="153.5" y1="888" x2="465.0" y2="970" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,970 457.0811982038024,971.1369160534259 458.6673440028322,965.111496341258" fill="#999"/>
+<text x="309.25" y="921.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="800.0" y1="888" x2="465.0" y2="970" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="465.0,970 471.41649822886853,965.2220767608795 472.8978897040003,971.2741029092839" fill="#999"/>
+<text x="632.5" y="921.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<rect x="50" y="690" width="207" height="198" rx="8" ry="8" fill="#d19a66" opacity="0.92"/>
+<text x="64" y="714" fill="#ffffff" font-size="15" font-weight="bold">### Race (4)</text>
+<text x="64" y="736" fill="#ffffff" font-size="12" font-weight="500">Concurrent requests</text>
+<text x="64" y="753" fill="#ffffff" font-size="12" font-weight="500">Task.WhenAll</text>
+<text x="64" y="770" fill="#ffffff" font-size="12" font-weight="500">Login storm, Post storm</text>
+<text x="64" y="787" fill="#ffffff" font-size="12" font-weight="500">Refresh race, Follow storm</text>
+<rect x="673" y="690" width="254" height="198" rx="8" ry="8" fill="#56b6c2" opacity="0.92"/>
+<text x="687" y="714" fill="#1a1a2e" font-size="15" font-weight="bold">### Metamorphic (8)</text>
+<text x="687" y="736" fill="#1a1a2e" font-size="12" font-weight="500">Relations ported from TS</text>
+<text x="687" y="753" fill="#1a1a2e" font-size="12" font-weight="500">Param order, Follow symmetry</text>
+<text x="687" y="770" fill="#1a1a2e" font-size="12" font-weight="500">Existence negation</text>
+<text x="687" y="787" fill="#1a1a2e" font-size="12" font-weight="500">Pagination disjoint, Self-follow</text>
+<text x="687" y="804" fill="#1a1a2e" font-size="12" font-weight="500">Auth consistency</text>
+<rect x="693" y="275" width="234" height="170" rx="8" ry="8" fill="#98c379" opacity="0.92"/>
+<text x="707" y="299" fill="#1a1a2e" font-size="15" font-weight="bold">### Schema (5)</text>
+<text x="707" y="321" fill="#1a1a2e" font-size="12" font-weight="500">JSON response validation</text>
+<text x="707" y="338" fill="#1a1a2e" font-size="12" font-weight="500">JObject.Parse</text>
+<text x="707" y="355" fill="#1a1a2e" font-size="12" font-weight="500">Field types + values</text>
+<text x="707" y="372" fill="#1a1a2e" font-size="12" font-weight="500">Login, Profile, Posts, Health</text>
+<rect x="50" y="275" width="214" height="170" rx="8" ry="8" fill="#e06c75" opacity="0.92"/>
+<text x="64" y="299" fill="#ffffff" font-size="15" font-weight="bold">### Fuzzer (19)</text>
+<text x="64" y="321" fill="#ffffff" font-size="12" font-weight="500">Crash detection</text>
+<text x="64" y="338" fill="#ffffff" font-size="12" font-weight="500">Random/invalid payloads</text>
+<text x="64" y="355" fill="#ffffff" font-size="12" font-weight="500">Login, Posts, Auth,</text>
+<text x="64" y="372" fill="#ffffff" font-size="12" font-weight="500">UUID, User fuzz</text>
+<rect x="400" y="50" width="130" height="80" rx="8" ry="8" fill="#c678dd" opacity="0.92"/>
+<text x="414" y="74" fill="#ffffff" font-size="15" font-weight="bold">## C# Tests</text>
+<text x="414" y="96" fill="#ffffff" font-size="12" font-weight="500">43 tests total</text>
+<rect x="367" y="470" width="196" height="170" rx="8" ry="8" fill="#e5c07b" opacity="0.92"/>
+<text x="381" y="494" fill="#1a1a2e" font-size="15" font-weight="bold">### PBT (7)</text>
+<text x="381" y="516" fill="#1a1a2e" font-size="12" font-weight="500">FsCheck properties</text>
+<text x="381" y="533" fill="#1a1a2e" font-size="12" font-weight="500">100+ iterations each</text>
+<text x="381" y="550" fill="#1a1a2e" font-size="12" font-weight="500">Email case, pagination</text>
+<text x="381" y="567" fill="#1a1a2e" font-size="12" font-weight="500">race register</text>
+<rect x="257" y="970" width="416" height="140" rx="8" ry="8" fill="#c678dd" opacity="0.92"/>
+<text x="271" y="994" fill="#ffffff" font-size="15" font-weight="bold">### Shared</text>
+<text x="271" y="1016" fill="#ffffff" font-size="12" font-weight="500">ApiClient.cs — Login, PostRaw, PatchRaw, WithToken</text>
+<text x="271" y="1033" fill="#ffffff" font-size="12" font-weight="500">WarmupFixture.cs — Render cold start (×3 retries)</text>
+<text x="271" y="1050" fill="#ffffff" font-size="12" font-weight="500">Newtonsoft.Json — JSON parsing</text>
+</svg></figure><figure style="margin:24px 0"><figcaption style="font-weight:bold;font-size:1.1em;margin-bottom:8px;color:#0f3460;text-align:center">Mutation Test Architecture</figcaption><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1450" style="width:100%;max-width:1200px;background:#f8f9fa;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin:8px 0">
+<line x1="510.0" y1="130" x2="200.0" y2="290" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="200.0,290 205.11895888119935,283.8521337057 207.97662232965584,289.3888566370844" fill="#999"/>
+<text x="355.0" y="202.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="510.0" y1="130" x2="690.0" y2="330" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="690.0,330 682.7551224404773,326.6071031333794 687.386360428946,322.4389889437575" fill="#999"/>
+<text x="600.0" y="222.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="510.0" y1="130" x2="1030.0" y2="210" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="1030.0,210 1022.2434842007145,211.95868901447741 1023.1909059067672,205.80044792513516" fill="#999"/>
+<text x="770.0" y="162.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">runs</text>
+<line x1="200.0" y1="530" x2="230" y2="940.0" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="230,940.0 226.35523952535362,932.8785028903709 232.56932025126628,932.4238140567676" fill="#999"/>
+<text x="215.0" y="727.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="690.0" y1="570" x2="230" y2="940.0" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="230,940.0 233.78905442074486,932.9542163958412 237.69419542061783,937.8092565578454" fill="#999"/>
+<text x="460.0" y="747.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="1030.0" y1="450" x2="570" y2="940.0" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="570,940.0 572.7719424500145,932.4955789661155 577.3145730401809,936.7600893160676" fill="#999"/>
+<text x="800.0" y="687.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">uses</text>
+<line x1="830" y1="450.0" x2="750" y2="950.0" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="750,950.0 748.087931151865,942.231860408052 754.2403710560122,943.2162507927155" fill="#999"/>
+<text x="790.0" y="692.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">found</text>
+<line x1="400.0" y1="1090" x2="210.0" y2="1150" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="210.0,1150 216.08833375434537,1144.810376497693 217.96459100425258,1150.7518577890658" fill="#999"/>
+<text x="305.0" y="1112.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">part of</text>
+<line x1="890.0" y1="1050" x2="210.0" y2="1150" stroke="#999" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="210.0,1150 216.83681664040495,1145.8457325284135 217.74334509791484,1152.0101260394806" fill="#999"/>
+<text x="550.0" y="1092.0" text-anchor="middle" fill="#666" font-size="11" font-style="italic">tracked in</text>
+<rect x="430" y="50" width="160" height="80" rx="8" ry="8" fill="#c678dd" opacity="0.92"/>
+<text x="444" y="74" fill="#ffffff" font-size="15" font-weight="bold">## Mutation Tests</text>
+<text x="444" y="96" fill="#ffffff" font-size="12" font-weight="500">15 tests total</text>
+<rect x="60" y="290" width="280" height="240" rx="8" ry="8" fill="#56b6c2" opacity="0.92"/>
+<text x="74" y="314" fill="#1a1a2e" font-size="15" font-weight="bold">### Stage 1 — API Response (8)</text>
+<text x="74" y="336" fill="#1a1a2e" font-size="12" font-weight="500">page.route() intercept</text>
+<text x="74" y="353" fill="#1a1a2e" font-size="12" font-weight="500">MUT-001..008</text>
+<text x="74" y="370" fill="#1a1a2e" font-size="12" font-weight="500">likes→0, null username,</text>
+<text x="74" y="387" fill="#1a1a2e" font-size="12" font-weight="500">500 login, empty feed,</text>
+<text x="74" y="404" fill="#1a1a2e" font-size="12" font-weight="500">unverified, missing avatar,</text>
+<text x="74" y="421" fill="#1a1a2e" font-size="12" font-weight="500">401 redirect, XSS escape</text>
+<rect x="550" y="330" width="280" height="240" rx="8" ry="8" fill="#e06c75" opacity="0.92"/>
+<text x="564" y="354" fill="#ffffff" font-size="15" font-weight="bold">### Stage 2 — DB Data (4)</text>
+<text x="564" y="376" fill="#ffffff" font-size="12" font-weight="500">pg direct SQL mutation</text>
+<text x="564" y="393" fill="#ffffff" font-size="12" font-weight="500">DBMUT-001..004</text>
+<text x="564" y="410" fill="#ffffff" font-size="12" font-weight="500">banned user, deleted post,</text>
+<text x="564" y="427" fill="#ffffff" font-size="12" font-weight="500">XSS injection (⚠️ BUG-005),</text>
+<text x="564" y="444" fill="#ffffff" font-size="12" font-weight="500">negative likes (⚠️ BUG-006)</text>
+<rect x="910" y="210" width="240" height="240" rx="8" ry="8" fill="#d19a66" opacity="0.92"/>
+<text x="924" y="234" fill="#ffffff" font-size="15" font-weight="bold">### Stage 3 — Chaos (3)</text>
+<text x="924" y="256" fill="#ffffff" font-size="12" font-weight="500">Docker stop/restart</text>
+<text x="924" y="273" fill="#ffffff" font-size="12" font-weight="500">CHAOS-001..003</text>
+<text x="924" y="290" fill="#ffffff" font-size="12" font-weight="500">db down, backend down,</text>
+<text x="924" y="307" fill="#ffffff" font-size="12" font-weight="500">restart recovery</text>
+<text x="924" y="324" fill="#ffffff" font-size="12" font-weight="500">DOCKER_CHAOS=1 guard</text>
+<rect x="230" y="790" width="340" height="300" rx="8" ry="8" fill="#e5c07b" opacity="0.92"/>
+<text x="244" y="814" fill="#1a1a2e" font-size="15" font-weight="bold">### Shared Patterns</text>
+<text x="244" y="836" fill="#1a1a2e" font-size="12" font-weight="500">page.route() → route.fulfill({json})</text>
+<text x="244" y="853" fill="#1a1a2e" font-size="12" font-weight="500">(no response param — gzip fix)</text>
+<text x="244" y="870" fill="#1a1a2e" font-size="12" font-weight="500">tid() truncates UUID to 12 hex</text>
+<text x="244" y="887" fill="#1a1a2e" font-size="12" font-weight="500">Auth from localStorage</text>
+<text x="244" y="904" fill="#1a1a2e" font-size="12" font-weight="500">token via page.evaluate()</text>
+<text x="244" y="921" fill="#1a1a2e" font-size="12" font-weight="500">DB restore in afterEach</text>
+<text x="244" y="938" fill="#1a1a2e" font-size="12" font-weight="500">Chaos guard: DOCKER_CHAOS=1</text>
+<rect x="750" y="850" width="280" height="200" rx="8" ry="8" fill="#e06c75" opacity="0.92"/>
+<text x="764" y="874" fill="#ffffff" font-size="15" font-weight="bold">### Bugs Found</text>
+<text x="764" y="896" fill="#ffffff" font-size="12" font-weight="500">BUG-005 (Critical): Post content renders raw HTML — XSS</text>
+<text x="764" y="913" fill="#ffffff" font-size="12" font-weight="500">BUG-006 (Low): Negative likes_count displayed as -5</text>
+<text x="764" y="930" fill="#ffffff" font-size="12" font-weight="500">Found by DB mutation stage</text>
+<rect x="50" y="1150" width="320" height="250" rx="8" ry="8" fill="#98c379" opacity="0.92"/>
+<text x="64" y="1174" fill="#1a1a2e" font-size="15" font-weight="bold">### Related Suites</text>
+<text x="64" y="1196" fill="#1a1a2e" font-size="12" font-weight="500">E2E API: ~900 tests (×4 browsers)</text>
+<text x="64" y="1213" fill="#1a1a2e" font-size="12" font-weight="500">Go API+UI: 33 tests</text>
+<text x="64" y="1230" fill="#1a1a2e" font-size="12" font-weight="500">C# Fuzzer+PBT+Race+Meta: 43 tests</text>
+<text x="64" y="1247" fill="#1a1a2e" font-size="12" font-weight="500">PBT (TS): 56 tests (fast-check)</text>
+<text x="64" y="1264" fill="#1a1a2e" font-size="12" font-weight="500">← Mutation tests validate</text>
+<text x="64" y="1281" fill="#1a1a2e" font-size="12" font-weight="500">frontend robustness</text>
+</svg></figure>
+</div>
+
+<h2>🔗 Ссылки</h2>
+<ul>
+<li><a href=".">Главная</a> — портал</li>
+<li><a href="Report-April-2026">Отчёт за Апрель 2026</a></li>
+<li><a href="PRESENTATION_FOR_MANAGEMENT">Presentation for Management</a></li>
+<li><a href="PRESENTATION_PART2">Presentation PART 2</a></li>
+<li><a href="TEST_REPORT">Test Report</a></li>
+<li><a href="API_CONTRACT">API Contract</a></li>
+<li><a href="BUGS">BUGS</a></li>
+<li><a href="https://github.com/victor-2026/qa-automation-playwright/blob/main/e2e/TEST_ARCHITECTURE.md">ARCH: TS e2e</a></li>
+<li><a href="https://github.com/victor-2026/qa-automation-playwright/blob/main/go-backend/TEST_ARCHITECTURE.md">ARCH: Go</a></li>
+<li><a href="https://github.com/victor-2026/qa-automation-playwright/blob/main/csharp-backend/TEST_ARCHITECTURE.md">ARCH: C#</a></li>
+<li><a href="https://github.com/victor-2026/qa-automation-playwright/blob/main/e2e/mutation/TEST_ARCHITECTURE.md">ARCH: Mutation</a></li>
+</ul>
+<hr />
+<p><em>Сгенерировано 2026-05-28 | Данные из playwright --list, git log, TEST_ARCHITECTURE.md</em></p>
+</body>
+</html>

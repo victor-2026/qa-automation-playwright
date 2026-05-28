@@ -1,0 +1,24 @@
+{
+	"nodes":[
+		{"id":"go-tests","type":"text","text":"## Go Tests\n`go test ./...`","x":300,"y":-80,"width":200,"height":100,"color":"6"},
+		{"id":"api-pkg","type":"text","text":"### api/\n`auth_test.go` + `posts_test.go`\n`users_test.go` + `follows_test.go`\n**24 tests**\nAPI via net/http\nAUTH + POST + USERS + FOLLOW","x":260,"y":120,"width":280,"height":180,"color":"5"},
+		{"id":"ui-pkg","type":"text","text":"### ui/\n`auth_test.go`\n4 tests\nUI Auth via playwright-go\nAUTH-001, 004","x":700,"y":120,"width":220,"height":180,"color":"4"},
+		{"id":"warmup","type":"text","text":"### Warm-Up\n\nRender cold start fix:\n`GET /api/health` × 3\n`GET /login` × 3\n30s timeout, 2s delay","x":680,"y":570,"width":240,"height":180,"color":"3"},
+		{"id":"root","type":"text","text":"### Root\n`login_test.go`\n5 tests (9 subtests)\nUI Auth via playwright-go\nAUTH-001, 002, 009, 010","x":-160,"y":120,"width":240,"height":180,"color":"4"},
+		{"id":"shared-api","type":"text","text":"### api/ shared\n`client.go` — BaseURL, HTTPClient, WarmUp\n`helpers.go` — Login(), LoginResponse\n`helpers_test.go` — requireHTTPStatus\n`warmup_test.go` — TestMain","x":240,"y":400,"width":320,"height":220,"color":"3"},
+		{"id":"test-cases","type":"text","text":"### Test Cases (TS)\n\n**E2E API:** ~900 tests (×4 browsers)\n**PBT:** 56 tests (fast-check)\n**Metamorphic:** 7 tests\n**DB:** Jest + pg\n**Go: 33 tests** ← here","x":680,"y":770,"width":240,"height":230,"color":"1"},
+		{"id":"targets","type":"text","text":"### Targets\n\n**Local Docker:**\n`APP_TARGET_URL=http://localhost:3000`\n`API_BASE_URL=http://localhost:8000/api`\n\n**Render staging:**\n`APP_TARGET_URL=https://qa-automation-playwright-front.onrender.com`\n`API_BASE_URL=https://buzzhive-test.onrender.com/api`","x":-220,"y":730,"width":480,"height":270,"color":"2"}
+	],
+	"edges":[
+		{"id":"e-go-to-root","fromNode":"go-tests","fromSide":"bottom","toNode":"root","toSide":"top","label":"runs"},
+		{"id":"e-go-to-api","fromNode":"go-tests","fromSide":"bottom","toNode":"api-pkg","toSide":"top","label":"runs"},
+		{"id":"e-go-to-ui","fromNode":"go-tests","fromSide":"bottom","toNode":"ui-pkg","toSide":"top","label":"runs"},
+		{"id":"e-api-to-shared","fromNode":"api-pkg","fromSide":"bottom","toNode":"shared-api","toSide":"top","label":"uses"},
+		{"id":"e-root-to-target","fromNode":"root","fromSide":"bottom","toNode":"targets","toSide":"top","label":"targets"},
+		{"id":"e-api-to-target","fromNode":"api-pkg","fromSide":"left","toNode":"targets","toSide":"top","label":"targets"},
+		{"id":"e-ui-to-warmup","fromNode":"ui-pkg","fromSide":"bottom","toNode":"warmup","toSide":"top","label":"warm-up"},
+		{"id":"e-shared-to-warmup","fromNode":"shared-api","fromSide":"right","toNode":"warmup","toSide":"top","label":"warm-up"},
+		{"id":"e-shared-to-testcases","fromNode":"shared-api","fromSide":"bottom","toNode":"test-cases","toSide":"left","label":"traceable to"},
+		{"id":"e-ui-to-target","fromNode":"ui-pkg","fromSide":"bottom","toNode":"targets","toSide":"top","label":"targets"}
+	]
+}

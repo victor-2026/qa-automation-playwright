@@ -1,0 +1,23 @@
+{
+	"nodes":[
+		{"id":"n5","type":"text","text":"### Race (4)\nConcurrent requests\nTask.WhenAll\nLogin storm, Post storm\nRefresh race, Follow storm","x":-297,"y":240,"width":207,"height":198,"color":"2"},
+		{"id":"n6","type":"text","text":"### Metamorphic (8)\nRelations ported from TS\nParam order, Follow symmetry\nExistence negation\nPagination disjoint, Self-follow\nAuth consistency","x":326,"y":240,"width":254,"height":198,"color":"5"},
+		{"id":"n4","type":"text","text":"### Schema (5)\nJSON response validation\nJObject.Parse\nField types + values\nLogin, Profile, Posts, Health","x":346,"y":-175,"width":234,"height":170,"color":"4"},
+		{"id":"n2","type":"text","text":"### Fuzzer (19)\nCrash detection\nRandom/invalid payloads\nLogin, Posts, Auth,\nUUID, User fuzz","x":-297,"y":-175,"width":214,"height":170,"color":"1"},
+		{"id":"n1","type":"text","text":"## C# Tests\n43 tests total","x":53,"y":-400,"width":130,"height":80,"color":"6"},
+		{"id":"n3","type":"text","text":"### PBT (7)\nFsCheck properties\n100+ iterations each\nEmail case, pagination\nrace register","x":20,"y":20,"width":196,"height":170,"color":"3"},
+		{"id":"n7","type":"text","text":"### Shared\nApiClient.cs — Login, PostRaw, PatchRaw, WithToken\nWarmupFixture.cs — Render cold start (×3 retries)\nNewtonsoft.Json — JSON parsing","x":-90,"y":520,"width":416,"height":140,"color":"6"}
+	],
+	"edges":[
+		{"id":"e-n1-n2","fromNode":"n1","fromSide":"bottom","toNode":"n2","toSide":"top","label":"runs"},
+		{"id":"e-n1-n3","fromNode":"n1","fromSide":"bottom","toNode":"n3","toSide":"top","label":"runs"},
+		{"id":"e-n1-n4","fromNode":"n1","fromSide":"bottom","toNode":"n4","toSide":"top","label":"runs"},
+		{"id":"e-n1-n5","fromNode":"n1","fromSide":"bottom","toNode":"n5","toSide":"top","label":"runs"},
+		{"id":"e-n1-n6","fromNode":"n1","fromSide":"bottom","toNode":"n6","toSide":"top","label":"runs"},
+		{"id":"e-all-to-shared","fromNode":"n2","fromSide":"bottom","toNode":"n7","toSide":"top","label":"uses"},
+		{"id":"e-n3-to-n7","fromNode":"n3","fromSide":"bottom","toNode":"n7","toSide":"top","label":"uses"},
+		{"id":"e-n4-to-n7","fromNode":"n4","fromSide":"bottom","toNode":"n7","toSide":"top","label":"uses"},
+		{"id":"e-n5-to-n7","fromNode":"n5","fromSide":"bottom","toNode":"n7","toSide":"top","label":"uses"},
+		{"id":"e-n6-to-n7","fromNode":"n6","fromSide":"bottom","toNode":"n7","toSide":"top","label":"uses"}
+	]
+}

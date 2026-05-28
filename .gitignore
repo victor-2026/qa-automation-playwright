@@ -31,3 +31,7 @@ playwright-report/
 *.png
 *.webm
 .obsidian/workspace.json
+
+# Build artifacts
+**/bin/
+**/obj/

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QA Automation Sandbox — Отчёт на Май 2026</title>
+    <title>QA Automation Sandbox — May 2026 Report</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; padding: 40px 20px; }
@@ -18,6 +18,7 @@
         .metric { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; text-align: center; }
         .metric-value { font-size: 2em; font-weight: bold; color: #58a6ff; }
         .metric-label { color: #8b949e; font-size: 0.9em; }
+        .metric-note { color: #484f58; font-size: 0.75em; margin-top: 4px; }
         h2 { color: #f0f6fc; font-size: 1.5em; margin: 40px 0 20px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
         .doc-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 15px; transition: border-color 0.2s; }
         .doc-card:hover { border-color: #58a6ff; }
@@ -26,6 +27,7 @@
         .doc-desc { color: #8b949e; margin-top: 8px; font-size: 0.9em; }
         .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; margin-left: 10px; background: #238636; color: white; }
         .badge.new { background: #a371f7; }
+        .badge.featured { background: #d29922; }
         .badge.archive { background: #484f58; }
         footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.9em; text-align: center; }
     </style>
@@ -33,50 +35,66 @@
 <body>
     <div class="container">
         <h1>🧪 QA Automation Sandbox</h1>
-        <p class="subtitle">Buzzhive Social Network — Zero-Budget AI-Assisted Testing — Май 2026</p>
+        <p class="subtitle">Buzzhive Social Network — Zero-Budget AI-Assisted Testing — May 2026</p>
 
         <div class="whatsnew">
-            <h3>🚀 Что нового в Мае</h3>
+            <h3>🚀 May v2 Update (2026-05-28)</h3>
             <ul>
-                <li>Монолиты удалены: <code>buzzhive.spec.ts</code> (2349 строк) + <code>api-expanded.spec.ts</code> (1559 строк) → 14 модульных UI-файлов</li>
-                <li>Все spec-файлы используют <code>import { test, expect } from '../fixtures'</code></li>
-                <li>GitHub Pages: Jekyll build, все ссылки работают без расширения</li>
-                <li>CI/CD: quality gates + Render smoke</li>
-                <li><a href="Report-May-2026" style="color: #58a6ff;">Полный отчёт за Май →</a></li>
+                <li>5 <code>TEST_ARCHITECTURE.md</code> files for TS / Go / C# / Mutation / Mutation Plan</li>
+                <li>3 visual Canvas diagrams (Go, C#, Mutation architectures)</li>
+                <li>Honest metrics: <strong>292 unique × 4 browsers = 1,157 runs</strong> (was "2000+")</li>
+                <li>4 AI skills created for OpenCode (xlsx-qa, superpowers, skill-creator, context-engineering)</li>
+                <li>Phase 2 article kit (341 lines, 6 headlines, AI tools matrix)</li>
+                <li>Render stabilization: exception handlers, connection pool, uptime monitor, 12 smoke tests</li>
+                <li>Portfolio updated: 8 published articles + AI Tools Landscape</li>
+                <li>Embedded SVG diagrams in <a href="Report-May-2026-v2" style="color: #d29922;">v2 report →</a></li>
             </ul>
         </div>
 
         <div class="metrics">
             <div class="metric">
-                <div class="metric-value">2000+</div>
-                <div class="metric-label">Tests (JS)</div>
+                <div class="metric-value">1,200+</div>
+                <div class="metric-label">Test Runs</div>
+                <div class="metric-note">292 unique × 4 browsers + 150 non-PW</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">5</div>
+                <div class="metric-label">Languages</div>
+                <div class="metric-note">TS · Go · C# · Python · k6</div>
             </div>
             <div class="metric">
                 <div class="metric-value">94%</div>
                 <div class="metric-label">API Coverage</div>
+                <div class="metric-note">49/52 endpoints</div>
             </div>
             <div class="metric">
-                <div class="metric-value">100%</div>
-                <div class="metric-label">PBT Coverage</div>
+                <div class="metric-value">7</div>
+                <div class="metric-label">Bugs Found</div>
+                <div class="metric-note">Race · Fuzzer · Mutation</div>
             </div>
             <div class="metric">
                 <div class="metric-value">$0</div>
                 <div class="metric-label">Budget</div>
+                <div class="metric-note">Zero-cost AI stack</div>
             </div>
         </div>
 
         <h2>📊 Monthly Reports</h2>
         <div class="doc-card">
-            <a href="Report-May-2026">📈 Отчёт на Май 2026</a> <span class="badge new">New</span>
-            <div class="doc-desc">2000+ тестов, 14 UI + 9 API модулей, монолиты удалены</div>
+            <a href="Report-May-2026">📈 Report — May 2026 (Markdown)</a> <span class="badge new">New</span>
+            <div class="doc-desc">Updated v2: architecture docs, honest numbers, phase 2 results, June roadmap</div>
         </div>
         <div class="doc-card">
-            <a href="Report-April-2026">📈 Отчёт на Апрель 2026</a> <span class="badge archive">Archive</span>
-            <div class="doc-desc">Все материалы апреля: презентации, тест-репорты, спеки, баги</div>
+            <a href="Report-May-2026-v2">📐 Report — May 2026 v2 (HTML + SVG Diagrams)</a> <span class="badge featured">Featured</span>
+            <div class="doc-desc">Same report with 3 embedded Canvas architecture diagrams (Go, C#, Mutation)</div>
+        </div>
+        <div class="doc-card">
+            <a href="Report-April-2026">📈 Report — April 2026</a> <span class="badge archive">Archive</span>
+            <div class="doc-desc">All April materials: presentations, test reports, specs, bug logs</div>
         </div>
 
         <footer>
-            <p>Built with Playwright, Jest, fast-check, Cucumber • AI: Groq Llama 3.3 70B, Ollama</p>
+            <p>Built with Playwright, Jest, fast-check, Cucumber, Go, C# • AI: Groq Llama 3.3 70B, Ollama, OpenCode</p>
             <p>GitHub: <a href="https://github.com/victor-2026/qa-automation-playwright" style="color: #58a6ff;">victor-2026/qa-automation-playwright</a></p>
         </footer>
     </div>
