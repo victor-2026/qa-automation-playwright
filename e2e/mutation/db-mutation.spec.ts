@@ -115,9 +115,8 @@ test.describe('Mutation — DB Data', () => {
     const content = page.locator(`[data-testid="post-content-${shortId}"]`);
     await expect(content).toBeVisible({ timeout: 5000 });
 
-    const text = await content.textContent();
-    expect(text).toContain('<script>');
-    expect(text).not.toContain(xssPayload);
+    const html = await content.innerHTML();
+    expect(html).toContain('&lt;');
 
     await query('DELETE FROM posts WHERE id = $1::uuid', [postId]);
   });
@@ -150,7 +149,8 @@ test.describe('Mutation — DB Data', () => {
     await expect(likesCount).toBeVisible({ timeout: 5000 });
 
     const text = (await likesCount.textContent())?.trim() ?? '';
-    expect(text).not.toMatch(/^-\d+$/);
+    expect(text).toMatch(/^\d+$/);
+    expect(Number(text)).toBeGreaterThanOrEqual(0);
 
     await query('DELETE FROM posts WHERE id = $1::uuid', [postId]);
   });

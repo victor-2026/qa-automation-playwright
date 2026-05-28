@@ -185,7 +185,7 @@ export default function PostCard({ post, onUpdate }: Props) {
               )}
             >
               <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
-              <span data-testid={`post-likes-count-${id}`}>{likesCount}</span>
+              <span data-testid={`post-likes-count-${id}`}>{Math.max(0, likesCount)}</span>
             </button>
 
             <Link

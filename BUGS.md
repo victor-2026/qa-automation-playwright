@@ -9,6 +9,67 @@
 
 ## Found Bugs
 
+### BUG-005: Post content не экранирует HTML (XSS)
+**Status:** 🟢 False Positive  
+**Date:** 2026-05-28 → 2026-05-28  
+**Severity:** Closed  
+**Module:** Frontend/Feed  
+
+**Resolution:** React автоматически экранирует строки в JSX. `{renderContent(post.content)}` рендерит `<script>` как текст, не как HTML-тег. `dangerouslySetInnerHTML` не используется.  
+**Fix:** Исправлен тест — проверять `innerHTML` на наличие `&lt;`, а не `textContent`.
+
+---
+
+### BUG-006: Отрицательный likes_count отображается как есть
+**Status:** 🟢 Fixed (2026-05-28)  
+**Date:** 2026-05-28  
+**Severity:** Low  
+**Module:** Frontend/PostCard  
+
+**Fix:** `PostCard.tsx` — `{Math.max(0, likesCount)}` вместо `{likesCount}`.
+
+---
+
+### BUG-001: Unicode control chars in post body → 500
+**Status:** 🟢 Fixed (2026-05-28)  
+**Date:** 2026-05-28  
+**Severity:** High  
+**Module:** API/Posts  
+
+**Fix:** Добавлен `BeforeValidator` (`SafeContent`) в `common.py`, применяется ко всем текстовым полям (`PostCreate.content`, `PostUpdate.content`, `RepostCreate.content`, `CommentCreate.content`, `CommentUpdate.content`, `MessageCreate.content`, `ConversationCreate.name`, `UserRegister.display_name`, `UserUpdate.display_name`, `UserUpdate.bio`). Control chars (Cc, Cs, non-characters) вырезаются, пустой результат → 422.
+
+---
+
+### BUG-003: Parallel register allows duplicate users
+**Status:** 🟢 Fixed (2026-05-28)  
+**Date:** 2026-05-28  
+**Severity:** Medium  
+**Module:** API/Auth  
+
+**Fix:** Удалён check-then-insert паттерн. `IntegrityError` ловится и конвертируется в 409 Conflict.
+
+---
+
+### BUG-004: Parallel register → 500 (IntegrityError unhandled)
+**Status:** 🟢 Fixed (2026-05-28)  
+**Date:** 2026-05-28  
+**Severity:** Medium  
+**Module:** API/Auth  
+
+**Fix:** Тот же fix, что и BUG-003 — `IntegrityError` ловится в `register()`.
+
+---
+
+### BUG-002: Concurrent follow/unfollow → 500
+**Status:** 🟢 Fixed (2026-05-28)  
+**Date:** 2026-05-28  
+**Severity:** Medium  
+**Module:** API/Follows  
+
+**Fix:** Добавлен `.with_for_update()` к `SELECT Follow` в `follow_user()` и `unfollow_user()`. Serializes concurrent follow/unfollow для одной пары пользователей. Добавлен `IntegrityError` catch как safety net.
+
+---
+
 ### AUTH-011-01: No HTML5 minlength on password field
 **Status:** 🔴 Open  
 **Date:** 2026-04-14  

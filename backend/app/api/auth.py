@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -31,12 +32,6 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/register", response_model=UserResponse, status_code=201)
 async def register(data: UserRegister, db: AsyncSession = Depends(get_db)) -> UserResponse:
-    existing = await db.execute(
-        select(User).where((User.email == data.email) | (User.username == data.username))
-    )
-    if existing.scalar_one_or_none():
-        raise ConflictException("User with this email or username already exists")
-
     user = User(
         email=data.email,
         username=data.username,
@@ -44,7 +39,11 @@ async def register(data: UserRegister, db: AsyncSession = Depends(get_db)) -> Us
         display_name=data.display_name,
     )
     db.add(user)
-    await db.flush()
+    try:
+        await db.flush()
+    except IntegrityError:
+        raise ConflictException("User with this email or username already exists")
+
     await db.refresh(user)
     return UserResponse.model_validate(user)
 

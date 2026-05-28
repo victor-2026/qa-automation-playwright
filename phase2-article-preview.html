@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 2: What Survived — Article Draft</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Georgia', serif;
+            background: #f5f5f0;
+            color: #1a1a1a;
+            line-height: 1.75;
+            padding: 40px 20px;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+
+        /* Label */
+        .draft-label {
+            display: inline-block;
+            background: #d29922;
+            color: #fff;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Headline */
+        h1 {
+            font-size: 2em;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            color: #0d1117;
+        }
+        .headline-alt {
+            font-size: 0.85em;
+            color: #656d76;
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 30px;
+            border-left: 3px solid #d29922;
+            padding-left: 14px;
+        }
+
+        /* Lead */
+        .lead {
+            font-size: 1.15em;
+            color: #24292f;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* Money Paragraph */
+        .money {
+            background: #fff8e8;
+            border: 1px solid #d29922;
+            border-left: 4px solid #d29922;
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 1.05em;
+        }
+        .money strong { color: #0d1117; }
+
+        /* Sections */
+        h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin: 40px 0 16px;
+            color: #0d1117;
+            border-bottom: 2px solid #d0d7de;
+            padding-bottom: 8px;
+        }
+        h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 24px 0 10px;
+            color: #24292f;
+        }
+        p { margin-bottom: 16px; color: #24292f; }
+
+        /* Metadata / story note */
+        .story-note {
+            background: #f0f4f8;
+            border-left: 3px solid #0969da;
+            padding: 14px 18px;
+            margin: 16px 0;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95em;
+            color: #24292f;
+        }
+
+        /* Tables */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0 24px;
+            font-size: 0.9em;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        th {
+            background: #0d1117;
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        td { padding: 7px 12px; border-bottom: 1px solid #d0d7de; }
+        tr:nth-child(even) { background: #f6f8fa; }
+        tr:hover { background: #e8f0fe; }
+
+        .tag-cell { color: #656d76; font-size: 0.85em; }
+        .green { color: #1a7f37; font-weight: 600; }
+        .red { color: #cf222e; }
+        .yellow { color: #9a6700; }
+
+        /* AI matrix */
+        .ai-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0 24px;
+        }
+        .ai-card {
+            background: #fff;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 12px 16px;
+        }
+        .ai-card h4 { font-size: 0.9em; margin-bottom: 4px; }
+        .ai-card p { font-size: 0.8em; color: #656d76; margin: 0; }
+        .ai-card .status { font-size: 0.75em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-active { color: #1a7f37; }
+        .status-gone { color: #cf222e; }
+
+        /* Image placeholder */
+        .img-placeholder {
+            background: #e8ecf0;
+            border: 2px dashed #afb8c1;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #656d76;
+            font-size: 0.85em;
+            margin: 16px 0 24px;
+        }
+
+        /* Quote block */
+        blockquote {
+            border-left: 3px solid #0d1117;
+            padding: 10px 18px;
+            margin: 20px 0;
+            background: #f6f8fa;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: #24292f;
+        }
+        blockquote strong { font-style: normal; }
+
+        /* CTA */
+        .cta {
+            background: #0d1117;
+            color: #fff;
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .cta p { color: #e6edf3; margin: 0; font-size: 0.95em; }
+        .cta strong { color: #d29922; }
+
+        /* Hashtags */
+        .hashtags {
+            margin: 30px 0;
+            color: #656d76;
+            font-size: 0.85em;
+        }
+        .hashtags span {
+            display: inline-block;
+            background: #e8ecf0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin: 2px 4px 2px 0;
+        }
+
+        /* Checklists */
+        .todo-item { display: inline-block; margin-right: 6px; }
+        .todo-done { color: #1a7f37; }
+        .todo-pending { color: #9a6700; }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #d0d7de;
+            font-size: 0.8em;
+            color: #656d76;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <span class="draft-label">📝 Draft — Not Published</span>
+
+    <h1>Phase 2: 4,000 Lines Deleted, 1,200 Tests Reorganized, 1 Race Condition Found</h1>
+    <div class="headline-alt">The honest story: we didn't scale to 2,000 tests. We cleaned up a mess that AI helped create.</div>
+
+    <p class="lead">
+        In my <a href="https://www.linkedin.com/pulse/zero-budget-qa-automation-how-i-built-comprehensive-test-suite-victor-p-Y1ime">first article</a>, 
+        I showed how AI helped scale tests from 60 to 456 on a $0 budget. What I didn't show: the mess it left behind.
+    </p>
+
+    <div class="money">
+        <strong>Money paragraph:</strong> Two files — nearly 4,000 lines. One was a 2,349-line UI monolith with 15 copy-pasted API blocks. 
+        The other was a 1,559-line API duplicate. That's not scale. That's technical debt. 
+        Phase 2: ~4,000 lines from 2 monoliths → 23 modules, 1,200 real tests (×4 browsers = 1,057 Playwright runs), 
+        1 race condition fixed, 12 AI models tried — 5 still free.
+    </div>
+
+    <!-- SECTION 1 -->
+    <h2>1. The Mess Nobody Talks About</h2>
+    <p>
+        AI doesn't create tech debt on its own. It amplifies what you put in. Bad prompt → bad architecture. And that's my fault.
+    </p>
+    <p>
+        Phase 1: I started without a strong prompt. Just <em>"write tests"</em> — and AI generated ~4,000 lines of monoliths in weeks. 
+        Fast. But without architecture. One file contained 2,349 lines of UI tests with 15 copy-pasted API blocks. 
+        AI isn't to blame — I didn't tell it how.
+    </p>
+
+    <table>
+        <thead>
+            <tr><th>File</th><th>Lines</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>buzzhive.spec.ts</code></td><td>2,349</td><td class="red">✕ Deleted</td></tr>
+            <tr><td><code>api-expanded.spec.ts</code></td><td>1,559</td><td class="red">✕ Deleted</td></tr>
+            <tr><td><strong>Total removed</strong></td><td><strong>~3,908</strong></td><td></td></tr>
+            <tr><td>→ Replaced by</td><td>23 modular files</td><td class="green">✓ 9 API + 14 UI</td></tr>
+        </tbody>
+    </table>
+
+    <div class="img-placeholder">
+        🖼️ <strong>Infographic:</strong> Before → After — 1 thick spaghetti strand → 14 thin organized modules
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2>2. The Split: One Domain at a Time</h2>
+    <p>
+        Refactoring ~4,000 lines of AI-generated code <em>with more AI</em> turned out to be surprisingly hard.
+    </p>
+
+    <table>
+        <thead>
+            <tr><th>Tool</th><th>Model</th><th>Did</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Cursor (Hobby free)</td><td>cursor-small</td><td>1st file extracted</td><td class="yellow">✅ Done, then 50-request limit</td></tr>
+            <tr><td>OpenCode Desktop</td><td>MiniMax M2.5 free</td><td>~20 remaining files</td><td class="green">✅ All refactoring</td></tr>
+            <tr><td>GitHub Copilot</td><td>—</td><td>Code review</td><td class="green">✅ Monthly reset</td></tr>
+            <tr><td>Cline (OpenRouter → Groq)</td><td>Various</td><td>Tried to help</td><td class="yellow">⚠️ Fell over >2,000 lines</td></tr>
+            <tr><td>Continue.dev</td><td>—</td><td>Tried to help</td><td class="red">❌ Weak, didn't stick</td></tr>
+            <tr><td><strong>Victor (human)</strong></td><td>—</td><td>Review + Approve</td><td class="green">✅ Final say on everything</td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        AI made a draft of the refactoring. A human reviewed and approved every single file. 
+        The lesson: AI is great at generating new code; refactoring large existing codebases is still a task not all agents handle well.
+    </p>
+
+    <div class="img-placeholder">
+        📷 <strong>Screenshot:</strong> <code>tree e2e/</code> — 23 modular files in organized structure
+    </div>
+
+    <!-- SECTION 3 -->
+    <h2>3. The Bug We Found by Accident</h2>
+    <p>
+        While rewriting tests under the modular structure, something unexpected happened — we found a real bug that had been living in production for weeks.
+    </p>
+
+    <div class="story-note">
+        <strong>🩻 Postmortem:</strong> Refresh token race condition. Root cause: <code>datetime.now()</code> as JWT <code>exp</code> → same microsecond → same JWT → <code>unique_violation</code> in PostgreSQL. 
+        Fix: <code>jti: uuid.uuid4()</code> — one line in the token payload.
+    </div>
+
+    <p>
+        We didn't find it through testing. We found it because the modular split forced us to actually <em>read</em> the code. 
+        The race had been there since day one (April). Automated tests passed every time because the probability of hitting 
+        the exact microsecond collision was low — until you run 4 parallel browser projects.
+    </p>
+
+    <div class="img-placeholder">
+        📷 <strong>Screenshot:</strong> Code diff — before vs after (1 line fix: <code>jti: uuid.uuid4()</code>)
+    </div>
+
+    <!-- SECTION 4 -->
+    <h2>4. The Real Numbers</h2>
+    <p>
+        I wrote "2,000+ tests" in my May report. That was wrong. Here's the truth:
+    </p>
+
+    <table>
+        <thead>
+            <tr><th>Category</th><th>Count</th><th class="tag-cell">Notes</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Unique Playwright tests</td><td>292</td><td class="tag-cell">real unique test cases</td></tr>
+            <tr><td>× Browser projects</td><td>4</td><td class="tag-cell">Chromium, Mobile Safari, Safari+, Mobile Chrome</td></tr>
+            <tr><td><strong>Playwright runs</strong></td><td><strong>1,057</strong></td><td class="tag-cell">what you actually see in CI</td></tr>
+            <tr><td>Non-Playwright (PBT, DB, Python, Go, Gherkin)</td><td>147</td><td class="tag-cell">Jest, pytest, Go test, Cucumber</td></tr>
+            <tr><td><strong>Grand total</strong></td><td><strong>~1,204</strong></td><td class="tag-cell">not 2,000+</td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        The mistake made sense: 267 unique tests × 4 browsers = 1,068. It <em>feels</em> like "over a thousand". But 2,000 was a stretch.
+        Lesson: count unique tests, not browser × tests.
+    </p>
+
+    <div class="money">
+        <strong>But here's the real metric:</strong> Phase 1 added ~750 unique tests. Phase 2 added zero. 
+        Phase 2 was about architecture, cleanliness, CI, and bugs. Not a single new test was written in May.
+        Yet Phase 2 delivered more value: the bug, the structure, the 3-minute CI smoke instead of 2+ hour full suite.
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>Metric</th><th>Phase 1 (April)</th><th>Phase 2 (May)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>New unique tests</td><td>~750</td><td>0</td></tr>
+            <tr><td>Lines deleted</td><td>—</td><td>~3,908</td></tr>
+            <tr><td>Monoliths</td><td>2 (~4,000 lines)</td><td>0</td></tr>
+            <tr><td>Modules</td><td>~8</td><td>23</td></tr>
+            <tr><td>Bugs found</td><td>0</td><td>1 (race condition)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="img-placeholder">
+        🖼️ <strong>Infographic:</strong> Bar chart — Phase 1 vs Phase 2 (lines added vs deleted, tests vs architecture)
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2>5. What I Learned About AI Agents</h2>
+    <p>
+        Over 2 months, I cycled through <strong>17 AI models and tools</strong> in this project. 
+        Of those, 5 are still free. 7 are gone — either discontinued, paywalled, or replaced.
+    </p>
+
+    <h3>🟢 Still Active (free)</h3>
+    <div class="ai-grid">
+        <div class="ai-card">
+            <h4>OpenCode Desktop <span class="status status-active">• 3 models</span></h4>
+            <p>glm-5-free, minimax-m2.7-free, gpt-5-nano — codegen &amp; refactoring</p>
+        </div>
+        <div class="ai-card">
+            <h4>GitHub Copilot <span class="status status-active">• free</span></h4>
+            <p>Code review in VS Code, monthly quota reset</p>
+        </div>
+        <div class="ai-card">
+            <h4>Ollama <span class="status status-active">• local</span></h4>
+            <p>qwen2.5:3b (1.9GB) — Russian text analysis, local inference</p>
+        </div>
+        <div class="ai-card">
+            <h4>Groq <span class="status status-active">• free</span></h4>
+            <p>Llama 3.3 70B — heavy codegen, 500 tok/s, TPM-limited</p>
+        </div>
+    </div>
+
+    <h3>🔴 Tried and Gone</h3>
+    <div class="ai-grid">
+        <div class="ai-card">
+            <h4>MiniMax M2.5 free <span class="status status-gone">• promo ended</span></h4>
+            <p>Did all ~20 file extractions, then replaced by M2.7</p>
+        </div>
+        <div class="ai-card">
+            <h4>Cursor Hobby<span class="status status-gone">• 50 req limit</span></h4>
+            <p>Made 1 file, hit limit, couldn't continue</p>
+        </div>
+        <div class="ai-card">
+            <h4>Cline (OpenRouter)<span class="status status-gone">• fell over</span></h4>
+            <p>Couldn't handle files >2,000 lines</p>
+        </div>
+        <div class="ai-card">
+            <h4>Google Gemini API<span class="status status-gone">• 429 quota</span></h4>
+            <p>Quota exceeded immediately, never recovered</p>
+        </div>
+        <div class="ai-card">
+            <h4>Ollama qwen2.5:14b<span class="status status-gone">• timeout</span></h4>
+            <p>9GB download, 10 min timeout on M2 Mac</p>
+        </div>
+        <div class="ai-card">
+            <h4>Continue.dev<span class="status status-gone">• weak</span></h4>
+            <p>Didn't stick, limited capabilities</p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Pattern:</strong> the free AI market in 2026 is a treadmill. Models appear, have great free tiers, then either 
+        change pricing or get replaced by something better. You can't rely on any single provider. 
+        The right strategy: maintain a stack of 4–5 free tools across different providers, and be ready to swap.
+    </p>
+
+    <!-- SECTION 2.5: Render -->
+    <h2>Bonus: The Deployment That Wouldn't Die</h2>
+    <p>
+        The backend runs on Render's free tier. It's been a journey:
+    </p>
+
+    <table>
+        <thead>
+            <tr><th>Date</th><th>What happened</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Apr 25</td><td>First deploy — psycopg2-binary, config.py URL transform</td></tr>
+            <tr><td>Apr 25–29</td><td>CORS diagnostics, env vars, soft assertion cycle</td></tr>
+            <tr><td>May 10</td><td>Metamorphic + health test reliability</td></tr>
+            <tr><td>May 20</td><td>Strong assertions, error handling in health checks</td></tr>
+            <tr><td><strong>May 27</strong></td><td><strong>Stabilization day:</strong> exception handlers, connection pool, uptime monitor, 12 smoke tests</td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        The stack today: <strong>12 smoke endpoints</strong> checked every push via GitHub Actions, plus an 
+        <strong>uptime monitor</strong> that pings health every 15 minutes and sends GitHub email alerts on failure.
+        All on $0.
+    </p>
+
+    <div class="img-placeholder">
+        🖼️ <strong>Diagram:</strong> GitHub Push → Render Deploy → Smoke Tests → Uptime Monitor → Email Alert
+    </div>
+
+    <!-- SECTION 7: Tools Matrix -->
+    <h2>Full AI Tools Landscape</h2>
+    <p>17 models and tools cycled through in 2 months. Here's the complete map:</p>
+
+    <table>
+        <thead>
+            <tr><th>Model / Tool</th><th>Platform</th><th>Phase</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>GPT-5 Nano</td><td>OpenCode</td><td>1–2</td><td class="green">🟢 Active</td></tr>
+            <tr><td>MiniMax M2.7 free</td><td>OpenCode</td><td>2+</td><td class="green">🟢 Active</td></tr>
+            <tr><td>GLM-5 free</td><td>OpenCode</td><td>2+</td><td class="green">🟢 Active</td></tr>
+            <tr><td>Llama 3.3 70B</td><td>Groq</td><td>1–2</td><td class="green">🟢 Active (TPM limit)</td></tr>
+            <tr><td>qwen2.5:3b</td><td>Ollama</td><td>1–2</td><td class="green">🟢 Active (local)</td></tr>
+            <tr><td>GitHub Copilot</td><td>VS Code</td><td>1–2</td><td class="green">🟢 Active (monthly)</td></tr>
+            <tr><td>MiniMax M2.5 free</td><td>OpenCode</td><td>2</td><td class="red">🔴 Promo ended</td></tr>
+            <tr><td>GPT-5.0 Mini</td><td>OpenCode</td><td>1</td><td class="red">🔴 Replaced</td></tr>
+            <tr><td>Nemotron 3 Super</td><td>OpenCode</td><td>1</td><td class="red">🔴 Removed</td></tr>
+            <tr><td>Cursor-small</td><td>Cursor Hobby</td><td>2</td><td class="red">🔴 50-req limit</td></tr>
+            <tr><td>Gemini 2.5</td><td>Google API</td><td>1</td><td class="red">🔴 Quota exceeded</td></tr>
+            <tr><td>qwen2.5:14b</td><td>Ollama</td><td>1</td><td class="red">🔴 Timeout</td></tr>
+            <tr><td>Continue.dev</td><td>—</td><td>2</td><td class="red">🔴 Weak</td></tr>
+            <tr><td>Big Pickle</td><td>OpenCode</td><td>1</td><td class="red">🔴 Removed</td></tr>
+            <tr><td>Mimo V2 Pro</td><td>OpenCode</td><td>1</td><td class="red">🔴 Removed</td></tr>
+            <tr><td>Mimo V2 Omni</td><td>OpenCode</td><td>1</td><td class="red">🔴 Removed</td></tr>
+            <tr><td>GPT-4o mini</td><td>Cursor Hobby</td><td>2</td><td class="red">🔴 Limit reached</td></tr>
+        </tbody>
+    </table>
+
+    <!-- SECTION 8: Conclusion -->
+    <h2>6. Honest Take</h2>
+
+    <p>
+        <strong>Free AI is a treadmill — keep moving or get left behind.</strong>
+    </p>
+    <p>
+        In 2 months, 7 out of 17 AI tools I tried either disappeared, changed pricing, or hit limits. 
+        The 5 that remain are from different providers: OpenCode (3 models), Groq (1), Ollama (1 local). 
+        No single source of truth.
+    </p>
+    <p>
+        The biggest surprise? The race condition. We didn't find it with smarter tests or better coverage. 
+        We found it because refactoring forced us to read the code. That's a humbling lesson for anyone who thinks 
+        "more tests = better quality." Sometimes the best test improvement is deleting 4,000 lines and starting cleaner.
+    </p>
+
+    <blockquote>
+        <strong>TL;DR:</strong> AI is great at writing new code. Refactoring existing code — especially code that AI wrote — 
+        is still a human-led effort. The tools help. The human decides. And occasionally, cleaning up the mess 
+        finds a bug that testing never could.
+    </blockquote>
+
+    <div class="cta">
+        <p>💬 <strong>What's the messiest test suite AI has helped you create — and how did you clean it up?</strong></p>
+        <p style="margin-top: 8px; font-size: 0.85em;">Share your story in the comments.</p>
+    </div>
+
+    <div class="hashtags">
+        <span>#TestAutomation</span>
+        <span>#Playwright</span>
+        <span>#ZeroBudgetQA</span>
+        <span>#TechDebt</span>
+        <span>#Refactoring</span>
+        <span>#GenAItesting</span>
+        <span>#HonestMetrics</span>
+    </div>
+
+    <h2>Editorial Checklist</h2>
+    <table>
+        <thead>
+            <tr><th>Item</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Update numbers (3,908 lines, ~1,204 tests)</td><td><span class="todo-done">✓</span> Done</td></tr>
+            <tr><td>Rewrite headlines (6 honest variants)</td><td><span class="todo-done">✓</span> Done</td></tr>
+            <tr><td>Narrative — honest tone, no "2,000+"</td><td><span class="todo-done">✓</span> Done</td></tr>
+            <tr><td>Final headline selected (from 6)</td><td><span class="todo-pending">◯</span> Pick one</td></tr>
+            <tr><td>Screenshot — Copilot $50 bill (Apr 25)</td><td><span class="todo-pending">◯</span> If saved</td></tr>
+            <tr><td>Screenshot — <code>tree e2e/</code> structure</td><td><span class="todo-pending">◯</span> Add</td></tr>
+            <tr><td>Infographic — Before → After (spaghetti)</td><td><span class="todo-pending">◯</span> NotebookLM</td></tr>
+            <tr><td>Infographic — Real numbers (1,200 vs 2,000 chart)</td><td><span class="todo-pending">◯</span> Create</td></tr>
+            <tr><td>Write Round 2 (first honest draft)</td><td><span class="todo-done">✓</span> Assembled</td></tr>
+            <tr><td>Decide: CTA keep or remove</td><td><span class="todo-pending">◯</span> Keep for now</td></tr>
+        </tbody>
+    </table>
+
+    <footer>
+        <p>Phase 2 Article Kit — assembled 2026-05-27, HTML preview generated 2026-05-28</p>
+        <p>Project: <a href="https://github.com/victor-2026/qa-automation-playwright">victor-2026/qa-automation-playwright</a></p>
+    </footer>
+
+</div>
+</body>
+</html>

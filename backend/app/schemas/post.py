@@ -3,22 +3,23 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.schemas.common import SafeContent
 from app.schemas.user import UserBrief
 
 
 class PostCreate(BaseModel):
-    content: str = Field(min_length=1, max_length=2000)
+    content: SafeContent = Field(min_length=1, max_length=2000)
     image_url: str | None = None
     visibility: str = Field(default="public", pattern=r"^(public|followers_only)$")
 
 
 class PostUpdate(BaseModel):
-    content: str = Field(min_length=1, max_length=2000)
+    content: SafeContent = Field(min_length=1, max_length=2000)
 
 
 class RepostCreate(BaseModel):
     repost_type: str = Field(default="repost", pattern=r"^(repost|quote)$")
-    content: str | None = Field(default=None, max_length=2000)
+    content: SafeContent | None = Field(default=None, max_length=2000)
 
 
 class HashtagResponse(BaseModel):

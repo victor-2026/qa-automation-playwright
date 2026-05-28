@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 2 — LinkedIn Carousel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @page { size: 1920px 1080px; margin: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background: #f5f5f0;
+        }
+
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            page-break-after: always;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 90px 120px;
+        }
+
+        .slide-dark { background: #0d1117; color: #e6edf3; }
+        .slide-accent { background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); }
+        .slide-num {
+            position: absolute;
+            bottom: 50px;
+            right: 80px;
+            font-size: 1.2em;
+            color: #30363d;
+            font-weight: 600;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(210,153,34,0.15);
+            color: #d29922;
+            font-size: 1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 6px 16px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 4em;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            max-width: 85%;
+        }
+        h2 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 28px;
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 2em;
+            color: #8b949e;
+            max-width: 75%;
+            line-height: 1.5;
+        }
+        .subtitle-white { color: #e6edf3; }
+        .subtitle-narrow { max-width: 65%; }
+
+        .data-row {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .data-item {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid #30363d;
+            border-radius: 14px;
+            padding: 28px 32px;
+        }
+        .data-item .label {
+            font-size: 1.1em;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        .data-item .value {
+            font-size: 3.5em;
+            font-weight: 800;
+            color: #d29922;
+            line-height: 1;
+        }
+        .data-item .note {
+            font-size: 1em;
+            color: #656d76;
+            margin-top: 8px;
+        }
+
+        .split-compare {
+            display: flex;
+            gap: 50px;
+            margin-top: 40px;
+            align-items: stretch;
+        }
+        .split-box {
+            flex: 1;
+            border-radius: 14px;
+            padding: 40px 44px;
+        }
+        .split-box.before {
+            background: rgba(248,81,73,0.08);
+            border: 2px solid #f85149;
+        }
+        .split-box.after {
+            background: rgba(63,185,80,0.08);
+            border: 2px solid #3fb950;
+        }
+        .split-box h3 { font-size: 2em; font-weight: 700; margin-bottom: 20px; }
+        .split-box .lines { font-size: 3em; font-weight: 800; }
+        .split-box ul { list-style: none; margin-top: 20px; }
+        .split-box li {
+            font-size: 1.4em;
+            margin-bottom: 12px;
+            padding-left: 32px;
+            position: relative;
+            line-height: 1.4;
+        }
+        .split-box.before li::before {
+            content: "✕";
+            position: absolute;
+            left: 0;
+            color: #f85149;
+            font-weight: 700;
+        }
+        .split-box.after li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #3fb950;
+            font-weight: 700;
+        }
+        .arrow-mid {
+            display: flex;
+            align-items: center;
+            font-size: 4em;
+            color: #484f58;
+        }
+
+        .phase-row {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .phase-box {
+            flex: 1;
+            border-radius: 14px;
+            padding: 36px 40px;
+        }
+        .phase-box.phase1 { background: rgba(210,153,34,0.08); border: 1px solid #d29922; }
+        .phase-box.phase2 { background: rgba(63,185,80,0.08); border: 1px solid #3fb950; }
+        .phase-box h3 { font-size: 1.8em; margin-bottom: 16px; }
+        .phase-box ul { list-style: none; }
+        .phase-box li {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            padding-left: 28px;
+            position: relative;
+        }
+        .phase-box.phase1 li::before { content: "→"; position: absolute; left: 0; color: #d29922; }
+        .phase-box.phase2 li::before { content: "✓"; position: absolute; left: 0; color: #3fb950; }
+
+        .bug-row {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .bug-box {
+            flex: 1;
+            border-radius: 14px;
+            padding: 40px 44px;
+        }
+        .bug-box.bad { background: rgba(248,81,73,0.08); border: 1px solid #f85149; }
+        .bug-box.good { background: rgba(63,185,80,0.08); border: 1px solid #3fb950; }
+        .bug-box .state { font-size: 1em; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+        .bug-box code {
+            font-size: 1.8em;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .bug-box .desc {
+            font-size: 1.3em;
+            color: #8b949e;
+            line-height: 1.5;
+        }
+        .bug-box .desc code {
+            font-size: 0.9em;
+            display: inline;
+            font-weight: 400;
+            background: #21262d;
+            padding: 2px 10px;
+            border-radius: 4px;
+        }
+
+        .teaser-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .teaser-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #30363d;
+            border-radius: 14px;
+            padding: 36px 32px;
+            text-align: center;
+        }
+        .teaser-card .icon { font-size: 3.5em; margin-bottom: 12px; }
+        .teaser-card h4 { font-size: 1.6em; margin-bottom: 10px; }
+        .teaser-card p { font-size: 1.1em; color: #8b949e; line-height: 1.5; }
+
+        .takeaway-item {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+        .takeaway-num {
+            font-size: 2.5em;
+            flex-shrink: 0;
+            width: 70px;
+            text-align: center;
+        }
+        .takeaway-text h3 { font-size: 1.8em; font-weight: 600; margin-bottom: 8px; }
+        .takeaway-text p { font-size: 1.3em; color: #8b949e; max-width: 700px; line-height: 1.5; }
+
+        .highlight-box {
+            margin-top: 40px;
+            background: rgba(210,153,34,0.08);
+            border: 1px solid #d29922;
+            border-radius: 14px;
+            padding: 28px 36px;
+        }
+        .highlight-box .text {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #d29922;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .ai-card {
+            border-radius: 14px;
+            padding: 32px 36px;
+        }
+        .ai-card h4 { font-size: 1.5em; margin-bottom: 12px; }
+        .ai-card p { font-size: 1.15em; color: #8b949e; line-height: 1.5; margin-bottom: 6px; }
+        .ai-card .badge {
+            font-size: 0.9em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-section { text-align: center; }
+        .cta-box {
+            background: #d29922;
+            color: #0d1117;
+            padding: 40px 60px;
+            border-radius: 16px;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        .cta-box .heading { color: #0d1117; font-size: 2em; font-weight: 700; margin-bottom: 12px; }
+        .cta-box .text { font-size: 1.3em; line-height: 1.5; }
+
+        .author-line {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 50px;
+            padding-top: 36px;
+            border-top: 1px solid #30363d;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            flex-shrink: 0;
+        }
+        .author-info h4 { font-size: 1.4em; font-weight: 600; }
+        .author-info p { font-size: 1.1em; color: #8b949e; }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide slide-dark">
+    <div class="tag">Phase 2 — The Refactoring Sprint</div>
+    <h1>I Thought We Had 2,000 Tests.<br>We Had 2 Monoliths<br>and a Race Condition.</h1>
+    <p class="subtitle subtitle-narrow">
+        The honest story of refactoring 4,000 lines of AI-generated tests
+        and the bug we found by accident.
+    </p>
+
+    <div class="data-row">
+        <div class="data-item">
+            <div class="label">Lines Deleted</div>
+            <div class="value">~4,000</div>
+            <div class="note">2 monoliths → 23 modules</div>
+        </div>
+        <div class="data-item">
+            <div class="label">Tests Running</div>
+            <div class="value">1,200+</div>
+            <div class="note">292 unique × 4 browsers</div>
+        </div>
+        <div class="data-item">
+            <div class="label">Bugs Found</div>
+            <div class="value">1</div>
+            <div class="note">Race — 1 line fix</div>
+        </div>
+        <div class="data-item">
+            <div class="label">AI Models</div>
+            <div class="value">17</div>
+            <div class="note">5 still free · 7 gone</div>
+        </div>
+    </div>
+    <div class="slide-num">1/9</div>
+</div>
+
+<!-- SLIDE 2: THE MESS -->
+<div class="slide slide-dark">
+    <div class="tag">Before &amp; After</div>
+    <h2>Two Files. Nearly 4,000 Lines.<br>No Structure.</h2>
+    <p class="subtitle subtitle-narrow">
+        AI generated fast. AI generated without architecture.
+    </p>
+
+    <div class="split-compare">
+        <div class="split-box before">
+            <h3 style="color:#f85149;">Before</h3>
+            <div class="lines">3,908 lines</div>
+            <ul>
+                <li>UI monolith — 2,349 lines</li>
+                <li>API monolith — 1,559 lines</li>
+                <li>15 duplicated API blocks</li>
+                <li>No shared fixtures</li>
+            </ul>
+        </div>
+        <div class="arrow-mid">→</div>
+        <div class="split-box after">
+            <h3 style="color:#3fb950;">After</h3>
+            <div class="lines">23 modules</div>
+            <ul>
+                <li>9 API modules (auth, posts…)</li>
+                <li>14 UI modules (profile, search…)</li>
+                <li>Shared fixtures.ts</li>
+                <li>CI smoke in 3 minutes</li>
+            </ul>
+        </div>
+    </div>
+    <div class="slide-num">2/9</div>
+</div>
+
+<!-- SLIDE 3: THE SPLIT -->
+<div class="slide slide-dark">
+    <div class="tag">How We Split It</div>
+    <h2>Refactoring AI Code With More AI<br>Was Surprisingly Hard</h2>
+    <p class="subtitle subtitle-narrow">
+        Every tool hit a wall. The human had to finish it.
+    </p>
+
+    <table style="width:100%; border-collapse: collapse; margin-top:30px; font-size:1.3em;">
+        <thead>
+            <tr style="border-bottom: 2px solid #30363d;">
+                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Tool</th>
+                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Result</th>
+                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Limit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom: 1px solid #21262d;">
+                <td style="padding:16px 20px; font-weight:600;">Cursor (Hobby)</td>
+                <td style="padding:16px 20px;">✅ 1 file done</td>
+                <td style="padding:16px 20px; color:#f85149;">50 requests — spent</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #21262d;">
+                <td style="padding:16px 20px; font-weight:600;">MiniMax M2.5 (OpenCode)</td>
+                <td style="padding:16px 20px;">✅ ~20 files refactored</td>
+                <td style="padding:16px 20px; color:#d29922;">Promo ended</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #21262d;">
+                <td style="padding:16px 20px; font-weight:600;">Cline (OpenRouter)</td>
+                <td style="padding:16px 20px; color:#f85149;">❌ Failed</td>
+                <td style="padding:16px 20px; color:#8b949e;">Couldn't handle &gt;2,000 lines</td>
+            </tr>
+            <tr>
+                <td style="padding:16px 20px; font-weight:600; color:#d29922;">Victor (human)</td>
+                <td style="padding:16px 20px; color:#3fb950;">✅ Reviewed &amp; approved</td>
+                <td style="padding:16px 20px; color:#8b949e;">Final say</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="slide-num">3/9</div>
+</div>
+
+<!-- SLIDE 4: THE BUG -->
+<div class="slide slide-dark">
+    <div class="tag">Found by Accident</div>
+    <h2>A Race Condition Lived in Production<br>for 2 Months. Tests Never Caught It.</h2>
+    <p class="subtitle subtitle-narrow">
+        We found it because refactoring forced us to <em>read</em> the code.
+    </p>
+
+    <div class="bug-row">
+        <div class="bug-box bad">
+            <div class="state" style="color:#f85149;">Root Cause</div>
+            <code style="color:#f85149;">datetime.now()</code>
+            <div class="desc">
+                Same microsecond → same JWT<br>
+                <code>unique_violation</code> in PostgreSQL
+            </div>
+        </div>
+        <div class="bug-box good">
+            <div class="state" style="color:#3fb950;">The Fix</div>
+            <code style="color:#3fb950;">jti: uuid.uuid4()</code>
+            <div class="desc">
+                One line in the token payload<br>
+                Every token now unique
+            </div>
+        </div>
+    </div>
+
+    <div class="data-row">
+        <div class="data-item">
+            <div class="label">Bug Age</div>
+            <div class="value" style="color:#f85149;">2 months</div>
+            <div class="note">Lived since day 1</div>
+        </div>
+        <div class="data-item">
+            <div class="label">Trigger</div>
+            <div class="value">4× browsers</div>
+            <div class="note">Parallel runs exposed it</div>
+        </div>
+        <div class="data-item">
+            <div class="label">Detection</div>
+            <div class="value" style="color:#d29922;">Refactoring</div>
+            <div class="note">Reading code, not tests</div>
+        </div>
+    </div>
+    <div class="slide-num">4/9</div>
+</div>
+
+<!-- SLIDE 5: REFACTORING SPRINT -->
+<div class="slide slide-dark">
+    <div class="tag">Phase 2 — Refactoring Sprint</div>
+    <h2>We Didn't Write a Single New Test in May.<br>It Was Our Most Productive Month.</h2>
+    <p class="subtitle subtitle-narrow">
+        Adding tests is easy. Deleting ~4,000 lines is where the value was.
+    </p>
+
+    <div class="phase-row">
+        <div class="phase-box phase1">
+            <h3 style="color:#d29922;">Phase 1 (April)</h3>
+            <ul>
+                <li>750+ tests built</li>
+                <li>API coverage: 94%</li>
+                <li>PBT coverage: 100%</li>
+                <li>2 monoliths ~4,000 lines</li>
+                <li>No CI pipeline</li>
+            </ul>
+        </div>
+        <div class="phase-box phase2">
+            <h3 style="color:#3fb950;">Phase 2 (May)</h3>
+            <ul>
+                <li>Zero new tests written</li>
+                <li>~4,000 lines deleted</li>
+                <li>2 → 23 modular files</li>
+                <li>CI smoke: 12 endpoints / 3 min</li>
+                <li>1 bug found (race condition)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="text">"Sometimes the best test improvement is deleting 4,000 lines and starting cleaner."</div>
+    </div>
+    <div class="slide-num">5/9</div>
+</div>
+
+<!-- SLIDE 6: AI TREADMILL -->
+<div class="slide slide-dark">
+    <div class="tag">The Free AI Market in 2026</div>
+    <h2>17 Models in 2 Months.<br>5 Still Free. 7 Already Gone.</h2>
+    <p class="subtitle subtitle-narrow">
+        The treadmill is real. Don't rely on one provider.
+    </p>
+
+    <div class="ai-grid">
+        <div class="ai-card" style="background: rgba(63,185,80,0.06); border:1px solid #3fb950;">
+            <h4 style="color:#3fb950;">🟢 Active — 6 tools</h4>
+            <p>OpenCode × 3 (glm-5, minimax-m2.7, gpt-5-nano)</p>
+            <p>GitHub Copilot · Ollama qwen2.5:3b · Groq Llama 3.3 70B</p>
+            <span class="badge" style="color:#3fb950;">All free</span>
+        </div>
+        <div class="ai-card" style="background: rgba(248,81,73,0.06); border:1px solid #f85149;">
+            <h4 style="color:#f85149;">🔴 Gone — 7 tools</h4>
+            <p>MiniMax M2.5 (promo) · Cursor Hobby (50 req)</p>
+            <p>Cline · Gemini API (429) · qwen2.5:14b (timeout)</p>
+            <p>Continue.dev · Big Pickle · Mimo V2 Pro/Omni</p>
+            <span class="badge" style="color:#f85149;">Free tier ended</span>
+        </div>
+    </div>
+
+    <div style="margin-top:30px; background: rgba(210,153,34,0.08); border:1px solid #d29922; border-radius:14px; padding:28px 36px;">
+        <div style="display:flex; gap:28px; align-items:center;">
+            <div style="font-size:3em;">🏃</div>
+            <div>
+                <div style="font-size:1.5em; font-weight:600; margin-bottom:6px; color:#d29922;">Free AI is a treadmill</div>
+                <div style="color:#8b949e; font-size:1.2em;">
+                    Keep moving or get left behind. Maintain a stack of 4–5 free tools across providers and be ready to swap any week.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-num">6/9</div>
+</div>
+
+<!-- SLIDE 7: TAKEAWAYS -->
+<div class="slide slide-dark">
+    <div class="tag">What I Learned</div>
+    <h2>Three Honest Takeaways</h2>
+
+    <div style="margin-top:30px;">
+        <div class="takeaway-item">
+            <div class="takeaway-num">1️⃣</div>
+            <div class="takeaway-text">
+                <h3>AI amplifies your prompt quality</h3>
+                <p>"Write tests" generated 4,000 lines of tech debt. A specific prompt with modular structure would have saved Phase 2 entirely.</p>
+            </div>
+        </div>
+        <div class="takeaway-item">
+            <div class="takeaway-num">2️⃣</div>
+            <div class="takeaway-text">
+                <h3>Refactoring finds bugs that testing misses</h3>
+                <p>A race condition lived for 2 months. 1,000+ tests ran daily. None caught it. Reading the code found it in 5 minutes.</p>
+            </div>
+        </div>
+        <div class="takeaway-item">
+            <div class="takeaway-num">3️⃣</div>
+            <div class="takeaway-text">
+                <h3>Free AI is a treadmill, not a foundation</h3>
+                <p>17 tools in 2 months. 7 are gone. 5 remain. Diversify, rotate, never depend on a single provider.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="text">"The biggest lesson? Sometimes the best test improvement is deleting 4,000 lines."</div>
+    </div>
+    <div class="slide-num">7/9</div>
+</div>
+
+<!-- SLIDE 8: WHAT'S NEXT -->
+<div class="slide slide-accent">
+    <div class="tag">Phase 3 — Coming Soon</div>
+    <h2>This Is Only Half the Stack.</h2>
+    <p class="subtitle subtitle-narrow subtitle-white">
+        The monoliths are gone. Architecture is documented.<br>
+        Now we expand across 5 languages.
+    </p>
+
+    <div class="teaser-grid">
+        <div class="teaser-card" style="border-color: #58a6ff;">
+            <div class="icon">🦫</div>
+            <h4>Go Backend</h4>
+            <p>11 tests, 2 packages — users &amp; follows.<br>Race detection, table-driven tests, error handling.</p>
+        </div>
+        <div class="teaser-card" style="border-color: #a371f7;">
+            <div class="icon">#️⃣</div>
+            <h4>C# + Fuzzer</h4>
+            <p>41 tests, 5 modules — Fuzzer, Properties,<br>Schema, Race, Metamorphic. PBT on .NET.</p>
+        </div>
+        <div class="teaser-card" style="border-color: #d29922;">
+            <div class="icon">🧪</div>
+            <h4>Mutation Testing</h4>
+            <p>API + DB mutations + Chaos testing.<br>Bugs found: BUG-005 (XSS), BUG-006 (negative likes).</p>
+        </div>
+    </div>
+
+    <div style="margin-top:30px; text-align:center;">
+        <div style="display:inline-block; background:rgba(255,255,255,0.05); border:1px solid #30363d; border-radius:12px; padding:20px 50px;">
+            <p style="font-size:1.3em; color:#8b949e;">
+                <strong style="color:#e6edf3;">5 languages</strong> · TypeScript · Go · C# · Python · k6<br>
+                <strong style="color:#e6edf3;">7 bugs</strong> found to date · 5 architecture docs · 3 diagrams
+            </p>
+        </div>
+    </div>
+
+    <div class="slide-num">8/9</div>
+</div>
+
+<!-- SLIDE 9: CTA -->
+<div class="slide slide-dark" style="text-align:center; align-items:center;">
+    <div style="max-width: 75%;">
+        <div class="tag" style="margin-bottom:24px;">Your Turn</div>
+
+        <h1 style="max-width:100%; font-size:3.5em; margin-bottom:24px;">
+            What's the messiest test suite<br>
+            AI has helped you create?
+        </h1>
+        <p class="subtitle" style="max-width:100%; font-size:1.8em; margin-bottom:50px;">
+            Share your story in the comments. How did you clean it up —<br>
+            or are you still living with the debt?
+        </p>
+
+        <div style="display:flex; gap:40px; justify-content:center; margin-bottom:50px;">
+            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
+                <div style="font-size:1.8em; font-weight:700; color:#d29922;">~4,000</div>
+                <div style="color:#8b949e; font-size:1em;">Lines deleted</div>
+            </div>
+            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
+                <div style="font-size:1.8em; font-weight:700; color:#d29922;">$0</div>
+                <div style="color:#8b949e; font-size:1em;">Budget</div>
+            </div>
+            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
+                <div style="font-size:1.8em; font-weight:700; color:#d29922;">1 bug</div>
+                <div style="color:#8b949e; font-size:1em;">Found by accident</div>
+            </div>
+        </div>
+
+        <div class="author-line">
+            <div class="author-avatar">🐛</div>
+            <div class="author-info">
+                <h4>Victor P.</h4>
+                <p>QA Automation Engineer · Building in public<br>victor-2026.github.io/qa-automation-playwright</p>
+            </div>
+        </div>
+    </div>
+    <div class="slide-num">9/9</div>
+</div>
+
+</body>
+</html>

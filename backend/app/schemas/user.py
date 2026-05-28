@@ -3,12 +3,14 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
+from app.schemas.common import SafeContent
+
 
 class UserRegister(BaseModel):
     email: EmailStr
     username: str = Field(min_length=3, max_length=30, pattern=r"^[a-zA-Z0-9_]+$")
     password: str = Field(min_length=6, max_length=128)
-    display_name: str = Field(min_length=1, max_length=100)
+    display_name: SafeContent = Field(min_length=1, max_length=100)
 
 
 class UserLogin(BaseModel):
@@ -60,8 +62,8 @@ class UserBrief(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    display_name: str | None = Field(default=None, min_length=1, max_length=100)
-    bio: str | None = Field(default=None, max_length=500)
+    display_name: SafeContent | None = Field(default=None, min_length=1, max_length=100)
+    bio: SafeContent | None = Field(default=None, max_length=500)
     is_private: bool | None = None
 
 

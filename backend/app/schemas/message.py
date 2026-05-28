@@ -3,17 +3,18 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.schemas.common import SafeContent
 from app.schemas.user import UserBrief
 
 
 class ConversationCreate(BaseModel):
     participant_ids: list[uuid.UUID] = Field(min_length=1)
     is_group: bool = False
-    name: str | None = Field(default=None, max_length=100)
+    name: SafeContent | None = Field(default=None, max_length=100)
 
 
 class MessageCreate(BaseModel):
-    content: str = Field(min_length=1, max_length=2000)
+    content: SafeContent = Field(min_length=1, max_length=2000)
     image_url: str | None = None
 
 

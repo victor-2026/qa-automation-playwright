@@ -3,15 +3,16 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.schemas.common import SafeContent
 from app.schemas.user import UserBrief
 
 
 class CommentCreate(BaseModel):
-    content: str = Field(min_length=1, max_length=1000)
+    content: SafeContent = Field(min_length=1, max_length=1000)
 
 
 class CommentUpdate(BaseModel):
-    content: str = Field(min_length=1, max_length=1000)
+    content: SafeContent = Field(min_length=1, max_length=1000)
 
 
 class CommentResponse(BaseModel):

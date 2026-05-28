@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
@@ -31,7 +32,9 @@ async def follow_user(
         raise BadRequestException("Cannot follow yourself")
 
     existing = await db.execute(
-        select(Follow).where(Follow.follower_id == current_user.id, Follow.following_id == target.id)
+        select(Follow)
+        .where(Follow.follower_id == current_user.id, Follow.following_id == target.id)
+        .with_for_update()
     )
     if existing.scalar_one_or_none():
         raise ConflictException("Already following or request pending")
@@ -46,7 +49,11 @@ async def follow_user(
     )
     db.add(notification)
 
-    await db.flush()
+    try:
+        await db.flush()
+    except IntegrityError:
+        raise ConflictException("Already following or request pending")
+
     await db.refresh(follow)
     return FollowResponse.model_validate(follow)
 
@@ -63,7 +70,9 @@ async def unfollow_user(
         raise NotFoundException(f"User '{username}' not found")
 
     follow_result = await db.execute(
-        select(Follow).where(Follow.follower_id == current_user.id, Follow.following_id == target.id)
+        select(Follow)
+        .where(Follow.follower_id == current_user.id, Follow.following_id == target.id)
+        .with_for_update()
     )
     follow = follow_result.scalar_one_or_none()
     if follow is None:
