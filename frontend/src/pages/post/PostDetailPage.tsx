@@ -77,7 +77,7 @@ export default function PostDetailPage() {
   }
 
   if (loading) return <div className="text-center py-8 text-gray-400">{t('common.loading')}</div>
-  if (!post) return <div className="text-center py-8 text-gray-500">{t('common.not_found')}</div>
+  if (!post) return <div className="text-center py-8 text-gray-500" data-testid="post-not-found">{t('common.not_found')}</div>
 
   const renderComment = (comment: Comment, depth: number = 0) => {
     const cid = tid(comment.id)

@@ -43,7 +43,7 @@ export default function FeedPage() {
       {loading ? (
         <div className="text-center py-8 text-gray-400">{t('feed.loading')}</div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-12" data-testid="feed-empty-state">
           <p className="text-gray-500 text-lg">{t('feed.empty')}</p>
           <p className="text-gray-400 text-sm mt-1">{t('feed.empty_hint')}</p>
         </div>

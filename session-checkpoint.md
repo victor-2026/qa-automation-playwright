@@ -1,97 +1,54 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-05-27
+**Date:** 2026-05-28
 **Status:** COMPLETE
-
-## Session 10 Final Verification
-- Frontend `https://qa-automation-playwright-front.onrender.com` — 200 ✅
-- Backend `https://buzzhive-test.onrender.com` — health OK ✅
-- nginx proxy: `/api/` и `/uploads/` прокидываются ✅
-- Sample images: `/uploads/images/sample1.jpg` → 200 ✅
-- Smoke tests: 12/12 через фронтенд-прокси ✅
-- CI: `BACKEND_URL=...` прописан в Actions vars, `--project=chromium` для скорости
 
 ## Work Completed
 
-### Session 10 — Backend Stabilization + Frontend Deploy + Sample Images (3 sessions)
+### Session 10 — Mutation Testing (3 stages, 15 tests)
 
-### Phase 2 Article Kit (`phase2-article-kit.md`)
-- Created comprehensive 341-line working document for Phase 2 LinkedIn article
-- **Real numbers established:** ~3,908 lines deleted (not 4,600), ~1,204 tests (not 2,000+)
-- 6 headline variants with honest metrics (selected: *"I Spent 2 Months Refactoring 4,000 Lines of AI-Generated Tests. Here's What Survived."*)
-- **Narrative correction:** Technical debt = my fault. I started without a strong prompt, AI amplified the lack of direction.
-- **Language correction:** Everywhere "monoliths deleted" → "monoliths split into 23 modules"
-- Full Render timeline added (25 Apr → 27 May, 10+ commits)
-- AI tools matrix: 17 models/instruments over 2 months, 5 still free
-- Fact-check table with 9 assertions + verdicts
+### Stage 1: API Response Mutation (8 tests, all pass)
+- `e2e/mutation/api-mutation.spec.ts` — 8 mutation tests via `page.route()`
+- MUT-001..008: likes_count zeroed, username null, login 500, empty feed, unverified, missing avatar, 401 redirect, XSS escaped
+- Key discovery: `route.fulfill({ response, json })` causes gzip encoding mismatch → use `route.fulfill({ json })` only
+- Frontend URL pattern for `page.route()` is `**/api/*` (not `API_BASE/*`)
 
-### Backend Stabilization (3 commits)
-- Global exception handlers (Exception, HTTPException, RequestValidationError → JSON)
-- DB connection pool: pool_size=10, max_overflow=20, pool_pre_ping
-- URL transform: urlparse/urlunparse instead of split("?")[0], preserves sslmode=require
-- try/except around reset_database() and UUID(user_id)
-- Removed unused slowapi==0.1.9 (Pillow kept for sample images)
+### Stage 2: DB Data Mutation (4 tests, 2 bugs found)
+- `e2e/mutation/db-mutation.spec.ts` — 4 tests via `pg` direct queries
+- DBMUT-001 (pass): banned user → login redirect
+- DBMUT-002 (pass): deleted post → "not found"
+- DBMUT-003 (FAIL): **BUG-005** XSS in post content NOT escaped (Critical)
+- DBMUT-004 (FAIL): **BUG-006** negative `likes_count` shown as `-5` (Low)
+- Key discoveries: `tid()` truncates UUIDs, `page.request` needs explicit Bearer token, local tests need `http://localhost:8000/api` not Render URL
 
-### CI/CD Improvements
-- `|| true` removed from all workflow steps — test failures now actually fail the build
-- `quality-gates` decoupled from `render-e2e` — lint/typecheck/audit run independently
-- `--project=chromium` added to smoke test steps — cuts CI time from 3min → ~30s
-- New `.github/workflows/uptime.yml` — checks Render health every 15 min, GitHub email on failure
+### Stage 3: Chaos Engineering (3 tests, all pass)
+- `e2e/mutation/chaos.spec.ts` — docker compose stop/restart
+- CHAOS-001..003: db down, backend down, restart recovers
+- Guarded by `DOCKER_CHAOS=1` env var
 
-### Smoke Tests Expanded
-- Expanded from 6 → 12 endpoints (register, user lookup, create post, refresh token, admin stats)
-- Added `safeJson()` helper — handles non-JSON (HTML) responses without crashing
+### Bugs Documented
+- `BUGS.md` — +BUG-005 (Critical, XSS), +BUG-006 (Low, negative likes)
+- `MUTATION_PLAN.md` — full results section with tables and key learnings
 
-### GO-Backend Branch (local only)
-- Created from `/Users/Shared/Projects/qa-automation-sandbox` clone
-- Ported 5 Go Playwright login tests, migration docs, agent rules, VS Code configs
-- Fixed broken import paths and Render URL
+### Source Changes
+- `frontend/src/pages/feed/FeedPage.tsx` — added `data-testid="feed-empty-state"` to empty state div
+- `frontend/src/pages/post/PostDetailPage.tsx` — added `data-testid="post-not-found"` to not-found div
 
-### Frontend Deploy to Render
-- Fixed `frontend/nginx.conf`: added `proxy_ssl_server_name on;`, explicit `Host` header, `proxy_ssl_verify off`
-- Created `render.yaml` blueprint: defines both backend (Docker) + frontend (Docker) services
-- Updated `frontend/Dockerfile`: COPY paths use `frontend/` prefix (build context = repo root)
-- Updated `docker-compose.yml`: frontend build uses `context: .` (matches Render config)
-- Frontend live at `https://qa-automation-playwright-front.onrender.com` — nginx proxies /api/ and /uploads/ to backend
-- Both services auto-deploy on push to main via Render webhook
-
-### Sample Images (4 placeholders)
-- Created `backend/app/services/uploads.py` with `ensure_sample_images()`
-- Generates 4 JPEGs (400×300, 640×480, 800×600, 320×240) in `/app/uploads/images/`
-- Called in lifespan after seed data; runs on every container restart
-- Accessible at `/uploads/images/sample1.jpg` etc. via StaticFiles mount
-- Added `Pillow==11.1.0` back to requirements.txt
-- Added try/except + logging to `ensure_sample_images()` for resilience
-
-### Diagnostic Endpoints
-- `GET /api/diagnostic/pillow` — checks Pillow installation + JPEG support
-- `GET /api/diagnostic/uploads` — lists all files in upload directory
-
-### Memory & Artifacts
-- Updated `~/.opencode-memory.md` with session date and Render stabilization
-- `.phase2-article-kit.md` → `phase2-article-kit.md` (visible in Obsidian)
-- Renamed global memory start marker issue
+## Modified Files
+- `e2e/mutation/api-mutation.spec.ts` — NEW, 8 tests
+- `e2e/mutation/db-mutation.spec.ts` — NEW, 4 tests
+- `e2e/mutation/chaos.spec.ts` — NEW, 3 tests
+- `BUGS.md` — +BUG-005, BUG-006
+- `MUTATION_PLAN.md` — results section
+- `frontend/src/pages/feed/FeedPage.tsx` — data-testid for empty state
+- `frontend/src/pages/post/PostDetailPage.tsx` — data-testid for not found
 
 ## Verification Results
-- Render health: `{"status":"healthy","database":"connected"}` ✅
-- Pillow: installed, JPEG support OK ✅
-- Sample images: 4 files in `/app/uploads/images/`, 200 on GET ✅
-- Frontend: 200 on health check via nginx proxy ✅
-- Smoke tests: 12 endpoints, all with safe JSON parsing
-- Uptime monitor: workflow created, runs every 15 min
-
-## Deployment Architecture
-- **Backend:** `https://buzzhive-test.onrender.com` (Docker, python:3.12-slim)
-- **Frontend:** `https://qa-automation-playwright-front.onrender.com` (Docker, nginx → proxies /api/ + /uploads/ to backend)
-- **Auto-deploy:** Both services deploy on push to `main` via Render webhook
-- **Build context:** Repo root (`render.yaml`), Dockerfile paths with `frontend/` prefix
-
-## Blockers
-- None
+- API mutation: 8/8 pass ✅
+- DB mutation: 2/4 pass, 2 bugs found ✅
+- Chaos: 3/3 pass (manual, `DOCKER_CHAOS=1`) ✅
 
 ## Next Steps
-1. Choose final headline for Phase 2 article
-2. Write Round 2 full article text
-3. Take screenshots (tree e2e/, Copilot $50 bill if exists)
-4. Create NotebookLM infographics (spaghetti→modules, Phase 1 vs Phase 2)
-5. Optionally add Technical Achievement Generator to career-mentor skill
+- Fix BUG-005 (XSS) — escape HTML in PostCard content
+- Fix BUG-006 (negative likes) — `Math.max(0, likesCount)`
+- UI Fuzzing tests (`e2e/mutation/ui-fuzz.spec.ts`)
