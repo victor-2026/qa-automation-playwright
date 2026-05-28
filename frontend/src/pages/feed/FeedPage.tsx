@@ -3,6 +3,7 @@ import { postsApi } from '../../api/posts'
 import PostCard from '../../components/post/PostCard'
 import PostComposer from '../../components/post/PostComposer'
 import { useI18n } from '../../lib/i18n'
+
 import type { Post } from '../../types'
 
 export default function FeedPage() {
