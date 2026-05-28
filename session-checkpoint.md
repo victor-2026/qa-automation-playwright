@@ -3,34 +3,44 @@
 **Date:** 2026-05-28
 **Status:** COMPLETE
 
-## Session 12 — SVG font fix + Publish May v2
+## Session 12 — Bug fixes: BUG-001..006
 
-### Work Completed
-- **SVG font size fixed**: header 13→15px bold, body 10→12px medium (+20%)
-- **Report-May-2026-v2.html** regenerated with bigger fonts in all 3 diagrams
-- **index.html** updated: 5 honest metrics cards (1200+ runs, 5 langs, 7 bugs), v2 link, What's New
-- **Report-May-2026.md** overwritten with v2 content (honest numbers, architecture docs)
-- **Published**: commit `a497c2e` pushed to `main`
+### BUG-005 (False Positive, Fixed)
+- React автоматически экранирует строки в JSX — XSS нет
+- `dangerouslySetInnerHTML` не используется нигде в проекте
+- Поправлен тест: проверять `innerHTML` на `&lt;`, а не `textContent`
+
+### BUG-006 (Fixed)
+- `PostCard.tsx`: `{Math.max(0, likesCount)}` — отрицательные значения не показываются
+- Поправлен тест: ожидает `\d+` вместо `not.toMatch(/^-\d+$/)`
+
+### BUG-001 (Fixed)
+- Добавлен `SafeContent` — `Annotated[str, BeforeValidator(...)]` в `common.py`
+- Валидатор вырезает control chars (Cc), surrogates (Cs), non-characters (`U+FDD0-U+FDEF`, `U+FFFE-U+FFFF`)
+- Применён ко всем текстовым полям: PostCreate/Update, CommentCreate/Update, MessageCreate, ConversationCreate.name, UserRegister/Update.display_name/bio
+
+### BUG-003/004 (Fixed)
+- `auth.py:register()` — удалён check-then-insert паттерн (TOCTOU race)
+- `IntegrityError` ловится → `ConflictException` (409)
+- Параллельная регистрация: один succeeds (201), остальные → 409
+
+### BUG-002 (Fixed)
+- `follows.py:follow_user()` + `unfollow_user()` — `.with_for_update()` на SELECT Follow
+- Serializes concurrent follow/unfollow для одной пары пользователей
+- `IntegrityError` catch как safety net для follow_user
 
 ### Files Modified
-- `Report-May-2026.md` — v2 markdown (honest metrics, architecture)
-- `Report-May-2026-v2.html` — SVG font 15/12px, regenerated
-- `Report-May-2026-v2.md` — unchanged
-- `index.html` — 5 metrics, v2 link, What's New
-- `.gitignore` — added `**/bin/` `**/obj/`
-- `session-checkpoint.md` — updated
-
-### Published (new files)
-- `csharp-backend/` — 7 source files + TEST_ARCHITECTURE.md + Canvas
-- `go-backend/` — 2 test files + TEST_ARCHITECTURE.md + Canvas + CSharp-Testing-Plans.md
-- `phase2-article-kit.md` — 407 lines
-
-### Verification
-- Git: 23 files, 3900 insertions, pushed to origin/main ✅
-- GitHub Pages: will auto-build via Jekyll ✅
-- No build artifacts committed (bin/, obj/ excluded via .gitignore) ✅
+- `backend/app/schemas/common.py` — SafeContent тип + regex control chars
+- `backend/app/schemas/post.py` — SafeContent на content поля
+- `backend/app/schemas/comment.py` — SafeContent, +UserBrief import
+- `backend/app/schemas/message.py` — SafeContent
+- `backend/app/schemas/user.py` — SafeContent на display_name/bio
+- `backend/app/api/auth.py` — register() race fix
+- `backend/app/api/follows.py` — follow/unfollow +for_update()
+- `frontend/src/components/post/PostCard.tsx` — Math.max for likes
+- `e2e/mutation/db-mutation.spec.ts` — fix XSS test, fix likes test
+- `BUGS.md` — updated fixed bugs
 
 ## Next Steps
-1. Verify Render deploy for root Dockerfile
-2. Fix BUG-005 (XSS) — escape HTML in PostCard
-3. Fix BUG-006 (negative likes) — `Math.max(0, likesCount)`
+1. Verify Render deploy for `9f602cd`
+2. Stress tests — fix timeout on Render free tier
