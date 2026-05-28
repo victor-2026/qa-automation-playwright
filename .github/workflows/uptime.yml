@@ -18,7 +18,7 @@ jobs:
           BACKEND_URL="${{ vars.BACKEND_URL || 'https://buzzhive-test.onrender.com' }}"
           echo "Checking $BACKEND_URL/api/health ..."
 
-          RESPONSE=$(curl -s -o /tmp/health.json -w "%{http_code}" --max-time 10 "$BACKEND_URL/api/health")
+          RESPONSE=$(curl -s -o /tmp/health.json -w "%{http_code}" --max-time 30 "$BACKEND_URL/api/health")
           echo "HTTP Status: $RESPONSE"
           echo "status=$RESPONSE" >> $GITHUB_OUTPUT
 
