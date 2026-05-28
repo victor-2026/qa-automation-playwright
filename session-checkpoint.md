@@ -1,47 +1,36 @@
 # Session Checkpoint - qa-automation-sandbox
 
 **Date:** 2026-05-28
-**Status:** COMPLETE (session ended)
+**Status:** COMPLETE
 
-## Session 11 — Render Frontend Deploy (ongoing saga)
+## Session 12 — SVG font fix + Publish May v2
 
-### Dockerfile: 7 attempts
-
-| Commit | Approach | Result |
-|--------|----------|--------|
-| `0b06746` | Original `frontend/Dockerfile` with `frontend/` COPY prefix | ✅ Last working deploy (Mar 30) |
-| `33fe71f` | Same Dockerfile (blank line trigger) | ❌ `"/frontend/nginx.conf": not found` |
-| `7ed25c4` | Removed `frontend/` COPY prefix | ❌ `"/nginx.conf": not found` |
-| `4128304` | Restored `frontend/` prefix | ❌ `"/frontend/nginx.conf": not found` |
-| `413d508` | Moved to root as `Dockerfile.frontend` | ❌ `open Dockerfile: no such file or directory` |
-| `8ff6512` | Renamed root to `Dockerfile` | ❌ `open Dockerfile: no such file or directory` |
-| `76f7419` | Restored `frontend/Dockerfile`, `COPY --from=builder` | ❌ `open Dockerfile: no such file or directory` |
-| `473ea47` | Root `Dockerfile` + `frontend/Dockerfile` | ⏳ awaiting Render build |
-
-### Key Discovery
-- Render **ignores** `dockerfilePath` in `render.yaml` for existing services (service was created manually, Blueprint not synced)
-- Render expects `Dockerfile` at repo root
-- BuildKit cache corruption: `COPY frontend/nginx.conf` fails with `failed to compute cache key` even though file exists
-- Fix: `COPY --from=builder` bypasses context checksum issue
-
-### Current State
-- Root `Dockerfile` + `frontend/Dockerfile` (identical, `COPY --from=builder`)
-- Both build locally: `docker build . --no-cache` ✅, `docker compose build frontend` ✅
-- Frontend serving from old deploy `0b06746`: `HTTP/2 200` ✅
-- Backend healthy: `{"status":"healthy","database":"connected"}` ✅
-- 17 smoke tests pass on Render (12 API + 5 UI) ✅
-- Render free tier: polling-only (no webhook), deploys take 10-20 min
+### Work Completed
+- **SVG font size fixed**: header 13→15px bold, body 10→12px medium (+20%)
+- **Report-May-2026-v2.html** regenerated with bigger fonts in all 3 diagrams
+- **index.html** updated: 5 honest metrics cards (1200+ runs, 5 langs, 7 bugs), v2 link, What's New
+- **Report-May-2026.md** overwritten with v2 content (honest numbers, architecture docs)
+- **Published**: commit `a497c2e` pushed to `main`
 
 ### Files Modified
-- `Dockerfile` — NEW (root, for Render)
-- `frontend/Dockerfile` — completely rewritten, `COPY --from=builder`
-- `render.yaml` — `dockerfilePath` reverted to `./frontend/Dockerfile`
-- `docker-compose.yml` — `dockerfile: frontend/Dockerfile`
+- `Report-May-2026.md` — v2 markdown (honest metrics, architecture)
+- `Report-May-2026-v2.html` — SVG font 15/12px, regenerated
+- `Report-May-2026-v2.md` — unchanged
+- `index.html` — 5 metrics, v2 link, What's New
+- `.gitignore` — added `**/bin/` `**/obj/`
 - `session-checkpoint.md` — updated
 
+### Published (new files)
+- `csharp-backend/` — 7 source files + TEST_ARCHITECTURE.md + Canvas
+- `go-backend/` — 2 test files + TEST_ARCHITECTURE.md + Canvas + CSharp-Testing-Plans.md
+- `phase2-article-kit.md` — 407 lines
+
+### Verification
+- Git: 23 files, 3900 insertions, pushed to origin/main ✅
+- GitHub Pages: will auto-build via Jekyll ✅
+- No build artifacts committed (bin/, obj/ excluded via .gitignore) ✅
+
 ## Next Steps
-1. Verify Render deploy for commit `473ea47` (root Dockerfile with `COPY --from=builder`)
-2. If still fails: clear Render build cache in dashboard (Settings → Build Cache → Clear)
-3. Fix BUG-005 (XSS) — escape HTML in PostCard content
-4. Fix BUG-006 (negative likes) — `Math.max(0, likesCount)`
-5. UI Fuzzing tests (`e2e/mutation/ui-fuzz.spec.ts`)
+1. Verify Render deploy for root Dockerfile
+2. Fix BUG-005 (XSS) — escape HTML in PostCard
+3. Fix BUG-006 (negative likes) — `Math.max(0, likesCount)`
