@@ -48,6 +48,29 @@
 - DB mutation: 2/4 pass, 2 bugs found ✅
 - Chaos: 3/3 pass (manual, `DOCKER_CHAOS=1`) ✅
 
+## Session 10.5 — UI Smoke Tests on Render
+
+### Infra Fix
+- `frontend/Dockerfile`: removed `frontend/` prefix in COPY paths — Render uses Dockerfile directory as build context
+- `docker-compose.yml`: changed frontend build `context: ./frontend` to match
+
+### UI Smoke Tests
+- `e2e/ui/smoke-ui.spec.ts` — 5 tests (UI-1..UI-5): homepage loads, login page, login flow, wrong password error, logout
+- Warm-up via `beforeAll` (5 retries × 2s) for Render cold start (503)
+- CI `FRONTEND_URL` var added
+
+### CI Updates
+- `playwright.yml` render-e2e: +UI smoke step after API smoke
+- `nightly.yml`: +UI smoke step after API smoke
+
+## Additional Fixes
+- Render deploy failure: `nginx.conf not found` — build context mismatch between Render (Dockerfile dir) and local (repo root). Fixed by matching both to `frontend/`.
+
+## Verification Results (Updated)
+- **17 smoke tests pass on Render**: 12 API + 5 UI ✅ (15.5s / 19.8s)
+- Frontend deploy fixed (build context issue) ✅
+- CI green on all jobs ✅
+
 ## Next Steps
 - Fix BUG-005 (XSS) — escape HTML in PostCard content
 - Fix BUG-006 (negative likes) — `Math.max(0, likesCount)`
