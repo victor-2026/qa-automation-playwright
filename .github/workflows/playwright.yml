@@ -239,6 +239,15 @@ jobs:
           TEST_BOB_PASSWORD: bob123
         run: npx playwright test e2e/api/smoke-api.spec.ts --project=chromium --retries=2
 
+      - name: Run UI Smoke tests on Frontend
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
+        env:
+          APP_BASE_URL: ${{ vars.FRONTEND_URL }}
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          TEST_USERNAME: alice@buzzhive.com
+          TEST_PASSWORD: alice123
+        run: npx playwright test e2e/ui/smoke-ui.spec.ts --project=chromium --retries=2
+
       - name: No backend available
         if: steps.check-backend.outputs.BACKEND_AVAILABLE != 'true'
         run: echo "⚠️ Render backend not available - skipping E2E tests"
