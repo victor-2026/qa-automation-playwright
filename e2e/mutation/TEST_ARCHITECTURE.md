@@ -173,6 +173,29 @@ test.setTimeout(60000);
 
 ---
 
+## Stage 4 — UI Fuzzing
+
+**Файл:** `e2e/mutation/ui-fuzz.spec.ts`
+
+**Подход:** Подаём на UI граничные/невалидные значения через формы и URL-параметры. Проверяем, что фронтенд не падает и корректно обрабатывает ошибки.
+
+### Traceability Matrix
+
+| Тест | Что делаем | Ожидание |
+|------|-----------|----------|
+| FUZZ-001 | Пустые поля логина | HTML5 validation срабатывает |
+| FUZZ-002 | Очень длинный email при логине | 422 → сообщение об ошибке |
+| FUZZ-003 | SQL инъекция в email | 401, не 500 |
+| FUZZ-004 | Double-click на кнопке логина | ≤ 2 запроса |
+| FUZZ-005 | Очень длинный контент поста (3000+) | 422 rejected |
+| FUZZ-006 | Unicode/эмодзи/XSS в контенте поста | Отправляется без ошибок |
+| FUZZ-007 | XSS в поисковом запросе | Не рендерится как HTML |
+| FUZZ-008 | Очень длинный поисковый запрос (5000+) | Страница не падает |
+| FUZZ-009 | Регистрация с существующим email | 409 Conflict показан |
+| FUZZ-010 | Короткий пароль при регистрации | HTML5 validation блокирует |
+
+---
+
 ## Running Guide
 
 ```bash
@@ -184,6 +207,9 @@ npx playwright test e2e/mutation/db-mutation.spec.ts --project=chromium
 
 # Stage 3 — Chaos Engineering (только локально, нужен Docker Compose)
 DOCKER_CHAOS=1 npx playwright test e2e/mutation/chaos.spec.ts --project=chromium
+
+# Stage 4 — UI Fuzzing (локально или на Render)
+npx playwright test e2e/mutation/ui-fuzz.spec.ts --project=chromium
 
 # All mutation tests
 npx playwright test e2e/mutation/ --project=chromium
@@ -211,4 +237,5 @@ npx playwright test e2e/mutation/ --project=chromium
 | DB mutation только локально | Нет доступа к Render Postgres из CI |
 | Chaos только локально | Нет Docker в GHA ubuntu runner |
 | API mutation не тестирует бэкенд | Только фронтенд-обработку ответов |
-| 15 тестов vs 100+ при Stryker | Без кода бэкенда — максимум возможного |
+| UI Fuzzing зависит от data-testid | Тесты ломаются при изменении UI |
+| 25 тестов vs 100+ при Stryker | Без кода бэкенда — максимум возможного |
