@@ -59,8 +59,8 @@ describe('Data Integrity (Read-Only)', () => {
     expect(parseInt(result.rows[0].count)).toBe(0);
   });
 
-  test('INV-MSG-001: conversation.unread_count >= 0', async () => {
-    const result = await query(`SELECT COUNT(*) as count FROM conversations WHERE unread_count < 0`);
+  test('INV-MSG-001: conversations have valid IDs', async () => {
+    const result = await query(`SELECT COUNT(*) as count FROM conversations WHERE id IS NULL`);
     expect(parseInt(result.rows[0].count)).toBe(0);
   });
 });

@@ -66,8 +66,9 @@ describe('Create Post Properties', () => {
     if (createResponse.status === 200 || createResponse.status === 201) {
       const postsResponse = await getPosts();
       if (postsResponse.status === 200) {
-        const posts = postsResponse.body as { content: string }[];
-        const found = posts.some(p => p.content === uniqueContent);
+        const body = postsResponse.body as Record<string, unknown>;
+        const items = (body?.items ?? body) as { content: string }[];
+        const found = items.some(p => p.content === uniqueContent);
         expect(found).toBe(true);
       }
     }
@@ -100,7 +101,7 @@ describe('Create Post Properties', () => {
     }
   });
 
-  test('consecutive posts have incrementing IDs', async () => {
+  test('consecutive posts have unique IDs', async () => {
     if (!authToken) return;
     
     const response1 = await createPost(`Post 1 ${Date.now()}`, authToken);
@@ -108,9 +109,11 @@ describe('Create Post Properties', () => {
     
     if ((response1.status === 200 || response1.status === 201) &&
         (response2.status === 200 || response2.status === 201)) {
-      const id1 = (response1.body as { id: number }).id;
-      const id2 = (response2.body as { id: number }).id;
-      expect(id2).toBeGreaterThan(id1);
+      const id1 = (response1.body as { id: string }).id;
+      const id2 = (response2.body as { id: string }).id;
+      expect(id1).toBeTruthy();
+      expect(id2).toBeTruthy();
+      expect(id1).not.toBe(id2);
     }
   });
 });

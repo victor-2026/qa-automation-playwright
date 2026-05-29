@@ -16,7 +16,9 @@ describe('Notification Properties', () => {
     
     const response = await getNotifications(authToken);
     expect([200, 500]).toContain(response.status);
-    expect(Array.isArray(response.body)).toBe(true);
+    const body = response.body as Record<string, unknown>;
+    const items = body?.items ?? body;
+    expect(Array.isArray(items)).toBe(true);
   });
 
   test('getNotifications without token returns 401', async () => {
@@ -34,12 +36,12 @@ describe('Notification Properties', () => {
     
     const response = await getNotifications(authToken);
     if (response.status === 200) {
-      const notifications = response.body as unknown[];
+      const body = response.body as Record<string, unknown>;
+      const notifications = (body?.items ?? body) as Record<string, unknown>[];
       if (notifications.length > 0) {
-        const firstNotification = notifications[0] as Record<string, unknown>;
+        const firstNotification = notifications[0];
         expect(firstNotification).toHaveProperty('id');
         expect(firstNotification).toHaveProperty('type');
-        expect(typeof firstNotification.id).toBe('number');
         expect(typeof firstNotification.type).toBe('string');
       }
     }
@@ -50,7 +52,8 @@ describe('Notification Properties', () => {
     
     const response = await getNotifications(authToken);
     if (response.status === 200) {
-      const notifications = response.body as { type: string }[];
+      const body = response.body as Record<string, unknown>;
+      const notifications = (body?.items ?? body) as { type: string }[];
       const validTypes = ['like', 'comment', 'follow', 'mention', 'system'];
       
       for (const notification of notifications) {
@@ -68,7 +71,12 @@ describe('Notification Properties', () => {
     const response2 = await getNotifications(authToken);
     
     if (response1.status === 200 && response2.status === 200) {
-      expect(Array.isArray(response1.body)).toBe(response2.body instanceof Array);
+      const body1 = response1.body as Record<string, unknown>;
+      const body2 = response2.body as Record<string, unknown>;
+      const items1 = body1?.items ?? body1;
+      const items2 = body2?.items ?? body2;
+      expect(Array.isArray(items1)).toBe(true);
+      expect(Array.isArray(items2)).toBe(true);
     }
   });
 
