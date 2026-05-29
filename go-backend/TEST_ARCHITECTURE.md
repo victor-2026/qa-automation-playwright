@@ -1,7 +1,7 @@
 # Go Test Architecture
 
 ## Purpose
-Black-box QA tests for Buzzhive social network API. Covers Users and Follows endpoints via `net/http`. Portable across local Docker and Render staging.
+Black-box QA tests for Buzzhive social network API. Covers Auth, Posts, Users, Follows endpoints via `net/http`, plus Playwright Go browser tests. Portable across local Docker and Render staging.
 
 ## Stack
 
@@ -9,6 +9,7 @@ Black-box QA tests for Buzzhive social network API. Covers Users and Follows end
 |-----------|---------|
 | Language | Go 1.26 |
 | API testing | `net/http` (stdlib) |
+| Browser testing | `playwright-go` v0.5700.1 |
 | Assertions | `testify/assert`, `testify/require` |
 | JSON | `encoding/json` (stdlib) |
 
@@ -16,14 +17,53 @@ Black-box QA tests for Buzzhive social network API. Covers Users and Follows end
 
 ```
 go-backend/
-├── api/
-│   ├── users_test.go        — 6 tests (list/profile/update/unauthorized)
-│   └── follows_test.go      — 5 tests (follow/unfollow/self/dup/unauth)
+├── go.mod                       — module definition
+├── go.sum                       — dependency checksums
+├── api/                         — package api (net/http tests)
+│   ├── client.go                — BaseURL, HTTPClient, WarmUp, BearerHeader
+│   ├── helpers.go               — Login, LoginResponse, UserProfile, Post types
+│   ├── helpers_test.go          — requireHTTPStatus helper
+│   ├── auth_test.go             — 8 tests (login, register, /auth/me)
+│   ├── posts_test.go            — 5 tests (list, create, get by ID)
+│   ├── users_test.go            — 6 tests (list, profile, update)
+│   ├── follows_test.go          — 5 tests (follow, unfollow, self, dup)
+│   └── warmup_test.go           — TestMain warm-up for Render cold start
+├── cmd/
+│   ├── api-tests/               — package main (Playwright Go API tests)
+│   │   └── login_test.go        — 5 tests (login flow, wrong pass, SQL injection)
+│   └── ui-tests/                — package main (Playwright Go UI tests)
+│       └── auth_test.go         — 4 tests (session, admin, logout, register)
+└── TEST_ARCHITECTURE.md         — this file
 ```
+
+**Total: 24 API tests + 9 Playwright Go tests = 33 Go tests**
 
 ## Test Matrix
 
-### api/ — API Users (net/http)
+### api/ — Auth (net/http)
+
+| Go Test | TS Equivalent | Endpoint | Status |
+|---------|---------------|----------|--------|
+| `TestAuthLoginValid` | `AUTH-API-001` | `POST /auth/login` | ✅ |
+| `TestAuthLoginWrongPassword` | `AUTH-API-002` | `POST /auth/login` | ✅ |
+| `TestAuthLoginNonexistentEmail` | `AUTH-API-003` | `POST /auth/login` | ✅ |
+| `TestAuthLoginEmptyBody` | `AUTH-API-005` | `POST /auth/login` | ✅ |
+| `TestAuthMeValidToken` | `AUTH-API-008` | `GET /auth/me` | ✅ |
+| `TestAuthMeNoToken` | `AUTH-API-010` | `GET /auth/me` | ✅ |
+| `TestAuthRegisterNewUser` | `AUTH-API-003` | `POST /auth/register` | ✅ |
+| `TestAuthRegisterDuplicate` | `AUTH-API-004` | `POST /auth/register` | ✅ |
+
+### api/ — Posts (net/http)
+
+| Go Test | TS Equivalent | Endpoint | Status |
+|---------|---------------|----------|--------|
+| `TestPostsListPublic` | `POST-API-001` | `GET /posts` | ✅ |
+| `TestPostsListAuthenticated` | `POST-API-002` | `GET /posts` (auth) | ✅ |
+| `TestPostsCreate` | `POST-API-003` | `POST /posts` | ✅ |
+| `TestPostsCreateUnauthorized` | `POST-API-006` | `POST /posts` (no token) | ✅ |
+| `TestPostsGetByID` | `POST-API-004` | `GET /posts/{id}` | ✅ |
+
+### api/ — Users (net/http)
 
 | Go Test | TS Equivalent | Endpoint | Status |
 |---------|---------------|----------|--------|
@@ -34,7 +74,7 @@ go-backend/
 | `TestUsersUpdateProfile` | `USERS-API-005` | `PATCH /users/me` | ✅ |
 | `TestUsersUpdateProfileUnauthorized` | `USERS-API-006` | `PATCH /users/me` (no token) | ✅ |
 
-### api/ — API Follows (net/http)
+### api/ — Follows (net/http)
 
 | Go Test | TS Equivalent | Endpoint | Status |
 |---------|---------------|----------|--------|
@@ -43,6 +83,20 @@ go-backend/
 | `TestFollowUnauthorized` | `FOLLOW-API-005` | `POST /users/{username}/follow` (no token) | ✅ |
 | `TestUnfollowUser` | `FOLLOW-API-002` | `DELETE /users/{username}/follow` | ✅ |
 | `TestFollowDuplicate` | `FOLLOW-API-004` | `POST /users/{username}/follow` (duplicate) | ✅ |
+
+### cmd/ — Playwright Go (browser tests)
+
+| Go Test | TS Equivalent | Description | Status |
+|---------|---------------|-------------|--------|
+| `TestUserLoginFlow` | `AUTH-001` | Login via UI | ✅ |
+| `TestUserLoginWrongPassword` | `AUTH-002` | Wrong password UI error | ✅ |
+| `TestUserLoginInvalidEmail` | `AUTH-009` | Non-existent email | ✅ |
+| `TestUserLoginHTML5EmailValidation` | `AUTH-009` | Browser email validation | ✅ |
+| `TestUserLoginSQLInjection` | `AUTH-010` | SQL injection (4 payloads) | ✅ |
+| `TestUILoginSessionPersists` | — | Login + reload + check token | ✅ |
+| `TestUIAdminLogin` | — | Admin login via UI | ✅ |
+| `TestUILogout` | — | Login + logout + check cleared | ✅ |
+| `TestUIRegisterNewUser` | — | Register via UI | ✅ |
 
 ## Test Patterns
 
@@ -70,6 +124,14 @@ func TestUsersListPublic(t *testing.T) {
 ### Flexible status with requireHTTPStatus
 ```go
 requireHTTPStatus(t, followResp, http.StatusCreated, http.StatusConflict)
+```
+
+### Warm-up for Render cold start
+```go
+func TestMain(m *testing.M) {
+    WarmUp(BaseURL() + "/health")
+    os.Exit(m.Run())
+}
 ```
 
 ## Error Handling
@@ -102,22 +164,31 @@ requireHTTPStatus(t, followResp, http.StatusCreated, http.StatusConflict)
 
 | Domain | Tests | Endpoints Covered | Type |
 |--------|-------|-------------------|------|
+| Auth API | 8 | `POST /auth/login`, `POST /auth/register`, `GET /auth/me` | HTTP |
+| Posts API | 5 | `GET /posts`, `POST /posts`, `GET /posts/{id}` | HTTP |
 | Users API | 6 | `GET /users`, `GET /users/{username}`, `PATCH /users/me` | HTTP |
 | Follows API | 5 | `POST/DELETE /users/{username}/follow` | HTTP |
-| **Total** | **11** | **4 endpoints** | |
+| Playwright Go | 9 | Login, Register, Logout (browser) | Browser |
+| **Total** | **33** | **10 endpoints** | |
 
 ## Running
 
 ```bash
 # Local (Docker required)
-go test ./...
+cd go-backend && go test ./api/ -v
+
+# API tests only (no browser)
+cd go-backend && go test ./api/ -v -count=1
+
+# Playwright Go tests (requires playwright browsers installed)
+cd go-backend && go test ./cmd/api-tests/ -v
+cd go-backend && go test ./cmd/ui-tests/ -v
 
 # Render staging
-API_BASE_URL=https://buzzhive-test.onrender.com/api go test ./...
+API_BASE_URL=https://buzzhive-test.onrender.com/api go test ./api/ -v
 
-# Via npm
-npm run test:go            # local
-npm run test:go:render     # Render
+# All Go tests
+cd go-backend && go test ./... -v
 ```
 
 ## Limitations
@@ -128,13 +199,13 @@ npm run test:go:render     # Render
 | No retry mechanism | Single attempt — fails on cold start 503 |
 | No `t.Cleanup()` | Tests leave state (created follows) |
 | No `-race` tests | Data races undetected |
-| No warm-up fixture | First test may hit cold start |
-| No go.mod in repo | Tests may not compile without module init |
+| Playwright Go requires browser install | `go install github.com/playwright-community/playwright-go/cmd/playwright@latest` |
 
 ## Related Test Suites
 
 | Suite | Language | Tests | Framework |
 |-------|----------|-------|-----------|
-| Go API | Go | 11 | net/http + testify |
+| Go API | Go | 24 | net/http + testify |
+| Go Playwright | Go | 9 | playwright-go + testify |
 | E2E API | TypeScript | ~1157 | Playwright (×4 browsers) |
 | C# Fuzzer + PBT + Schema + Race + Meta | C# | 41 | xUnit + FsCheck |
