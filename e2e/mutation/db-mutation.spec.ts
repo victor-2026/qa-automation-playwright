@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures';
 import { Pool } from 'pg';
 
-const BACKEND = 'http://localhost:8000/api';
+const BACKEND = '/api';
 
 const pool = new Pool({
   host: process.env.PGHOST || 'localhost',
@@ -27,11 +27,32 @@ function tid(uuid: string): string {
   return trimmed || '0';
 }
 
+/** Create post via browser fetch (uses localStorage token) */
+async function createPostViaBrowser(page: any, content: string): Promise<{ status: number; id?: string }> {
+  return page.evaluate(async (args: { url: string; content: string }) => {
+    const token = localStorage.getItem('access_token');
+    const res = await fetch(args.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ content: args.content }),
+    });
+    if (res.status === 201 || res.status === 200) {
+      const body = await res.json();
+      return { status: res.status, id: body.id || body.post?.id || body.data?.id };
+    }
+    return { status: res.status };
+  }, { url: `${BACKEND}/posts`, content });
+}
+
 test.describe('Mutation — DB Data', () => {
 
   test.afterEach(async ({ page }, testInfo) => {
     if (testInfo.status !== testInfo.expectedStatus) {
       await page.screenshot({ path: testInfo.outputPath(`${testInfo.title}.png`), fullPage: true });
+    }
+    // Restore DB state if test failed mid-mutation
+    if (testInfo.title.includes('DBMUT-001')) {
+      await query("UPDATE users SET is_active = true WHERE email = 'alice@buzzhive.com'");
     }
   });
 
@@ -50,7 +71,8 @@ test.describe('Mutation — DB Data', () => {
     await query("UPDATE users SET is_active = false WHERE email = 'alice@buzzhive.com'");
 
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    // Frontend calls /auth/me → 403 → clears token → AppLayout redirects to /login
+    await page.waitForURL('**/login', { timeout: 10000 });
 
     const loginBtn = page.locator('[data-testid="auth-login-btn"]');
     await expect(loginBtn).toBeVisible({ timeout: 5000 });
@@ -66,22 +88,16 @@ test.describe('Mutation — DB Data', () => {
     await page.waitForURL('**/');
     await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
 
-    const token = await page.evaluate(() => localStorage.getItem('access_token'));
+    const post = await createPostViaBrowser(page, 'DBMUT-002 post to be deleted');
+    expect(post.status).toBe(201);
+    expect(post.id).toBeTruthy();
 
-    const res = await page.request.post(`${BACKEND}/posts`, {
-      headers: { Authorization: `Bearer ${token}` },
-      data: { content: 'DBMUT-002 post to be deleted' },
-    });
-    expect(res.status()).toBe(201);
-    const body = await res.json();
-    const postId = body.id || body.post?.id || body.data?.id;
-
-    await page.goto(`/post/${postId}`);
+    await page.goto(`/post/${post.id}`);
     await expect(page.locator('[data-testid^="post-content-"]').first()).toBeVisible({ timeout: 5000 });
 
-    await query('DELETE FROM posts WHERE id = $1::uuid', [postId]);
+    await query('DELETE FROM posts WHERE id = $1::uuid', [post.id]);
 
-    await page.goto(`/post/${postId}`);
+    await page.goto(`/post/${post.id}`);
     await page.waitForLoadState('networkidle');
 
     await expect(page.getByText('not found', { exact: false }).first()).toBeVisible({ timeout: 5000 });
@@ -95,30 +111,24 @@ test.describe('Mutation — DB Data', () => {
     await page.waitForURL('**/');
     await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
 
-    const token = await page.evaluate(() => localStorage.getItem('access_token'));
-
-    const res = await page.request.post(`${BACKEND}/posts`, {
-      headers: { Authorization: `Bearer ${token}` },
-      data: { content: 'DBMUT-003 original' },
-    });
-    expect(res.status()).toBe(201);
-    const body = await res.json();
-    const postId = body.id || body.post?.id || body.data?.id;
+    const post = await createPostViaBrowser(page, 'DBMUT-003 original');
+    expect(post.status).toBe(201);
+    expect(post.id).toBeTruthy();
 
     const xssPayload = '<script>alert("xss")</script>';
-    await query('UPDATE posts SET content = $1 WHERE id = $2::uuid', [xssPayload, postId]);
+    await query('UPDATE posts SET content = $1 WHERE id = $2::uuid', [xssPayload, post.id]);
 
-    await page.goto(`/post/${postId}`);
+    await page.goto(`/post/${post.id}`);
     await page.waitForLoadState('networkidle');
 
-    const shortId = tid(postId);
+    const shortId = tid(post.id!);
     const content = page.locator(`[data-testid="post-content-${shortId}"]`);
     await expect(content).toBeVisible({ timeout: 5000 });
 
     const html = await content.innerHTML();
     expect(html).toContain('&lt;');
 
-    await query('DELETE FROM posts WHERE id = $1::uuid', [postId]);
+    await query('DELETE FROM posts WHERE id = $1::uuid', [post.id]);
   });
 
   test('DBMUT-004: negative likes_count handled gracefully', async ({ page }) => {
@@ -129,22 +139,16 @@ test.describe('Mutation — DB Data', () => {
     await page.waitForURL('**/');
     await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
 
-    const token = await page.evaluate(() => localStorage.getItem('access_token'));
+    const post = await createPostViaBrowser(page, 'DBMUT-004 likes test');
+    expect(post.status).toBe(201);
+    expect(post.id).toBeTruthy();
 
-    const res = await page.request.post(`${BACKEND}/posts`, {
-      headers: { Authorization: `Bearer ${token}` },
-      data: { content: 'DBMUT-004 likes test' },
-    });
-    expect(res.status()).toBe(201);
-    const body = await res.json();
-    const postId = body.id || body.post?.id || body.data?.id;
+    await query('UPDATE posts SET likes_count = -5 WHERE id = $1::uuid', [post.id]);
 
-    await query('UPDATE posts SET likes_count = -5 WHERE id = $1::uuid', [postId]);
-
-    await page.goto(`/post/${postId}`);
+    await page.goto(`/post/${post.id}`);
     await page.waitForLoadState('networkidle');
 
-    const shortId = tid(postId);
+    const shortId = tid(post.id!);
     const likesCount = page.locator(`[data-testid="post-likes-count-${shortId}"]`);
     await expect(likesCount).toBeVisible({ timeout: 5000 });
 
@@ -152,6 +156,6 @@ test.describe('Mutation — DB Data', () => {
     expect(text).toMatch(/^\d+$/);
     expect(Number(text)).toBeGreaterThanOrEqual(0);
 
-    await query('DELETE FROM posts WHERE id = $1::uuid', [postId]);
+    await query('DELETE FROM posts WHERE id = $1::uuid', [post.id]);
   });
 });
