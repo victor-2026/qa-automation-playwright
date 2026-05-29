@@ -94,6 +94,26 @@ jobs:
         run: npm run test:components
         continue-on-error: true
 
+  csharp-tests:
+    name: C# API Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore
+        run: dotnet restore csharp-backend/
+      
+      - name: Run C# Tests
+        run: dotnet test csharp-backend/ --no-restore --verbosity normal
+        continue-on-error: true
+
   # ========== SMOKE TESTS (requires backend - SKIPPED: image unavailable) ==========
   smoke-tests:
     name: Smoke Tests
@@ -115,7 +135,7 @@ jobs:
   quality-summary:
     name: Quality Summary
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, unit-tests, component-tests, smoke-tests]
+    needs: [lint, typecheck, unit-tests, component-tests, csharp-tests, smoke-tests]
     if: always()
     
     steps:
@@ -129,4 +149,5 @@ jobs:
           echo "| Type Check | ${{ needs.typecheck.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Unit Tests (PBT) | ${{ needs.unit-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Component Tests | ${{ needs.component-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| C# Tests | ${{ needs.csharp-tests.result == 'success' && '✅' || '⚠️' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Smoke Tests | ⚠️ Skipped (backend unavailable) |" >> $GITHUB_STEP_SUMMARY

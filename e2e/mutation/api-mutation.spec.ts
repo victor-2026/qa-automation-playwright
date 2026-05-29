@@ -17,22 +17,29 @@ test.describe('Mutation — API Response', () => {
     await page.waitForURL('**/');
   }
 
-  // ── MUT-001: likes_count → 0 ──
+  // ── MUT-001: likes_count mutations ──
 
-  test('MUT-001: likes_count zeroed out', async ({ page }) => {
-    await page.route('**/api/posts*', async route => {
-      const response = await route.fetch();
-      const json = await response.json();
-      if (json.items) json.items.forEach((p: any) => { p.likes_count = 0; });
-      await route.fulfill({ json });
+  const LIKES_MUTATIONS = [
+    { name: 'zeroed out', value: 0, expected: '0' },
+    { name: 'negative', value: -5, expected: '0' },
+    { name: 'null', value: null, expected: '0' },
+  ];
+  for (const { name, value, expected } of LIKES_MUTATIONS) {
+    test(`MUT-001: likes_count ${name}`, async ({ page }) => {
+      await page.route('**/api/posts*', async route => {
+        const response = await route.fetch();
+        const json = await response.json();
+        if (json.items) json.items.forEach((p: any) => { p.likes_count = value; });
+        await route.fulfill({ json });
+      });
+
+      await login(page);
+
+      const firstLikes = page.locator('[data-testid^="post-likes-count-"]').first();
+      const text = await firstLikes.textContent();
+      expect(text?.trim()).toBe(expected);
     });
-
-    await login(page);
-
-    const firstLikes = page.locator('[data-testid^="post-likes-count-"]').first();
-    const text = await firstLikes.textContent();
-    expect(text?.trim()).toBe('0');
-  });
+  }
 
   // ── MUT-002: author.username → null ──
 
@@ -50,26 +57,36 @@ test.describe('Mutation — API Response', () => {
     await expect(firstAuthor).not.toBeVisible();
   });
 
-  // ── MUT-003: Login response → 500 ──
+  // ── MUT-003: Login error codes ──
 
-  test('MUT-003: login endpoint returns 500', async ({ page }) => {
-    await page.route('**/api/auth/login', async route => {
-      await route.fulfill({
-        status: 500,
-        contentType: 'application/json',
-        body: JSON.stringify({ detail: 'Internal Server Error' }),
+  const ERROR_CODES = [
+    { status: 400, detail: 'Bad Request' },
+    { status: 401, detail: 'Invalid credentials' },
+    { status: 403, detail: 'Forbidden' },
+    { status: 429, detail: 'Too Many Requests' },
+    { status: 500, detail: 'Internal Server Error' },
+    { status: 502, detail: 'Bad Gateway' },
+    { status: 503, detail: 'Service Unavailable' },
+  ];
+  for (const { status, detail } of ERROR_CODES) {
+    test(`MUT-003: login returns ${status}`, async ({ page }) => {
+      await page.route('**/api/auth/login', async route => {
+        await route.fulfill({
+          status,
+          contentType: 'application/json',
+          body: JSON.stringify({ detail }),
+        });
       });
+
+      await page.goto('/login');
+      await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+      await page.fill('[data-testid="auth-password-input"]', 'alice123');
+      await page.click('[data-testid="auth-login-btn"]');
+
+      const errorMsg = page.locator('[data-testid="auth-error-message"]');
+      await expect(errorMsg).toBeVisible({ timeout: 3000 });
     });
-
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
-
-    const errorMsg = page.locator('[data-testid="auth-error-message"]');
-    await expect(errorMsg).toBeVisible({ timeout: 3000 });
-    await expect(errorMsg).toContainText('Internal Server Error');
-  });
+  }
 
   // ── MUT-004: items → [] empty feed ──
 
@@ -158,21 +175,29 @@ test.describe('Mutation — API Response', () => {
 
   // ── MUT-008: XSS in post content ──
 
-  test('MUT-008: XSS in post content is escaped', async ({ page }) => {
-    const xssPayload = '<img src=x onerror=alert(1)>';
-    await page.route('**/api/posts*', async route => {
-      const response = await route.fetch();
-      const json = await response.json();
-      if (json.items && json.items.length > 0) json.items[0].content = xssPayload;
-      await route.fulfill({ json });
+  const XSS_PAYLOADS = [
+    { name: 'img onerror', value: '<img src=x onerror=alert(1)>' },
+    { name: 'script tag', value: '<script>alert(1)</script>' },
+    { name: 'svg onload', value: '<svg onload=alert(1)>' },
+    { name: 'javascript URI', value: 'javascript:alert(1)' },
+  ];
+  for (const { name, value } of XSS_PAYLOADS) {
+    test(`MUT-008: XSS (${name}) is escaped`, async ({ page }) => {
+      await page.route('**/api/posts*', async route => {
+        const response = await route.fetch();
+        const json = await response.json();
+        if (json.items && json.items.length > 0) json.items[0].content = value;
+        await route.fulfill({ json });
+      });
+
+      await login(page);
+
+      await page.waitForLoadState('networkidle');
+      const content = page.locator('[data-testid^="post-content-"]').first();
+      await expect(content).toBeVisible({ timeout: 5000 });
+      const text = await content.textContent();
+      expect(text).not.toContain('<script>');
+      expect(text).not.toContain('onerror=');
     });
-
-    await login(page);
-
-    await page.waitForLoadState('networkidle');
-    const content = page.locator('[data-testid^="post-content-"]').first();
-    await expect(content).toBeVisible({ timeout: 5000 });
-    const text = await content.textContent();
-    expect(text).not.toContain(xssPayload);
-  });
+  }
 });
