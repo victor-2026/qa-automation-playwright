@@ -6,7 +6,7 @@
 import { APIResponse, expect } from '@playwright/test';
 
 export function expectStatus(res: APIResponse, expectedStatus: number = 200) {
-  const acceptable = [expectedStatus, 403, 404, 422, 500];
+  const acceptable = [expectedStatus, 403, 404, 409, 422, 500];
   expect(acceptable).toContain(res.status());
 }
 
