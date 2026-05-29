@@ -22,31 +22,36 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 90px 120px;
+            padding: 80px 110px;
         }
 
-        .slide-dark { background: #0d1117; color: #e6edf3; }
-        .slide-accent { background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); }
+        .bg-dark   { background: #0d1117; color: #e6edf3; }
+        .bg-blue   { background: #0a1628; color: #e6edf3; }
+        .bg-teal   { background: #0c2b2b; color: #e6edf3; }
+        .bg-purple { background: #1a0a2a; color: #e6edf3; }
+        .bg-cta    { background: #0a1628; color: #e6edf3; }
+
         .slide-num {
             position: absolute;
-            bottom: 50px;
-            right: 80px;
-            font-size: 1.2em;
+            bottom: 40px;
+            right: 70px;
+            font-size: 1.3em;
             color: #30363d;
             font-weight: 600;
         }
 
         .tag {
             display: inline-block;
-            background: rgba(210,153,34,0.15);
             color: #d29922;
-            font-size: 1em;
+            font-size: 1.2em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            padding: 6px 16px;
+            border: 1px solid #d29922;
+            padding: 6px 18px;
             border-radius: 4px;
             margin-bottom: 30px;
+            width: fit-content;
         }
 
         h1 {
@@ -54,37 +59,38 @@
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 24px;
-            max-width: 85%;
+            max-width: 90%;
         }
         h2 {
             font-size: 3em;
             font-weight: 700;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             line-height: 1.2;
         }
         .subtitle {
             font-size: 2em;
-            color: #8b949e;
+            color: #b0b8c0;
             max-width: 75%;
             line-height: 1.5;
         }
-        .subtitle-white { color: #e6edf3; }
         .subtitle-narrow { max-width: 65%; }
+        .subtitle-light { color: #b0b8c0; }
 
+        /* ── Data cards ── */
         .data-row {
             display: flex;
-            gap: 30px;
-            margin-top: 40px;
+            gap: 28px;
+            margin-top: 36px;
         }
         .data-item {
             flex: 1;
             background: rgba(255,255,255,0.04);
             border: 1px solid #30363d;
             border-radius: 14px;
-            padding: 28px 32px;
+            padding: 26px 30px;
         }
         .data-item .label {
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: #8b949e;
             text-transform: uppercase;
             letter-spacing: 1.5px;
@@ -97,70 +103,117 @@
             line-height: 1;
         }
         .data-item .note {
-            font-size: 1em;
-            color: #656d76;
-            margin-top: 8px;
+            font-size: 1.15em;
+            color: #b0b8c0;
+            font-weight: 500;
+            margin-top: 10px;
         }
 
-        .split-compare {
+        /* ═══════════ VISUAL CHARTS ═══════════ */
+
+        /* Bar chart row */
+        .chart-row {
             display: flex;
             gap: 50px;
-            margin-top: 40px;
+            margin-top: 24px;
             align-items: stretch;
         }
-        .split-box {
+        .chart-col {
             flex: 1;
-            border-radius: 14px;
-            padding: 40px 44px;
         }
-        .split-box.before {
-            background: rgba(248,81,73,0.08);
-            border: 2px solid #f85149;
-        }
-        .split-box.after {
-            background: rgba(63,185,80,0.08);
-            border: 2px solid #3fb950;
-        }
-        .split-box h3 { font-size: 2em; font-weight: 700; margin-bottom: 20px; }
-        .split-box .lines { font-size: 3em; font-weight: 800; }
-        .split-box ul { list-style: none; margin-top: 20px; }
-        .split-box li {
-            font-size: 1.4em;
-            margin-bottom: 12px;
-            padding-left: 32px;
-            position: relative;
-            line-height: 1.4;
-        }
-        .split-box.before li::before {
-            content: "✕";
-            position: absolute;
-            left: 0;
-            color: #f85149;
+        .chart-col h3 {
+            font-size: 1.6em;
             font-weight: 700;
+            margin-bottom: 20px;
         }
-        .split-box.after li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #3fb950;
-            font-weight: 700;
+
+        /* Individual bar */
+        .bar-block {
+            margin-bottom: 16px;
         }
-        .arrow-mid {
+        .bar-block .bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            margin-bottom: 6px;
+        }
+        .bar-block .bar-label .name { color: #8b949e; }
+        .bar-block .bar-label .num  { font-weight: 700; }
+        .bar-track {
+            height: 36px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s;
+        }
+        .bar-fill.red    { background: linear-gradient(90deg, #f85149, #da3633); }
+        .bar-fill.green  { background: linear-gradient(90deg, #3fb950, #2ea043); }
+        .bar-fill.orange { background: linear-gradient(90deg, #d29922, #bb8009); }
+        .bar-fill.purple { background: linear-gradient(90deg, #a371f7, #8957e5); }
+
+        /* Grid of small bars (After visual) */
+        .bar-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .bar-grid-item {
+            background: rgba(63,185,80,0.25);
+            border: 1px solid rgba(63,185,80,0.3);
+            border-radius: 4px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Arrow between chart columns */
+        .chart-arrow {
             display: flex;
             align-items: center;
             font-size: 4em;
             color: #484f58;
+            flex-shrink: 0;
+            padding: 0 10px;
         }
 
+        /* Comparison bars (side by side) */
+        .compare-bars {
+            display: flex;
+            gap: 40px;
+            margin-top: 24px;
+        }
+        .compare-col {
+            flex: 1;
+            padding: 28px 32px;
+            border-radius: 14px;
+        }
+        .compare-col.p1 { background: rgba(210,153,34,0.08); border: 1px solid #d29922; }
+        .compare-col.p2 { background: rgba(63,185,80,0.08); border: 1px solid #3fb950; }
+        .compare-col h3 { font-size: 1.6em; margin-bottom: 16px; }
+        .compare-col .stat-value {
+            font-size: 2.8em;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        /* ── Phase boxes ── */
         .phase-row {
             display: flex;
             gap: 40px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
         .phase-box {
             flex: 1;
             border-radius: 14px;
-            padding: 36px 40px;
+            padding: 32px 36px;
         }
         .phase-box.phase1 { background: rgba(210,153,34,0.08); border: 1px solid #d29922; }
         .phase-box.phase2 { background: rgba(63,185,80,0.08); border: 1px solid #3fb950; }
@@ -171,14 +224,16 @@
             margin-bottom: 12px;
             padding-left: 28px;
             position: relative;
+            line-height: 1.4;
         }
         .phase-box.phase1 li::before { content: "→"; position: absolute; left: 0; color: #d29922; }
         .phase-box.phase2 li::before { content: "✓"; position: absolute; left: 0; color: #3fb950; }
 
+        /* ── Bug boxes ── */
         .bug-row {
             display: flex;
             gap: 40px;
-            margin-top: 40px;
+            margin-top: 36px;
         }
         .bug-box {
             flex: 1;
@@ -187,133 +242,209 @@
         }
         .bug-box.bad { background: rgba(248,81,73,0.08); border: 1px solid #f85149; }
         .bug-box.good { background: rgba(63,185,80,0.08); border: 1px solid #3fb950; }
-        .bug-box .state { font-size: 1em; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-        .bug-box code {
-            font-size: 1.8em;
+        .bug-box .state {
+            font-size: 1.1em;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+        .bug-box .code-block {
+            font-size: 2em;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Fira Code', monospace;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            background: rgba(0,0,0,0.3);
+            padding: 12px 20px;
+            border-radius: 6px;
         }
         .bug-box .desc {
-            font-size: 1.3em;
-            color: #8b949e;
+            font-size: 1.4em;
+            color: #b0b8c0;
             line-height: 1.5;
         }
-        .bug-box .desc code {
-            font-size: 0.9em;
-            display: inline;
-            font-weight: 400;
-            background: #21262d;
-            padding: 2px 10px;
-            border-radius: 4px;
-        }
 
-        .teaser-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .teaser-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid #30363d;
-            border-radius: 14px;
-            padding: 36px 32px;
-            text-align: center;
-        }
-        .teaser-card .icon { font-size: 3.5em; margin-bottom: 12px; }
-        .teaser-card h4 { font-size: 1.6em; margin-bottom: 10px; }
-        .teaser-card p { font-size: 1.1em; color: #8b949e; line-height: 1.5; }
-
+        /* ── Takeaways ── */
+        .takeaway-list { margin-top: 24px; }
         .takeaway-item {
             display: flex;
-            gap: 30px;
+            gap: 28px;
             margin-bottom: 30px;
             align-items: flex-start;
         }
         .takeaway-num {
-            font-size: 2.5em;
+            font-size: 2.8em;
             flex-shrink: 0;
             width: 70px;
             text-align: center;
         }
-        .takeaway-text h3 { font-size: 1.8em; font-weight: 600; margin-bottom: 8px; }
-        .takeaway-text p { font-size: 1.3em; color: #8b949e; max-width: 700px; line-height: 1.5; }
+        .takeaway-text h3 { font-size: 1.8em; font-weight: 600; margin-bottom: 6px; }
+        .takeaway-text p { font-size: 1.3em; color: #b0b8c0; max-width: 720px; line-height: 1.5; }
 
         .highlight-box {
-            margin-top: 40px;
+            margin-top: 32px;
             background: rgba(210,153,34,0.08);
             border: 1px solid #d29922;
             border-radius: 14px;
-            padding: 28px 36px;
+            padding: 24px 32px;
         }
         .highlight-box .text {
             font-size: 1.5em;
             font-weight: 600;
             color: #d29922;
+            line-height: 1.4;
         }
 
+        /* ── Tool table ── */
+        .tool-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            font-size: 1.3em;
+        }
+        .tool-table thead tr { border-bottom: 2px solid #30363d; }
+        .tool-table th {
+            text-align: left;
+            padding: 14px 20px;
+            color: #8b949e;
+            font-weight: 600;
+        }
+        .tool-table tbody tr { border-bottom: 1px solid #21262d; }
+        .tool-table td { padding: 18px 20px; vertical-align: middle; }
+        .tool-table .ok  { color: #3fb950; }
+        .tool-table .fail { color: #f85149; }
+        .tool-table .warn { color: #d29922; }
+
+        /* ── AI Grid ── */
         .ai-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
+            gap: 28px;
+            margin-top: 24px;
         }
         .ai-card {
             border-radius: 14px;
-            padding: 32px 36px;
+            padding: 28px 32px;
         }
-        .ai-card h4 { font-size: 1.5em; margin-bottom: 12px; }
-        .ai-card p { font-size: 1.15em; color: #8b949e; line-height: 1.5; margin-bottom: 6px; }
+        .ai-card h4 { font-size: 1.5em; margin-bottom: 10px; }
+        .ai-card p { font-size: 1.2em; color: #b0b8c0; line-height: 1.5; margin-bottom: 6px; }
         .ai-card .badge {
-            font-size: 0.9em;
+            font-size: 1em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: inline-block;
+            margin-top: 4px;
         }
 
-        .cta-section { text-align: center; }
-        .cta-box {
-            background: #d29922;
-            color: #0d1117;
-            padding: 40px 60px;
-            border-radius: 16px;
-            max-width: 80%;
-            margin: 0 auto;
+        .treadmill-box {
+            margin-top: 28px;
+            background: rgba(210,153,34,0.08);
+            border: 1px solid #d29922;
+            border-radius: 14px;
+            padding: 24px 32px;
         }
-        .cta-box .heading { color: #0d1117; font-size: 2em; font-weight: 700; margin-bottom: 12px; }
-        .cta-box .text { font-size: 1.3em; line-height: 1.5; }
+        .treadmill-box .inner {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .treadmill-box .icon { font-size: 3em; }
+        .treadmill-box .heading {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #d29922;
+        }
+        .treadmill-box .desc { color: #b0b8c0; font-size: 1.15em; line-height: 1.5; }
+
+        /* ── Teaser (Phase 3) ── */
+        .teaser-sub {
+            display: flex;
+            gap: 36px;
+            margin-top: 28px;
+            align-items: stretch;
+        }
+        .teaser-card {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 32px 28px;
+            text-align: center;
+            position: relative;
+        }
+        .teaser-card .icon { font-size: 3.2em; margin-bottom: 12px; display: block; }
+        .teaser-card h4 { font-size: 1.5em; font-weight: 700; margin-bottom: 10px; color: #e6edf3; }
+        .teaser-card p { font-size: 1.1em; color: #b0b8c0; line-height: 1.5; }
+
+        .teaser-footer {
+            margin-top: 28px;
+            text-align: center;
+        }
+        .teaser-footer .box {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px 44px;
+        }
+        .teaser-footer .box p {
+            font-size: 1.2em;
+            color: #b0b8c0;
+            line-height: 1.5;
+        }
+        .teaser-footer .box strong { color: #e6edf3; }
+
+        /* ── CTA ── */
+        .cta-content { text-align: center; max-width: 75%; margin: 0 auto; }
+        .cta-stats {
+            display: flex;
+            gap: 36px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .cta-stat {
+            border: 1px solid #30363d;
+            border-radius: 14px;
+            padding: 22px 32px;
+            min-width: 150px;
+            text-align: center;
+        }
+        .cta-stat .num { font-size: 1.8em; font-weight: 700; color: #d29922; }
+        .cta-stat .lbl { color: #8b949e; font-size: 1.05em; margin-top: 4px; }
 
         .author-line {
             display: flex;
             align-items: center;
-            gap: 30px;
-            margin-top: 50px;
-            padding-top: 36px;
+            gap: 28px;
+            padding-top: 32px;
             border-top: 1px solid #30363d;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 550px;
+            margin: 0 auto;
         }
         .author-avatar {
-            width: 80px;
-            height: 80px;
+            width: 78px;
+            height: 78px;
             border-radius: 50%;
             background: #30363d;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5em;
+            font-size: 2.6em;
             flex-shrink: 0;
         }
-        .author-info h4 { font-size: 1.4em; font-weight: 600; }
-        .author-info p { font-size: 1.1em; color: #8b949e; }
+        .author-info h4 { font-size: 1.5em; font-weight: 600; }
+        .author-info p { font-size: 1.1em; color: #8b949e; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-<!-- SLIDE 1: TITLE -->
-<div class="slide slide-dark">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 1 — TITLE                -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-blue">
     <div class="tag">Phase 2 — The Refactoring Sprint</div>
     <h1>I Thought We Had 2,000 Tests.<br>We Had 2 Monoliths<br>and a Race Condition.</h1>
     <p class="subtitle subtitle-narrow">
@@ -339,112 +470,143 @@
         </div>
         <div class="data-item">
             <div class="label">AI Models</div>
-            <div class="value">17</div>
-            <div class="note">5 still free · 7 gone</div>
+            <div class="value">15</div>
+            <div class="note">9 still free · 6 gone</div>
         </div>
     </div>
     <div class="slide-num">1/9</div>
 </div>
 
-<!-- SLIDE 2: THE MESS -->
-<div class="slide slide-dark">
-    <div class="tag">Before &amp; After</div>
-    <h2>Two Files. Nearly 4,000 Lines.<br>No Structure.</h2>
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 2 — VISUAL BEFORE/AFTER  -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-dark">
+    <div class="tag">The Split — Visualized</div>
+    <h2>2 Monoliths → 23 Modules</h2>
     <p class="subtitle subtitle-narrow">
-        AI generated fast. AI generated without architecture.
+        ~4,000 lines of AI-generated spaghetti restructured into clean, domain-separated modules.
     </p>
 
-    <div class="split-compare">
-        <div class="split-box before">
+    <div class="chart-row">
+        <!-- BEFORE -->
+        <div class="chart-col">
             <h3 style="color:#f85149;">Before</h3>
-            <div class="lines">3,908 lines</div>
-            <ul>
-                <li>UI monolith — 2,349 lines</li>
-                <li>API monolith — 1,559 lines</li>
-                <li>15 duplicated API blocks</li>
-                <li>No shared fixtures</li>
-            </ul>
+            <div class="bar-block">
+                <div class="bar-label">
+                    <span class="name">UI monolith</span>
+                    <span class="num" style="color:#f85149;">2,349 lines</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill red" style="width:60%"></div>
+                </div>
+            </div>
+            <div class="bar-block">
+                <div class="bar-label">
+                    <span class="name">API monolith</span>
+                    <span class="num" style="color:#f85149;">1,559 lines</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill red" style="width:40%"></div>
+                </div>
+            </div>
+            <div style="margin-top:12px; color:#8b949e; font-size:1.2em;">
+                <strong style="color:#f85149;">3,908 lines</strong> total · 15 duplicated API blocks<br>
+                No shared fixtures · Hard to maintain
+            </div>
         </div>
-        <div class="arrow-mid">→</div>
-        <div class="split-box after">
+
+        <div class="chart-arrow">→</div>
+
+        <!-- AFTER -->
+        <div class="chart-col">
             <h3 style="color:#3fb950;">After</h3>
-            <div class="lines">23 modules</div>
-            <ul>
-                <li>9 API modules (auth, posts…)</li>
-                <li>14 UI modules (profile, search…)</li>
-                <li>Shared fixtures.ts</li>
-                <li>CI smoke in 3 minutes</li>
-            </ul>
+            <div style="display:flex; gap:16px;">
+                <div style="flex:1;">
+                    <div style="font-size:1.1em; font-weight:600; margin-bottom:8px; color:#8b949e;">API (9)</div>
+                    <div class="bar-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="bar-grid-item">auth</div>
+                        <div class="bar-grid-item">posts</div>
+                        <div class="bar-grid-item">users</div>
+                        <div class="bar-grid-item">admin</div>
+                        <div class="bar-grid-item">convers</div>
+                        <div class="bar-grid-item">notif</div>
+                        <div class="bar-grid-item">health</div>
+                        <div class="bar-grid-item">meta</div>
+                        <div class="bar-grid-item">smoke</div>
+                    </div>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size:1.1em; font-weight:600; margin-bottom:8px; color:#8b949e;">UI (14)</div>
+                    <div class="bar-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="bar-grid-item">auth</div>
+                        <div class="bar-grid-item">posts</div>
+                        <div class="bar-grid-item">profile</div>
+                        <div class="bar-grid-item">search</div>
+                        <div class="bar-grid-item">comments</div>
+                        <div class="bar-grid-item">navig</div>
+                        <div class="bar-grid-item">msg</div>
+                        <div class="bar-grid-item">notif</div>
+                        <div class="bar-grid-item">follows</div>
+                        <div class="bar-grid-item">moder</div>
+                        <div class="bar-grid-item">admin</div>
+                        <div class="bar-grid-item">logout</div>
+                        <div class="bar-grid-item">perf</div>
+                        <div class="bar-grid-item">mobile</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:12px; color:#8b949e; font-size:1.2em;">
+                <strong style="color:#3fb950;">23 modules</strong> · Shared <code>fixtures.ts</code><br>
+                CI smoke in 3 minutes · Zero monoliths
+            </div>
         </div>
     </div>
     <div class="slide-num">2/9</div>
 </div>
 
-<!-- SLIDE 3: THE SPLIT -->
-<div class="slide slide-dark">
-    <div class="tag">How We Split It</div>
-    <h2>Refactoring AI Code With More AI<br>Was Surprisingly Hard</h2>
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 3 — E2E ARCHITECTURE     -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-blue">
+    <div class="tag">E2E Test Architecture</div>
+    <h2>1,157 Runs · 23 Modules · 4 Browsers</h2>
     <p class="subtitle subtitle-narrow">
-        Every tool hit a wall. The human had to finish it.
+        Full layer diagram: from spec modules through shared infrastructure to deployment targets.
     </p>
 
-    <table style="width:100%; border-collapse: collapse; margin-top:30px; font-size:1.3em;">
-        <thead>
-            <tr style="border-bottom: 2px solid #30363d;">
-                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Tool</th>
-                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Result</th>
-                <th style="text-align:left; padding:14px 20px; color:#8b949e; font-weight:600;">Limit</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding:16px 20px; font-weight:600;">Cursor (Hobby)</td>
-                <td style="padding:16px 20px;">✅ 1 file done</td>
-                <td style="padding:16px 20px; color:#f85149;">50 requests — spent</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding:16px 20px; font-weight:600;">MiniMax M2.5 (OpenCode)</td>
-                <td style="padding:16px 20px;">✅ ~20 files refactored</td>
-                <td style="padding:16px 20px; color:#d29922;">Promo ended</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding:16px 20px; font-weight:600;">Cline (OpenRouter)</td>
-                <td style="padding:16px 20px; color:#f85149;">❌ Failed</td>
-                <td style="padding:16px 20px; color:#8b949e;">Couldn't handle &gt;2,000 lines</td>
-            </tr>
-            <tr>
-                <td style="padding:16px 20px; font-weight:600; color:#d29922;">Victor (human)</td>
-                <td style="padding:16px 20px; color:#3fb950;">✅ Reviewed &amp; approved</td>
-                <td style="padding:16px 20px; color:#8b949e;">Final say</td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="flex:1; display:flex; align-items:center; justify-content:center; margin-top:10px; overflow:hidden;">
+        <img src="e2e/E2E-Test-Architecture.png" style="max-width:100%; max-height:100%; width:100%; height:100%; object-fit:contain; border-radius:8px;">
+    </div>
+
     <div class="slide-num">3/9</div>
 </div>
 
-<!-- SLIDE 4: THE BUG -->
-<div class="slide slide-dark">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 4 — THE BUG              -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-dark">
     <div class="tag">Found by Accident</div>
-    <h2>A Race Condition Lived in Production<br>for 2 Months. Tests Never Caught It.</h2>
+    <h2>A Race Condition Lived in Production<br>for 1 Month. Hidden from Sequential Tests.</h2>
     <p class="subtitle subtitle-narrow">
-        We found it because refactoring forced us to <em>read</em> the code.
+        Standard tests couldn't catch it — they were single-thread. Only when we split the monoliths 
+        and ran 4 parallel browser projects did the collision surface.
     </p>
 
     <div class="bug-row">
         <div class="bug-box bad">
             <div class="state" style="color:#f85149;">Root Cause</div>
-            <code style="color:#f85149;">datetime.now()</code>
+            <span class="code-block" style="color:#f85149;">datetime.now()</span>
             <div class="desc">
-                Same microsecond → same JWT<br>
-                <code>unique_violation</code> in PostgreSQL
+                Same microsecond → same JWT →<br>
+                unique_violation in PostgreSQL
             </div>
         </div>
         <div class="bug-box good">
             <div class="state" style="color:#3fb950;">The Fix</div>
-            <code style="color:#3fb950;">jti: uuid.uuid4()</code>
+            <span class="code-block" style="color:#3fb950;">jti: uuid.uuid4()</span>
             <div class="desc">
-                One line in the token payload<br>
-                Every token now unique
+                One line in the token payload.<br>
+                Every token is now unique.
             </div>
         </div>
     </div>
@@ -452,7 +614,7 @@
     <div class="data-row">
         <div class="data-item">
             <div class="label">Bug Age</div>
-            <div class="value" style="color:#f85149;">2 months</div>
+            <div class="value" style="color:#f85149;">1 month</div>
             <div class="note">Lived since day 1</div>
         </div>
         <div class="data-item">
@@ -462,19 +624,21 @@
         </div>
         <div class="data-item">
             <div class="label">Detection</div>
-            <div class="value" style="color:#d29922;">Refactoring</div>
-            <div class="note">Reading code, not tests</div>
+            <div class="value" style="color:#d29922;">Parallel run</div>
+            <div class="note">4 browsers exposed the race</div>
         </div>
     </div>
     <div class="slide-num">4/9</div>
 </div>
 
-<!-- SLIDE 5: REFACTORING SPRINT -->
-<div class="slide slide-dark">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 5 — SPRINT + BAR CHART   -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-purple">
     <div class="tag">Phase 2 — Refactoring Sprint</div>
-    <h2>We Didn't Write a Single New Test in May.<br>It Was Our Most Productive Month.</h2>
+    <h2>Zero New Tests. Zero Regrets.</h2>
     <p class="subtitle subtitle-narrow">
-        Adding tests is easy. Deleting ~4,000 lines is where the value was.
+        Adding tests is easy. Deleting ~4,000 lines, stabilizing production infra — that's where the real value was.
     </p>
 
     <div class="phase-row">
@@ -485,7 +649,7 @@
                 <li>API coverage: 94%</li>
                 <li>PBT coverage: 100%</li>
                 <li>2 monoliths ~4,000 lines</li>
-                <li>No CI pipeline</li>
+                <li>2 envs: Docker (local) + Render (cloud)</li>
             </ul>
         </div>
         <div class="phase-box phase2">
@@ -495,48 +659,78 @@
                 <li>~4,000 lines deleted</li>
                 <li>2 → 23 modular files</li>
                 <li>CI smoke: 12 endpoints / 3 min</li>
+                <li>Render stabilized + uptime monitor</li>
                 <li>1 bug found (race condition)</li>
             </ul>
         </div>
     </div>
 
-    <div class="highlight-box">
+    <!-- Visual: Lines Added vs Deleted -->
+    <div style="margin-top:20px;">
+        <h3 style="font-size:1.3em; font-weight:600; margin-bottom:12px; color:#8b949e;">Lines Added vs Deleted</h3>
+        <div class="compare-bars">
+            <div style="flex:1; background:rgba(210,153,34,0.08); border:1px solid #d29922; border-radius:10px; padding:16px 24px;">
+                <div style="color:#8b949e; font-size:1em;">Phase 1</div>
+                <div style="display:flex; align-items:baseline; gap:10px;">
+                    <div style="font-size:2.4em; font-weight:800; color:#d29922;">+750</div>
+                    <div style="color:#8b949e; font-size:1em;">tests added</div>
+                </div>
+                <div class="bar-track" style="height:18px; margin-top:6px;">
+                    <div class="bar-fill orange" style="width:100%"></div>
+                </div>
+            </div>
+            <div style="flex:1; background:rgba(63,185,80,0.08); border:1px solid #3fb950; border-radius:10px; padding:16px 24px;">
+                <div style="color:#8b949e; font-size:1em;">Phase 2</div>
+                <div style="display:flex; align-items:baseline; gap:10px;">
+                    <div style="font-size:2.4em; font-weight:800; color:#3fb950;">~4,000</div>
+                    <div style="color:#8b949e; font-size:1em;">lines deleted</div>
+                </div>
+                <div class="bar-track" style="height:18px; margin-top:6px;">
+                    <div class="bar-fill green" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:16px;">
         <div class="text">"Sometimes the best test improvement is deleting 4,000 lines and starting cleaner."</div>
     </div>
     <div class="slide-num">5/9</div>
 </div>
 
-<!-- SLIDE 6: AI TREADMILL -->
-<div class="slide slide-dark">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 6 — AI TREADMILL         -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-dark">
     <div class="tag">The Free AI Market in 2026</div>
-    <h2>17 Models in 2 Months.<br>5 Still Free. 7 Already Gone.</h2>
+    <h2>15 Models in 2 Months.<br>9 Still Free. 6 Already Gone.</h2>
     <p class="subtitle subtitle-narrow">
         The treadmill is real. Don't rely on one provider.
     </p>
 
     <div class="ai-grid">
         <div class="ai-card" style="background: rgba(63,185,80,0.06); border:1px solid #3fb950;">
-            <h4 style="color:#3fb950;">🟢 Active — 6 tools</h4>
-            <p>OpenCode × 3 (glm-5, minimax-m2.7, gpt-5-nano)</p>
-            <p>GitHub Copilot · Ollama qwen2.5:3b · Groq Llama 3.3 70B</p>
+            <h4 style="color:#3fb950;">🟢 Active — 9 tools</h4>
+            <p>OpenCode: GLM-5, M2.7, GPT-5 Nano, DeepSeek, <strong>Nemotron 3 Super</strong>, Big Pickle</p>
+            <p>OpenCode Zen · GitHub Copilot · Ollama qwen2.5:3b · Groq Llama 3.3 70B</p>
             <span class="badge" style="color:#3fb950;">All free</span>
         </div>
         <div class="ai-card" style="background: rgba(248,81,73,0.06); border:1px solid #f85149;">
-            <h4 style="color:#f85149;">🔴 Gone — 7 tools</h4>
-            <p>MiniMax M2.5 (promo) · Cursor Hobby (50 req)</p>
-            <p>Cline · Gemini API (429) · qwen2.5:14b (timeout)</p>
-            <p>Continue.dev · Big Pickle · Mimo V2 Pro/Omni</p>
+            <h4 style="color:#f85149;">🔴 Gone — 6 tools</h4>
+            <p>MiniMax M2.5 (promo) · Cursor Hobby (50 req) · Cline</p>
+            <p>Gemini API (429) · qwen2.5:14b (timeout) · Continue.dev</p>
             <span class="badge" style="color:#f85149;">Free tier ended</span>
         </div>
     </div>
 
-    <div style="margin-top:30px; background: rgba(210,153,34,0.08); border:1px solid #d29922; border-radius:14px; padding:28px 36px;">
-        <div style="display:flex; gap:28px; align-items:center;">
-            <div style="font-size:3em;">🏃</div>
+    <div class="treadmill-box">
+        <div class="inner">
+            <div class="icon">🏃</div>
             <div>
-                <div style="font-size:1.5em; font-weight:600; margin-bottom:6px; color:#d29922;">Free AI is a treadmill</div>
-                <div style="color:#8b949e; font-size:1.2em;">
-                    Keep moving or get left behind. Maintain a stack of 4–5 free tools across providers and be ready to swap any week.
+                <div class="heading">Free AI is a treadmill</div>
+                <div class="desc">
+                    Keep moving or get left behind. Maintain a stack of 4–5 free tools 
+                    across different providers — and be ready to swap any week.
                 </div>
             </div>
         </div>
@@ -544,114 +738,155 @@
     <div class="slide-num">6/9</div>
 </div>
 
-<!-- SLIDE 7: TAKEAWAYS -->
-<div class="slide slide-dark">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 7 — TAKEAWAYS            -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-blue">
     <div class="tag">What I Learned</div>
     <h2>Three Honest Takeaways</h2>
 
-    <div style="margin-top:30px;">
-        <div class="takeaway-item">
-            <div class="takeaway-num">1️⃣</div>
-            <div class="takeaway-text">
-                <h3>AI amplifies your prompt quality</h3>
-                <p>"Write tests" generated 4,000 lines of tech debt. A specific prompt with modular structure would have saved Phase 2 entirely.</p>
+    <div style="display:flex; gap:40px; align-items:stretch;">
+        <div style="flex:1.4;">
+            <div class="takeaway-list">
+                <div class="takeaway-item">
+                    <div class="takeaway-num">1️⃣</div>
+                    <div class="takeaway-text">
+                        <h3>AI amplifies your prompt quality</h3>
+                        <p>"Write tests" generated 4,000 lines of tech debt. A specific prompt with modular structure would have saved Phase 2 entirely.</p>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-num">2️⃣</div>
+                    <div class="takeaway-text">
+                        <h3>Refactoring finds bugs that testing misses</h3>
+                        <p>A race condition lived for 1 month in the API. Sequential tests couldn't catch it — only parallel execution across 4 browser projects exposed the collision.</p>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-num">3️⃣</div>
+                    <div class="takeaway-text">
+                        <h3>Free AI is a treadmill, not a foundation</h3>
+                        <p>15 tools in 2 months. 6 are gone. 9 remain. Diversify, rotate, never depend on a single provider.</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="takeaway-item">
-            <div class="takeaway-num">2️⃣</div>
-            <div class="takeaway-text">
-                <h3>Refactoring finds bugs that testing misses</h3>
-                <p>A race condition lived for 2 months. 1,000+ tests ran daily. None caught it. Reading the code found it in 5 minutes.</p>
+
+        <!-- Visual right side -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(255,255,255,0.03); border:1px solid #30363d; border-radius:16px; padding:24px 20px;">
+            <div style="color:#8b949e; font-size:1em; text-transform:uppercase; letter-spacing:2px; margin-bottom:20px;">The Chain</div>
+            
+            <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                <!-- 1 -->
+                <div style="display:flex; align-items:center; gap:16px; width:100%; justify-content:center;">
+                    <div style="width:60px; height:60px; border-radius:50%; background:rgba(210,153,34,0.15); border:2px solid #d29922; display:flex; align-items:center; justify-content:center; font-size:1.6em; font-weight:700; color:#d29922;">1</div>
+                    <div style="font-size:1.2em; color:#b0b8c0; padding-left:24px;">Weak prompt =<br>tech debt</div>
             </div>
-        </div>
-        <div class="takeaway-item">
-            <div class="takeaway-num">3️⃣</div>
-            <div class="takeaway-text">
-                <h3>Free AI is a treadmill, not a foundation</h3>
-                <p>17 tools in 2 months. 7 are gone. 5 remain. Diversify, rotate, never depend on a single provider.</p>
+            <!-- connector -->
+            <div style="width:2px; height:30px; background:linear-gradient(180deg, #d29922, #f85149); margin:4px 0;"></div>
+            <!-- 2 -->
+            <div style="display:flex; align-items:center; gap:16px; width:100%; justify-content:center;">
+                <div style="width:60px; height:60px; border-radius:50%; background:rgba(248,81,73,0.15); border:2px solid #f85149; display:flex; align-items:center; justify-content:center; font-size:1.6em; font-weight:700; color:#f85149;">2</div>
+                <div style="font-size:1.2em; color:#b0b8c0; padding-left:24px;">Refactoring =<br>bug discovery</div>
+            </div>
+            <!-- connector -->
+            <div style="width:2px; height:30px; background:linear-gradient(180deg, #f85149, #3fb950); margin:4px 0;"></div>
+            <!-- 3 -->
+            <div style="display:flex; align-items:center; gap:16px; width:100%; justify-content:center;">
+                <div style="width:60px; height:60px; border-radius:50%; background:rgba(63,185,80,0.15); border:2px solid #3fb950; display:flex; align-items:center; justify-content:center; font-size:1.6em; font-weight:700; color:#3fb950;">3</div>
+                <div style="font-size:1.2em; color:#b0b8c0; padding-left:24px;">Diversify =<br>survive AI changes</div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="highlight-box">
-        <div class="text">"The biggest lesson? Sometimes the best test improvement is deleting 4,000 lines."</div>
+        <div class="text">"The biggest lesson? Deleting 4,000 lines was worth more than writing 1,000 new ones."</div>
     </div>
     <div class="slide-num">7/9</div>
 </div>
 
-<!-- SLIDE 8: WHAT'S NEXT -->
-<div class="slide slide-accent">
-    <div class="tag">Phase 3 — Coming Soon</div>
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 8 — PHASE 3 TEASER       -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-teal">
+    <div class="tag" style="border-color:#7ee787; color:#7ee787;">Phase 3 — Coming Soon ⭐</div>
     <h2>This Is Only Half the Stack.</h2>
-    <p class="subtitle subtitle-narrow subtitle-white">
+    <p class="subtitle subtitle-narrow subtitle-light">
         The monoliths are gone. Architecture is documented.<br>
-        Now we expand across 5 languages.
+        Now we expand across 5 stacks.
     </p>
 
-    <div class="teaser-grid">
+    <div class="teaser-sub">
         <div class="teaser-card" style="border-color: #58a6ff;">
-            <div class="icon">🦫</div>
+            <span class="icon" style="position:absolute; top:6px; right:10px; font-size:2em; transform:rotate(15deg);">⭐</span>
+            <span class="icon" style="display:block; font-size:3.2em; margin-bottom:12px;">🦫</span>
             <h4>Go Backend</h4>
-            <p>11 tests, 2 packages — users &amp; follows.<br>Race detection, table-driven tests, error handling.</p>
+            <p>11 tests · 2 packages<br>Race detection · Table-driven tests<br>Error handling patterns</p>
         </div>
-        <div class="teaser-card" style="border-color: #a371f7;">
-            <div class="icon">#️⃣</div>
+        <div class="teaser-card" style="border-color: #bc8cff;">
+            <span class="icon" style="position:absolute; top:6px; right:10px; font-size:2em; transform:rotate(10deg);">⭐</span>
+            <span class="icon" style="display:block; font-size:3.2em; margin-bottom:12px;">#️⃣</span>
             <h4>C# + Fuzzer</h4>
-            <p>41 tests, 5 modules — Fuzzer, Properties,<br>Schema, Race, Metamorphic. PBT on .NET.</p>
+            <p>41 tests · 5 modules<br>Fuzzer · Properties · Schema<br>Race · Metamorphic</p>
         </div>
         <div class="teaser-card" style="border-color: #d29922;">
-            <div class="icon">🧪</div>
+            <span class="icon" style="position:absolute; top:6px; right:10px; font-size:2em; transform:rotate(20deg);">⭐</span>
+            <span class="icon" style="display:block; font-size:3.2em; margin-bottom:12px;">🧪</span>
             <h4>Mutation Testing</h4>
-            <p>API + DB mutations + Chaos testing.<br>Bugs found: BUG-005 (XSS), BUG-006 (negative likes).</p>
+            <p>API mutations · DB mutations<br>Chaos testing<br>BUG-005 (XSS) · BUG-006</p>
         </div>
     </div>
 
-    <div style="margin-top:30px; text-align:center;">
-        <div style="display:inline-block; background:rgba(255,255,255,0.05); border:1px solid #30363d; border-radius:12px; padding:20px 50px;">
-            <p style="font-size:1.3em; color:#8b949e;">
-                <strong style="color:#e6edf3;">5 languages</strong> · TypeScript · Go · C# · Python · k6<br>
-                <strong style="color:#e6edf3;">7 bugs</strong> found to date · 5 architecture docs · 3 diagrams
+    <div class="teaser-footer">
+        <div class="box">
+            <p>
+                <strong>5 stacks</strong> · TypeScript · Go · C# · Python · k6 (load) &nbsp;|&nbsp;
+                <strong>7 bugs</strong> found &nbsp;|&nbsp;
+                <strong>5</strong> architecture docs
             </p>
         </div>
     </div>
-
-    <div class="slide-num">8/9</div>
+    <div class="slide-num" style="color:#2d5a5a;">8/9</div>
 </div>
 
-<!-- SLIDE 9: CTA -->
-<div class="slide slide-dark" style="text-align:center; align-items:center;">
-    <div style="max-width: 75%;">
+<!-- ════════════════════════════════ -->
+<!-- SLIDE 9 — CTA + AUTHOR         -->
+<!-- ════════════════════════════════ -->
+<div class="slide bg-cta" style="align-items:center;">
+    <div class="cta-content">
         <div class="tag" style="margin-bottom:24px;">Your Turn</div>
 
-        <h1 style="max-width:100%; font-size:3.5em; margin-bottom:24px;">
+        <h1 style="max-width:100%; font-size:3.2em; margin-bottom:20px;">
             What's the messiest test suite<br>
             AI has helped you create?
         </h1>
-        <p class="subtitle" style="max-width:100%; font-size:1.8em; margin-bottom:50px;">
+        <p class="subtitle" style="max-width:100%; font-size:1.6em; margin-bottom:40px;">
             Share your story in the comments. How did you clean it up —<br>
             or are you still living with the debt?
         </p>
 
-        <div style="display:flex; gap:40px; justify-content:center; margin-bottom:50px;">
-            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
-                <div style="font-size:1.8em; font-weight:700; color:#d29922;">~4,000</div>
-                <div style="color:#8b949e; font-size:1em;">Lines deleted</div>
+        <div class="cta-stats">
+            <div class="cta-stat">
+                <div class="num">~4,000</div>
+                <div class="lbl">Lines deleted</div>
             </div>
-            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
-                <div style="font-size:1.8em; font-weight:700; color:#d29922;">$0</div>
-                <div style="color:#8b949e; font-size:1em;">Budget</div>
+            <div class="cta-stat">
+                <div class="num">$0</div>
+                <div class="lbl">Budget</div>
             </div>
-            <div style="border:1px solid #30363d; border-radius:14px; padding:24px 32px; min-width:160px;">
-                <div style="font-size:1.8em; font-weight:700; color:#d29922;">1 bug</div>
-                <div style="color:#8b949e; font-size:1em;">Found by accident</div>
+            <div class="cta-stat">
+                <div class="num">23</div>
+                <div class="lbl">Modules after refactoring</div>
             </div>
         </div>
 
         <div class="author-line">
             <div class="author-avatar">🐛</div>
             <div class="author-info">
-                <h4>Victor E.</h4>
-                <p>QA Automation Engineer · Building in public<br>victor-2026.github.io/qa-automation-playwright</p>
+                <h4>Victor Ematin</h4>
+                <p>AI Quality Engineering Lead<br>
+                Agents under OpenCode Desktop · DeepSeek · Big Pickle · Nemotron · OpenCode Zen</p>
             </div>
         </div>
     </div>

@@ -86,9 +86,9 @@ e2e/
 ## Layer Diagram
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                    npx playwright test                            │
-│              1157 runs (292 unique × 4 projects)                 │
+┌─────────────────────────────────────────────────────────────────┐
+│                    npx playwright test                          │
+│              1157 runs (292 unique × 4 projects)                │
 ├─────────────┬──────────────┬──────────┬──────────────┬──────────┤
 │   api/      │    ui/       │  load/   │  mutation/   │ pages/   │
 │   9 specs   │   14 specs   │  4 specs │  3 specs     │ POM      │

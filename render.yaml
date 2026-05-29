@@ -15,5 +15,7 @@ services:
     repo: https://github.com/victor-2026/qa-automation-playwright
     branch: main
     envVars:
-      - key: API_PROXY_URL
+      - key: API_BACKEND_URL
         value: https://buzzhive-test.onrender.com
+      - key: API_HOST
+        value: buzzhive-test.onrender.com

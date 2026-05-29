@@ -1,0 +1,26 @@
+{
+	"nodes":[
+		{"id":"api","type":"text","text":"### API Tests (9 specs)\nauth, posts, users, admin,\nconversations, notifications,\nhealth, metamorphic, smoke\n\n→ request()\n→ Backend API /api/*","x":-480,"y":-200,"width":240,"height":214,"color":"5"},
+		{"id":"ui","type":"text","text":"### UI Tests (14 specs)\nauth, posts, profile, search,\ncomments, navigation, messages,\nnotifications, follows, moderator,\nadmin, logout, performance, mobile\n\n→ page + POM\n→ Frontend UI localhost","x":-140,"y":-200,"width":231,"height":310,"color":"4"},
+		{"id":"load","type":"text","text":"### Load Tests (4 specs)\nk6 stress, Playwright timing,\nconcurrent sessions,\nsmoke under load\n\n→ page + timing\n→ Full stack","x":200,"y":-200,"width":238,"height":214,"color":"2"},
+		{"id":"mutation","type":"text","text":"### Mutation Tests (3 stages)\nAPI Response (8) — route.fulfill()\nDB Data (4) — pg direct SQL\nChaos (3) — Docker stop/restart\n\n→ route + pg + docker\n→ All layers mutated","x":500,"y":-200,"width":242,"height":289,"color":"1"},
+		{"id":"header","type":"text","text":"## E2E Test Architecture\n1,157 runs (292 unique × 4 browsers)","x":-24,"y":-560,"width":262,"height":110,"color":"6"},
+		{"id":"shared","type":"text","text":"### Shared Layer\n\nfixtures.ts, credentials.ts\nsetup/teardown, utils\npage.evaluate(), tid()\nauth.setup.ts, mobile.spec.ts\n\n→ Used by all test modules","x":20,"y":258,"width":243,"height":214,"color":"3"},
+		{"id":"targets","type":"text","text":"### Targets\n\n**Local Docker:**\nhttp://localhost:3000 (UI)\nhttp://localhost:8000/api\n\n**Render (production):**\nhttps://buzzhive-test.onrender.com/api\n+ 12 smoke endpoints + uptime monitor","x":-480,"y":258,"width":218,"height":304,"color":"1"},
+		{"id":"browsers","type":"text","text":"### Multi-Browser Matrix\n\nChromium — 256 tests\nMobile Safari — 267 tests\nSafari Plus — 267 tests\nMobile Chrome — 267 tests\n\n→ 4 parallel projects","x":500,"y":348,"width":237,"height":214,"color":"2"}
+	],
+	"edges":[
+		{"id":"e-h-api","fromNode":"header","fromSide":"bottom","toNode":"api","toSide":"top","label":"runs"},
+		{"id":"e-h-ui","fromNode":"header","fromSide":"bottom","toNode":"ui","toSide":"top","label":"runs"},
+		{"id":"e-h-load","fromNode":"header","fromSide":"bottom","toNode":"load","toSide":"top","label":"runs"},
+		{"id":"e-h-mutation","fromNode":"header","fromSide":"bottom","toNode":"mutation","toSide":"top","label":"runs"},
+		{"id":"e-api-shared","fromNode":"api","fromSide":"bottom","toNode":"shared","toSide":"left","label":"uses"},
+		{"id":"e-ui-shared","fromNode":"ui","fromSide":"bottom","toNode":"shared","toSide":"top","label":"uses"},
+		{"id":"e-load-shared","fromNode":"load","fromSide":"bottom","toNode":"shared","toSide":"top","label":"uses"},
+		{"id":"e-mutation-shared","fromNode":"mutation","fromSide":"bottom","toNode":"shared","toSide":"right","label":"uses"},
+		{"id":"e-shared-browsers","fromNode":"shared","fromSide":"right","toNode":"browsers","toSide":"left","label":"runs on"},
+		{"id":"e-api-targets","fromNode":"api","fromSide":"left","toNode":"targets","toSide":"top","label":"targets"},
+		{"id":"e-ui-targets","fromNode":"ui","fromSide":"left","toNode":"targets","toSide":"right","label":"targets"},
+		{"id":"e-browsers-targets","fromNode":"browsers","fromSide":"bottom","toNode":"targets","toSide":"right","label":"deployed to"}
+	]
+}
