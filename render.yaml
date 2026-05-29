@@ -10,7 +10,7 @@ services:
         value: "*"
 
   - type: web
-    name: buzzhive-frontend
+    name: buzzhive-frontend-v2
     runtime: docker
     repo: https://github.com/victor-2026/qa-automation-playwright
     branch: main
