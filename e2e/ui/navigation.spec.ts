@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Navigation', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -19,11 +19,9 @@ test.describe('Buzzhive Social Network - Navigation', () => {
   
   test.use({ storageState: { cookies: [], origins: [] } });
   
-  test('navigation elements visible after login', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('navigation elements visible after login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     await expect(page.locator('[data-testid="nav-feed"]')).toBeVisible({ timeout: 5000 });
@@ -34,11 +32,9 @@ test.describe('Buzzhive Social Network - Navigation', () => {
     console.log('✅ Navigation elements visible!');
   });
   
-  test('can navigate to profile', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can navigate to profile', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForLoadState('networkidle');
     await page.click('[data-testid="nav-profile"]');
     await page.waitForLoadState('networkidle');
@@ -46,22 +42,18 @@ test.describe('Buzzhive Social Network - Navigation', () => {
     console.log('✅ Profile page accessible!');
   });
 
-  test('can navigate to search', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can navigate to search', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-search"]');
     await page.waitForURL('**/search**');
     console.log('✅ Search page accessible!');
   });
 
-  test('can navigate to explore', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can navigate to explore', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-explore"]');
     await page.waitForURL('**/explore**');

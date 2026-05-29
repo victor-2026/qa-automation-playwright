@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Notifications', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,11 +17,9 @@ test.describe('Buzzhive Social Network - Notifications', () => {
     }
   });
   
-  test('notifications page accessible', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('notifications page accessible', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-notifications"]');
     await page.waitForURL('**/notifications**');
@@ -31,11 +29,9 @@ test.describe('Buzzhive Social Network - Notifications', () => {
     console.log('✅ Notifications page accessible!');
   });
   
-  test('can mark all notifications as read', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can mark all notifications as read', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-notifications"]');
     await page.waitForLoadState('networkidle');

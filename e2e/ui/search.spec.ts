@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Search', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,11 +17,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     }
   });
 
-  test('search page loads with all elements', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('search page loads with all elements', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -32,11 +30,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Search page loaded!');
   });
 
-  test('can search for users', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can search for users', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -53,11 +49,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ User search executed!');
   });
 
-  test('can search for posts', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can search for posts', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -76,11 +70,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Post search executed and tab switched!');
   });
 
-  test('can search for hashtags', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can search for hashtags', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -99,11 +91,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Hashtag search executed and tab switched!');
   });
 
-  test('search by pressing Enter key', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('search by pressing Enter key', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -118,11 +108,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Search triggered via Enter key!');
   });
 
-  test('display correct result counts in tabs', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('display correct result counts in tabs', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -142,11 +130,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Tab counts displayed correctly!');
   });
 
-  test('empty search shows no results message', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('empty search shows no results message', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -166,11 +152,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     }
   });
 
-  test('can switch between search result tabs', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can switch between search result tabs', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -196,11 +180,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     console.log('✅ Tab switching works!');
   });
 
-  test('clicking search result user navigates to profile', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('clicking search result user navigates to profile', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     await page.goto('/search');
@@ -223,11 +205,9 @@ test.describe('Buzzhive Social Network - Search', () => {
     }
   });
 
-  test('search from navigation menu', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('search from navigation menu', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
 
     const navSearch = page.locator('[data-testid="nav-search"]');

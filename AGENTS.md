@@ -85,6 +85,35 @@ Minimum sections to keep updated:
 - If not — find all possible holes, propose fixes, repeat until confident
 - This applies to: code generation, test creation, documentation, reviews
 
+## E2E Test Rules (AI-generated tests)
+
+### Selector Reuse
+- Before writing any new `[data-testid=...]` locator, grep `e2e/pages/` for existing Page Objects
+- Use Page Objects from fixtures: `loginPage.login()`, `navPage.*`, `feedPage.*`
+- Never write raw `page.fill('[data-testid="auth-email-input"]')` when `loginPage.login()` exists
+- If a Page Object doesn't cover a selector, add it to the existing Page Object class
+
+### Spec Structure
+- Each spec file tests ONE domain (auth, posts, admin, etc.)
+- Import `{ test, expect }` from `../fixtures` — never from `@playwright/test`
+- Use `test.beforeAll` for token acquisition, `test.afterEach` for screenshots on failure
+- Naming: `DOMAIN-API-NNN:` or `DOMAIN-UI-NNN:` prefix
+
+### Assertion Coverage
+- CRUD tests must verify persisted state (reload → data persists)
+- Don't assert success toasts — assert the actual state change
+- Negative assertions: use `expect(locator).not.toBeVisible()` or `toHaveCount(0)`, not absence-by-omission
+- API tests: assert status code + response schema (fields, types)
+
+### Flake Prevention
+- Never use `page.waitForTimeout()` — use `expect(locator).toBeVisible()` or `waitForResponse()`
+- Retries: max 2, use `trace: 'on-first-retry'`
+- If a test fails intermittently, add `await page.waitForLoadState('networkidle')` or increase timeout
+
+### Data-Driven Tests
+- Use `test.each` for parameterized inputs (SQLi patterns, XSS vectors, boundary values)
+- Test data: valid, boundary, invalid, malicious — at least 3 variants per input type
+
 ## End-of-Session Report Template (chat/PR)
 Use this short repeatable format:
 

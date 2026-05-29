@@ -69,9 +69,10 @@ export const accounts = {
 };
 
 export async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('http://localhost:3000');
-  await page.fill('[data-testid="auth-email-input"]', email);
-  await page.fill('[data-testid="auth-password-input"]', password);
-  await page.click('[data-testid="auth-login-btn"]');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto('/login');
+  await loginPage.login(email, password);
   await page.waitForURL('**/');
 }
+
+export const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';

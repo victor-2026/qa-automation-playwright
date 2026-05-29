@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Profile', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,11 +17,9 @@ test.describe('Buzzhive Social Network - Profile', () => {
     }
   });
   
-  test('profile page shows user info', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('profile page shows user info', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-profile"]');
     await page.waitForURL('**/profile**');
@@ -33,11 +31,9 @@ test.describe('Buzzhive Social Network - Profile', () => {
     console.log('✅ Profile info visible!');
   });
 
-  test('can navigate to profile settings', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can navigate to profile settings', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.click('[data-testid="nav-profile"]');
     await page.waitForLoadState('networkidle');

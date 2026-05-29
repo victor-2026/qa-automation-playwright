@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Posts', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,22 +17,18 @@ test.describe('Buzzhive Social Network - Posts', () => {
     }
   });
   
-  test('feed shows posts', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('feed shows posts', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     await expect(page.locator('[data-testid="post-composer-input"]')).toBeVisible({ timeout: 5000 });
     console.log('✅ Feed page accessible!');
   });
   
-  test('can create a post', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can create a post', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const testContent = `Hello from Playwright! ${Date.now()}`;
@@ -47,11 +43,9 @@ test.describe('Buzzhive Social Network - Posts', () => {
     console.log('✅ Post created successfully!');
   });
 
-  test('can like and unlike a post', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can like and unlike a post', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const likeBtn = page.locator('[data-testid^="post-like-btn-"]').first();
@@ -70,11 +64,9 @@ test.describe('Buzzhive Social Network - Posts', () => {
     console.log('✅ Like/Unlike works!');
   });
   
-  test('can bookmark a post', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('can bookmark a post', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const bookmarkBtn = page.locator('[data-testid^="post-bookmark-btn-"]').first();

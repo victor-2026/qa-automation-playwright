@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Moderator', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,11 +17,9 @@ test.describe('Buzzhive Social Network - Moderator', () => {
     }
   });
   
-  test('moderator can access admin panel', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'mod123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('moderator can access admin panel', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('mod@buzzhive.com', 'mod123');
     await page.waitForURL('**/');
     
     const adminLink = page.locator('[data-testid="nav-admin"]');
@@ -32,11 +30,9 @@ test.describe('Buzzhive Social Network - Moderator', () => {
     console.log('✅ Moderator can access admin panel!');
   });
   
-  test('moderator can delete any post', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'mod123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('moderator can delete any post', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('mod@buzzhive.com', 'mod123');
     await page.waitForURL('**/');
     
     const menuBtn = page.locator('[data-testid^="post-menu-btn-"]').first();
@@ -54,11 +50,9 @@ test.describe('Buzzhive Social Network - Moderator', () => {
     }
   });
   
-  test('moderator cannot ban users', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'mod@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'mod123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('moderator cannot ban users', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('mod@buzzhive.com', 'mod123');
     await page.waitForURL('**/');
     
     await page.goto('/admin/users');

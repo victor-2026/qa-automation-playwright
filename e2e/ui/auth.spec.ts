@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Auth', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,7 +17,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     }
   });
   
-  test('homepage loads', async ({ page }) => {
+  test('homepage loads', async ({ page, loginPage }) => {
     await page.goto('/');
     const title = await page.title();
     console.log('Page title:', title);
@@ -26,7 +26,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ Homepage test passed!');
   });
 
-  test('login page accessible', async ({ page }) => {
+  test('login page accessible', async ({ page, loginPage }) => {
     await page.goto('/login');
     const emailInput = page.locator('[data-testid="auth-email-input"]');
     const passwordInput = page.locator('[data-testid="auth-password-input"]');
@@ -37,12 +37,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ Login page test passed!');
   });
 
-  test('AUTH-001: login with valid credentials creates session', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-001: login with valid credentials creates session', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     
     await page.waitForURL('**/');
     
@@ -52,12 +49,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-001: Login creates session - PASSED');
   });
 
-  test('AUTH-001: JWT tokens stored after login', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-001: JWT tokens stored after login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     
     await page.waitForURL('**/');
     
@@ -74,12 +68,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-001: JWT tokens stored - PASSED');
   });
 
-  test('AUTH-001: session persists on page reload', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-001: session persists on page reload', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     
     await page.waitForURL('**/');
     
@@ -92,12 +83,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-001: Session persists on reload - PASSED');
   });
 
-  test('AUTH-001: sidebar shows username after login', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-001: sidebar shows username after login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     
     await page.waitForURL('**/');
     await page.waitForLoadState('networkidle');
@@ -108,20 +96,16 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-001: Sidebar shows user - PASSED');
   });
 
-  test('AUTH-002: login with wrong password shows error', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-002: login with wrong password shows error', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'wrongpassword');
     await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
     console.log('✅ AUTH-002: Wrong password error - PASSED');
   });
 
-  test('AUTH-011: password boundary - 1 character (no HTML5 validation)', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'a');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-011: password boundary - 1 character (no HTML5 validation)', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'a');
     
     const passwordInput = page.locator('[data-testid="auth-password-input"]');
     const isInvalid = await passwordInput.evaluate(el => (el as HTMLInputElement).validity.valid);
@@ -132,17 +116,15 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-011: 1 char password behavior documented - PASSED');
   });
 
-  test('AUTH-011: password boundary - minimum 6 characters accepted', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', '123456');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-011: password boundary - minimum 6 characters accepted', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', '123456');
     
     await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
     console.log('✅ AUTH-011: 6 char password accepted (wrong password) - PASSED');
   });
 
-  test('AUTH-011: password boundary - very long password handled', async ({ page }) => {
+  test('AUTH-011: password boundary - very long password handled', async ({ page, loginPage }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'a'.repeat(1000));
@@ -152,7 +134,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-011: Long password handled - PASSED');
   });
 
-  test('AUTH-011: password boundary - 3001 chars rejected', async ({ page }) => {
+  test('AUTH-011: password boundary - 3001 chars rejected', async ({ page, loginPage }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'a'.repeat(3001));
@@ -162,7 +144,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-011: 3001 char password handled - PASSED');
   });
 
-  test('AUTH-010: SQL injection in password field is blocked', async ({ page }) => {
+  test('AUTH-010: SQL injection in password field is blocked', async ({ page, loginPage }) => {
     const sqlPayloads = [
       "' OR '1'='1",
       "admin'--",
@@ -182,7 +164,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-010: SQL injection in password blocked - PASSED');
   });
 
-  test('AUTH-010: SQL injection in email field is blocked', async ({ page }) => {
+  test('AUTH-010: SQL injection in email field is blocked', async ({ page, loginPage }) => {
     const sqlPayloads = [
       "' OR '1'='1",
       "admin'--",
@@ -201,7 +183,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-010: SQL injection in email blocked - PASSED');
   });
 
-  test('AUTH-010: XSS in fields is blocked', async ({ page }) => {
+  test('AUTH-010: XSS in fields is blocked', async ({ page, loginPage }) => {
     const xssPayloads = [
       '<script>alert("XSS")</script>',
       '"><img src=x onerror=alert(1)>',
@@ -220,7 +202,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-010: XSS in fields blocked - PASSED');
   });
 
-  test('AUTH-009: login with wrong email shows error', async ({ page }) => {
+  test('AUTH-009: login with wrong email shows error', async ({ page, loginPage }) => {
     const invalidEmails = [
       'wrong@buzzhive.com',
       'plaintext',
@@ -241,11 +223,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-009: All invalid email formats rejected - PASSED');
   });
 
-  test('AUTH-009: email validation - HTML5 constraints', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'invalid-email');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-009: email validation - HTML5 constraints', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('invalid-email', 'alice123');
     
     const emailInput = page.locator('[data-testid="auth-email-input"]');
     const isInvalid = await emailInput.evaluate(el => (el as HTMLInputElement).validity.valid);
@@ -253,12 +233,9 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-009: HTML5 email validation works - PASSED');
   });
 
-  test('AUTH-002: no tokens stored on failed login', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-002: no tokens stored on failed login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'wrongpassword');
     
     await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
     
@@ -275,23 +252,18 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-002: No tokens on failed login - PASSED');
   });
 
-  test('AUTH-002: user stays on login page after error', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-002: user stays on login page after error', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'wrongpassword');
     
     await expect(page).toHaveURL(/.*\/login/);
     
     console.log('✅ AUTH-002: Stay on login page - PASSED');
   });
 
-  test('AUTH-001: admin can login', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'admin123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('AUTH-001: admin can login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('admin@buzzhive.com', 'admin123');
     
     await page.waitForURL('**/');
     await expect(page.locator('[data-testid="nav-feed"]')).toBeVisible({ timeout: 5000 });
@@ -299,7 +271,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ AUTH-001: Admin login - PASSED');
   });
 
-  test('registration page - all fields present', async ({ page }) => {
+  test('registration page - all fields present', async ({ page, loginPage }) => {
     await page.goto('/register');
     await expect(page.locator('[data-testid="auth-display-name-input"]')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('[data-testid="auth-username-input"]')).toBeVisible({ timeout: 5000 });
@@ -309,7 +281,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ Registration fields present!');
   });
 
-  test('registration - email validation', async ({ page }) => {
+  test('registration - email validation', async ({ page, loginPage }) => {
     await page.goto('/register');
     await page.fill('[data-testid="auth-display-name-input"]', 'Test User');
     await page.fill('[data-testid="auth-username-input"]', 'testuser123');
@@ -324,7 +296,7 @@ test.describe('Buzzhive Social Network - Auth', () => {
     console.log('✅ Email validation works!');
   });
 
-  test('registration - short password validation', async ({ page }) => {
+  test('registration - short password validation', async ({ page, loginPage }) => {
     await page.goto('/register');
     await page.fill('[data-testid="auth-display-name-input"]', 'Test User');
     await page.fill('[data-testid="auth-username-input"]', 'testuser123');

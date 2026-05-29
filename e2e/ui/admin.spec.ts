@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Admin', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,11 +17,9 @@ test.describe('Buzzhive Social Network - Admin', () => {
     }
   });
   
-  test('admin dashboard shows stats', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'admin123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('admin dashboard shows stats', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('admin@buzzhive.com', 'admin123');
     await page.waitForURL('**/');
     
     await page.click('[data-testid="nav-admin"]');
@@ -34,11 +32,9 @@ test.describe('Buzzhive Social Network - Admin', () => {
     console.log('✅ Admin dashboard loaded!');
   });
   
-  test('regular user cannot access admin', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('regular user cannot access admin', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const adminLink = page.locator('[data-testid="nav-admin"]');
@@ -47,11 +43,9 @@ test.describe('Buzzhive Social Network - Admin', () => {
     console.log('✅ Admin link hidden for regular user!');
   });
   
-  test('admin can ban a user', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'admin123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('admin can ban a user', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('admin@buzzhive.com', 'admin123');
     await page.waitForURL('**/');
     
     await page.goto('/admin/users');
@@ -66,22 +60,18 @@ test.describe('Buzzhive Social Network - Admin', () => {
     console.log('✅ User banned successfully!');
   });
   
-  test('banned user cannot login', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'frank@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'frank123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('banned user cannot login', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('frank@buzzhive.com', 'frank123');
     
     await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
     
     console.log('✅ Banned user login blocked!');
   });
   
-  test('admin can change user role', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'admin@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'admin123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('admin can change user role', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('admin@buzzhive.com', 'admin123');
     await page.waitForURL('**/');
     
     await page.goto('/admin/users');

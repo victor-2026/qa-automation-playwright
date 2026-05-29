@@ -7,7 +7,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Buzzhive Social Network - Performance', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, loginPage }) => {
     await page.goto('/');
   });
 
@@ -17,7 +17,7 @@ test.describe('Buzzhive Social Network - Performance', () => {
     }
   });
   
-  test('PERF-001: Login page loads under 2 seconds', async ({ page }) => {
+  test('PERF-001: Login page loads under 2 seconds', async ({ page, loginPage }) => {
     const startTime = Date.now();
     await page.goto('/login');
     await page.waitForLoadState('domcontentloaded');
@@ -27,11 +27,9 @@ test.describe('Buzzhive Social Network - Performance', () => {
     console.log(`✅ PERF-001: Login page loaded in ${loadTime}ms (< 2000ms)`);
   });
   
-  test('PERF-001: Feed loads under 3 seconds', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('PERF-001: Feed loads under 3 seconds', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const startTime = Date.now();
@@ -42,12 +40,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     console.log(`✅ PERF-001: Feed loaded in ${loadTime}ms (< 3000ms)`);
   });
   
-  test('PERF-001: API response time under 500ms', async ({ page }) => {
+  test('PERF-001: API response time under 500ms', async ({ page, loginPage }) => {
     const startTime = Date.now();
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     await page.waitForLoadState('networkidle');
     const apiTime = Date.now() - startTime;
@@ -56,11 +52,9 @@ test.describe('Buzzhive Social Network - Performance', () => {
     console.log(`✅ PERF-001: API response time measured`);
   });
   
-  test('PERF-002: Page navigation under 1 second', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('PERF-002: Page navigation under 1 second', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const startTime = Date.now();
@@ -72,11 +66,9 @@ test.describe('Buzzhive Social Network - Performance', () => {
     console.log(`✅ PERF-002: Navigation completed in ${navTime}ms (< 1000ms)`);
   });
   
-  test('PERF-002: Post creation under 2 seconds', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('PERF-002: Post creation under 2 seconds', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const startTime = Date.now();
@@ -91,11 +83,9 @@ test.describe('Buzzhive Social Network - Performance', () => {
     console.log(`✅ PERF-002: Post created in ${postTime}ms (< 2000ms)`);
   });
   
-  test('PERF-003: Multiple rapid actions handled', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-    await page.fill('[data-testid="auth-password-input"]', 'alice123');
-    await page.click('[data-testid="auth-login-btn"]');
+  test('PERF-003: Multiple rapid actions handled', async ({ page, loginPage }) => {
+    await loginPage.goto('/login');
+    await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
     
     const actions = ['nav-feed', 'nav-messages', 'nav-notifications', 'nav-profile'];
