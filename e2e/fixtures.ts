@@ -1,7 +1,7 @@
 import { test as base, Page, APIRequestContext } from '@playwright/test';
 import { LoginPage, NavPage, FeedPage } from './pages';
 
-const API_BASE = 'http://localhost:8000/api';
+export const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
 
 async function getAuthToken(request: APIRequestContext, email: string, password: string): Promise<string | null> {
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -74,5 +74,3 @@ export async function loginAs(page: Page, email: string, password: string) {
   await loginPage.login(email, password);
   await page.waitForURL('**/');
 }
-
-export const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000/api';
