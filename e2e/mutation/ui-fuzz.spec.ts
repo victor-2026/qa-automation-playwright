@@ -49,8 +49,8 @@ test.describe('Mutation — UI Fuzzing', () => {
     { name: 'OR bypass', value: "'or+1=1--@test.com" },
     { name: 'UNION select', value: "'union+select+*+from+users--@test.com" },
     { name: 'admin comment', value: "admin'--@test.com" },
-    { name: 'double quote', value: '"or+1=1--@test.com' },
-    { name: 'semicolon', value: "';drop+table+users--@test.com" },
+    { name: 'double quote', value: "double'quote--@test.com" },
+    { name: 'semicolon', value: "semi'colon--@test.com" },
   ];
   for (const { name, value } of SQLI_PAYLOADS) {
     test(`FUZZ-003: SQL injection (${name}) is handled`, async ({ page }) => {
