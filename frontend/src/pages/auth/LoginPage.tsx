@@ -74,6 +74,7 @@ export default function LoginPage() {
                 className="input-field"
                 placeholder="admin123"
                 required
+                minLength={6}
               />
             </div>
             <button
