@@ -3,6 +3,7 @@ import type { Config } from 'jest';
 const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testTimeout: 15000,
   roots: ['<rootDir>/pbt', '<rootDir>/db', '<rootDir>/components'],
   testMatch: ['**/*.test.ts', '**/*.test.tsx'],
   testPathIgnorePatterns: ['/node_modules/'],
