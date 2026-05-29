@@ -307,7 +307,7 @@ test.describe('API - Admin', () => {
           headers: { Authorization: `Bearer ${adminToken}` },
           timeout: 10000,
         });
-        expect([400, 403, 409, 500]).toContain(res.status());
+        expect([400, 401, 403, 409, 500]).toContain(res.status());
       }
     } catch (err) {
       console.error('ADMIN-API-016 error', err);

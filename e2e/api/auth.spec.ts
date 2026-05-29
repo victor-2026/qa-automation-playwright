@@ -245,7 +245,7 @@ test.describe('API - Auth', () => {
       const res = await request.post(`${API_BASE}/auth/register`, {
         data: {
           email: `new${ts}@test.com`,
-          username: 'alice',
+          username: 'alice_dev',
           password: 'password123',
           display_name: 'Test',
         },

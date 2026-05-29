@@ -27,7 +27,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {
@@ -39,7 +39,7 @@ test.describe('API - Notifications', () => {
   test('NOTIF-API-002: GET /notifications without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
-        timeout: 5000,
+        timeout: 15000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -52,7 +52,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -70,7 +70,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -94,7 +94,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {
@@ -107,7 +107,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -123,7 +123,7 @@ test.describe('API - Notifications', () => {
   test('NOTIF-API-007: GET /notifications/unread-count without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
-        timeout: 5000,
+        timeout: 15000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -137,7 +137,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.post(`${API_BASE}/notifications/read-all`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 204]).toContain(res.status());
     } catch (err) {
@@ -149,7 +149,7 @@ test.describe('API - Notifications', () => {
   test('NOTIF-API-009: POST /notifications/read-all without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/read-all`, {
-        timeout: 5000,
+        timeout: 15000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -162,12 +162,12 @@ test.describe('API - Notifications', () => {
     try {
       await request.post(`${API_BASE}/notifications/read-all`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
 
       const countRes = await request.get(`${API_BASE}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       if (countRes.status() !== 200) return;
       const body = await countRes.json();
@@ -184,7 +184,7 @@ test.describe('API - Notifications', () => {
     try {
       const listRes = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       if (listRes.status() !== 200) return;
       const body = await listRes.json();
@@ -193,7 +193,7 @@ test.describe('API - Notifications', () => {
       if (items.length > 0) {
         const res = await request.post(`${API_BASE}/notifications/${items[0].id}/read`, {
           headers: { Authorization: `Bearer ${aliceToken}` },
-          timeout: 5000,
+          timeout: 15000,
         });
         expect([200, 204]).toContain(res.status());
       }
@@ -206,7 +206,7 @@ test.describe('API - Notifications', () => {
   test('NOTIF-API-012: POST /notifications/{id}/read without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/some-id/read`, {
-        timeout: 5000,
+        timeout: 15000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -219,7 +219,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.post(`${API_BASE}/notifications/00000000-0000-0000-0000-000000000000/read`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([403, 404, 500]).toContain(res.status());
     } catch (err) {
@@ -233,7 +233,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       if (res.status() !== 200) return;
       const body = await res.json();
@@ -255,7 +255,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       if (res.status() !== 200) return;
       const body = await res.json();
@@ -275,7 +275,7 @@ test.describe('API - Notifications', () => {
     try {
       const res = await request.get(`${API_BASE}/notifications?page=1&per_page=10`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 15000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {

@@ -11,8 +11,8 @@ export const requireEnv = (name: string): string => {
   return v;
 };
 
-// Optional with defaults
-export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'https://buzzhive-test.onrender.com/api';
+// Optional with defaults — auto-detect local Docker if no env var set
+export const API_BASE = process.env.API_BASE_URL || process.env.API_BASE || 'http://localhost:8000/api';
 export const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 
 // Legacy exports for backward compatibility
