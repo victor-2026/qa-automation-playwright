@@ -1,3 +1,4 @@
+import { API_BASE } from "./fixtures";
 /**
  * MAS-Generated ViewFeed Test
  * Balance Variant: qwen2.5:3b + deepseek-r1:7b
@@ -8,7 +9,7 @@ import { test, expect } from '@playwright/test';
 
 test('MAS: View posts feed', async ({ request }) => {
   // 1. Login to get token
-  const loginRes = await request.post('http://localhost:8000/api/auth/login', {
+  const loginRes = await request.post(`${API_BASE}/auth/login`, {
     data: { email: 'alice@buzzhive.com', password: 'alice123' }
   });
   expect([200, 201, 500]).toContain(loginRes.status());
@@ -16,7 +17,7 @@ test('MAS: View posts feed', async ({ request }) => {
   const { access_token } = await loginRes.json();
 
   // 2. Get posts feed
-  const feedRes = await request.get('http://localhost:8000/api/posts', {
+  const feedRes = await request.get(`${API_BASE}/posts`, {
     headers: { Authorization: `Bearer ${access_token}` }
   });
   expect([200, 401, 403, 500]).toContain(feedRes.status());
