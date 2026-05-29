@@ -74,7 +74,7 @@ test.describe('Metamorphic API Tests', () => {
   // Relation 3: Follow/Unfollow Symmetry
   test('MET-003: Follow-unfollow symmetry', async ({ request }) => {
     // Check initial following count
-    const initialRes = await request.get(`${API_BASE}/users/bob/following`, {
+    const initialRes = await request.get(`${API_BASE}/users/bob_photo/following`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
       timeout: 5000,
     });
@@ -82,19 +82,19 @@ test.describe('Metamorphic API Tests', () => {
     const initialCount = Array.isArray(initialData) ? initialData.length : (initialData.items?.length || 0);
     
     // Follow bob
-    await request.post(`${API_BASE}/users/bob/follow`, {
+    await request.post(`${API_BASE}/users/bob_photo/follow`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
       timeout: 5000,
     });
     
     // Unfollow bob
-    await request.delete(`${API_BASE}/users/bob/follow`, {
+    await request.delete(`${API_BASE}/users/bob_photo/follow`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
       timeout: 5000,
     });
     
     // Check final count = initial count
-    const finalRes = await request.get(`${API_BASE}/users/bob/following`, {
+    const finalRes = await request.get(`${API_BASE}/users/bob_photo/following`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
       timeout: 5000,
     });
@@ -107,7 +107,7 @@ test.describe('Metamorphic API Tests', () => {
   // Relation 4: Negation
   test('MET-004: Existence negation', async ({ request }) => {
     try {
-      const res1 = await request.get(`${API_BASE}/users/alice`, {
+      const res1 = await request.get(`${API_BASE}/users/alice_dev`, {
         timeout: 5000,
       });
       const res2 = await request.get(`${API_BASE}/users/nonexistent_user_12345`, {

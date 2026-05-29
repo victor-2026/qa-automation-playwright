@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://192.168.1.210:3000';
+const BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 const API_BASE = 'http://localhost:8000/api';
 
 test.describe('Load Test 2: Basic - 10 users, full workflow', () => {

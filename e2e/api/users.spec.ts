@@ -74,7 +74,7 @@ test.describe('API - Users', () => {
   // GET /users/{username}
   test('USER-API-004: GET /users/{username} returns 200 for existing', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev`, {
         timeout: 5000,
       });
       expectStatus(res, 200);
@@ -86,7 +86,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-005: GET /users/{username} returns user data', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -95,7 +95,7 @@ test.describe('API - Users', () => {
       const body = await res.json();
       expect(body).toHaveProperty('username');
       expect(body).toHaveProperty('email');
-      expect(body.username).toBe('alice');
+      expect(body.username).toBe('alice_dev');
       // Phase 4: Check types
       expect(typeof body.id).toBe('string');
       expect(typeof body.username).toBe('string');
@@ -122,7 +122,7 @@ test.describe('API - Users', () => {
   // GET /users/{username}/posts
   test('USER-API-007: GET /users/{username}/posts returns 200', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/posts`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/posts`, {
         timeout: 5000,
       });
       expectStatus(res, 200);
@@ -134,7 +134,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-008: GET /users/{username}/posts returns posts', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/posts`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -151,7 +151,7 @@ test.describe('API - Users', () => {
   // POST /users/{username}/follow
   test('USER-API-009: POST /users/{username}/follow follows user', async ({ request }) => {
     try {
-      const res = await request.post(`${API_BASE}/users/bob/follow`, {
+      const res = await request.post(`${API_BASE}/users/bob_photo/follow`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -164,7 +164,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-010: POST /users/{username}/follow without auth returns 401', async ({ request }) => {
     try {
-      const res = await request.post(`${API_BASE}/users/bob/follow`, {
+      const res = await request.post(`${API_BASE}/users/bob_photo/follow`, {
         timeout: 5000,
       });
       expectStatusAtLeast(res, 401);
@@ -190,7 +190,7 @@ test.describe('API - Users', () => {
   // DELETE /users/{username}/follow
   test('USER-API-012: DELETE /users/{username}/follow unfollows', async ({ request }) => {
     try {
-      const res = await request.delete(`${API_BASE}/users/bob/follow`, {
+      const res = await request.delete(`${API_BASE}/users/bob_photo/follow`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -203,7 +203,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-013: DELETE /users/{username}/follow without auth returns 401', async ({ request }) => {
     try {
-      const res = await request.delete(`${API_BASE}/users/bob/follow`, {
+      const res = await request.delete(`${API_BASE}/users/bob_photo/follow`, {
         timeout: 5000,
       });
       expectStatusAtLeast(res, 401);
@@ -216,7 +216,7 @@ test.describe('API - Users', () => {
   // GET /users/{username}/followers
   test('USER-API-014: GET /users/{username}/followers returns 200', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/followers`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/followers`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -229,7 +229,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-015: GET /users/{username}/followers returns list', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/followers`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/followers`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -245,7 +245,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-016: GET /users/{username}/followers with pagination', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/followers?page=1`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/followers?page=1`, {
         timeout: 5000,
       });
       expectStatus(res, 200);
@@ -258,7 +258,7 @@ test.describe('API - Users', () => {
   // GET /users/{username}/following
   test('USER-API-017: GET /users/{username}/following returns 200', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/following`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/following`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -271,7 +271,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-018: GET /users/{username}/following returns list', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice/following`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev/following`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -288,7 +288,7 @@ test.describe('API - Users', () => {
   // Permission tests
   test('USER-API-019: Admin can access any user profile', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev`, {
         headers: { Authorization: `Bearer ${adminToken}` },
         timeout: 5000,
       });
@@ -315,7 +315,7 @@ test.describe('API - Users', () => {
   // Self-follow tests
   test('USER-API-021: Cannot follow yourself', async ({ request }) => {
     try {
-      const res = await request.post(`${API_BASE}/users/alice/follow`, {
+      const res = await request.post(`${API_BASE}/users/alice_dev/follow`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -328,7 +328,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-022: Cannot unfollow yourself', async ({ request }) => {
     try {
-      const res = await request.delete(`${API_BASE}/users/alice/follow`, {
+      const res = await request.delete(`${API_BASE}/users/alice_dev/follow`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         timeout: 5000,
       });
@@ -342,7 +342,7 @@ test.describe('API - Users', () => {
   // Banned user tests
   test('USER-API-023: Banned user profile is accessible', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev`, {
         timeout: 5000,
       });
       expectStatus(res, 200);
@@ -368,7 +368,7 @@ test.describe('API - Users', () => {
 
   test('USER-API-025: GET /users/{username} with invalid token returns 401', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/users/alice`, {
+      const res = await request.get(`${API_BASE}/users/alice_dev`, {
         headers: { Authorization: 'Bearer invalid_token_123' },
         timeout: 5000,
       });

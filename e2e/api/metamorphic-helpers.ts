@@ -45,10 +45,10 @@ export async function checkFollowUnfollowSymmetry(
   const initialCount = Array.isArray(initialData) ? initialData.length : (initialData.items?.length || 0);
   
   // Follow and unfollow
-  await request.post(`${apiBase}/users/bob/follow`, {
+  await request.post(`${apiBase}/users/bob_photo/follow`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  await request.delete(`${apiBase}/users/bob/follow`, {
+  await request.delete(`${apiBase}/users/bob_photo/follow`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   

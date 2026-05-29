@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://192.168.1.210:3000';
+const BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 
 test.describe('Load Test 1: Smoke - 5 users simultaneously', () => {
   test('5 users login at the same time', async ({ browser }) => {
