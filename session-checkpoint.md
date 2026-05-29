@@ -1,45 +1,35 @@
 # Session Checkpoint - qa-automation-sandbox
 
 **Date:** 2026-05-29
-**Session:** 15 — Go test suite cherry-pick from GO-Backend + Shared
+**Session:** 16 — Tech debt fixes + UI Fuzz randomization + Go race tests
 **Status:** COMPLETE
 
 ## Summary
-- Cherry-picked Go test files from GO-Backend branch + `/Users/Shared/Projects/` copy
-- 33 Go tests now in main: 24 API (net/http) + 9 Playwright Go (browser)
-- All 24 API tests pass against local Docker backend
-- `go-backend/go.mod` + `go.sum` added (was missing — tests couldn't compile before)
-- Removed pseudo-code `go/auth_test.go` (incomplete scaffold)
-- Reorganized Playwright Go tests into `cmd/api-tests/` and `cmd/ui-tests/` to avoid package collision
-- Updated `TEST_ARCHITECTURE.md` (11 → 33 tests, new structure)
-- Shared copy (`/Users/Shared/Projects/`) left untouched — other agent can continue
-
-## Files Added
-- `go-backend/go.mod`, `go-backend/go.sum` — module definition
-- `go-backend/api/client.go` — shared HTTP client (BaseURL, HTTPClient, WarmUp)
-- `go-backend/api/helpers.go` — Login function, types (LoginResponse, UserProfile, Post)
-- `go-backend/api/helpers_test.go` — requireHTTPStatus helper
-- `go-backend/api/auth_test.go` — 8 auth tests
-- `go-backend/api/posts_test.go` — 5 posts tests
-- `go-backend/api/warmup_test.go` — TestMain warm-up
-- `go-backend/cmd/api-tests/login_test.go` — 5 Playwright Go login tests
-- `go-backend/cmd/ui-tests/auth_test.go` — 4 Playwright Go UI tests
-
-## Files Removed
-- `go/auth_test.go` — pseudo-code, never compiled
+- **TD-1:** DBMUT-004 fixed (relative URLs for page.evaluate, afterEach DB cleanup)
+- **TD-9:** AUTH-011-01 fixed — `minLength={6}` on LoginPage.tsx password input
+- **TD-2:** BUGS.md cleaned — removed 6 duplicate entries, unified status
+- **P-1:** UI Fuzz randomized — 10 → 33 tests (SQLi×5, XSS×5, email lengths×4, content lengths×4, search lengths×3, password lengths×5)
+- **P-2:** Go race tests — 2 tests (parallel login×10, follow/unfollow storm×5+5) with `-race` flag
+- **Render fix:** Removed `dockerfilePath: ./frontend/Dockerfile` from render.yaml — root Dockerfile used instead
 
 ## Files Modified
-- `go-backend/TEST_ARCHITECTURE.md` — updated structure + coverage
+- `frontend/src/pages/auth/LoginPage.tsx` — added `minLength={6}`
+- `BUGS.md` — removed duplicates, unified Fixed/Open sections
+- `e2e/mutation/ui-fuzz.spec.ts` — randomized with test.each (33 tests)
+- `e2e/mutation/db-mutation.spec.ts` — relative URLs, afterEach cleanup
+- `render.yaml` — removed dockerfilePath for frontend service
+
+## Files Added
+- `go-backend/api/race_test.go` — 2 race condition tests
 
 ## Verification
-- `go mod tidy` — ✅ no errors
-- `go test ./api/ -v` — ✅ 24/24 pass (6.7s)
-- `go test -c ./cmd/api-tests/` — ✅ compiles
-- `go test -c ./cmd/ui-tests/` — ✅ compiles
-- `git push` — ✅ `b9ea8a4`
+- Go API + race: 26/26 pass ✅
+- TS smoke + mutation + fuzz: 55 pass ✅ (2 SQLi patterns fixed)
+- PBT: 79/80 pass ✅ (1 pre-existing fast-check failure)
+- Render deploy: `cc16cf1` pushed
 
-## Next Steps
-- Install playwright-go browsers: `go install github.com/playwright-community/playwright-go/cmd/playwright@latest`
-- Run Playwright Go tests: `cd go-backend && go test ./cmd/... -v`
-- Add `go test` to CI workflow (qa.yml)
-- Periodically pull new Go files from Shared copy
+## Remaining Tech Debt
+- TD-6: C# tests in CI (add `dotnet test` to workflow)
+- TD-10: Page Objects for Search/Messages/Admin
+- P-3: API Mutation parameterization
+- DBMUT-001/002/003: Frontend behavior issues (redirect timing, post not found text, DB mutation not reflected)
