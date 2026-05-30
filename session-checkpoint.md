@@ -3,7 +3,7 @@
 **Date:** 2026-05-30
 **Session:** 20 — Checkpoint enforcement + AGENTS.md discussion
 **Status:** COMPLETE
-**Session closed:** 2026-05-30 — checkpoint saved, AGENTS.md mandatory rule added, bdd-gherkin skill created
+**Session closed:** 2026-05-30 — checkpoint saved, AGENTS.md mandatory rule added, bdd-gherkin skill created, skills validated per OpenCode docs
 
 ## Next Session Checklist
 1. Прочитать AGENTS.md в sandbox, ai-qa-wiki, CV-CL, MAS
