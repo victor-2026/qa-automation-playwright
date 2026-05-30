@@ -5,6 +5,12 @@
 **Status:** COMPLETE
 **Session closed:** 2026-05-30 — checkpoint saved, AGENTS.md mandatory rule added
 
+## Next Session Checklist
+1. Прочитать AGENTS.md в sandbox, ai-qa-wiki, CV-CL, MAS
+2. Проверить что правило `Update ~/.opencode-memory.md at end of session` есть во всех
+3. Свериться с session-checkpoint.md
+4. Прочитать хвост .opencode-memory.md
+
 ## Summary
 
 ### CapsLock QA Team Lead — Job Analysis
