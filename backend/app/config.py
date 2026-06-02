@@ -1,4 +1,4 @@
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 from pydantic_settings import BaseSettings
 
@@ -24,7 +24,10 @@ class Settings(BaseSettings):
             url = url.replace("postgres://", "postgresql+asyncpg://", 1)
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
             parsed = urlparse(url)
-            self.DATABASE_URL = urlunparse(parsed._replace(scheme=parsed.scheme))
+            params = parse_qs(parsed.query)
+            params.pop("sslmode", None)
+            clean_query = urlencode(params, doseq=True)
+            self.DATABASE_URL = urlunparse(parsed._replace(query=clean_query))
 
 
 settings = Settings()
