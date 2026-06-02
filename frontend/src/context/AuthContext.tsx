@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { authApi } from '../api/auth'
+import { wakeBackend } from '../utils/wakeBackend'
 import type { User } from '../types'
 
 interface AuthContextType {
@@ -30,11 +31,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
-    if (token) {
-      refreshUser().finally(() => setLoading(false))
-    } else {
-      setLoading(false)
-    }
+    wakeBackend().then(ok => {
+      if (ok && token) {
+        refreshUser().finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+      }
+    })
   }, [])
 
   const login = async (email: string, password: string) => {
