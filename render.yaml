@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: buzzhive-backend
+    name: buzzhive-test
     runtime: docker
     repo: https://github.com/victor-2026/qa-automation-playwright
     branch: main
@@ -8,9 +8,11 @@ services:
     envVars:
       - key: CORS_ORIGINS
         value: "*"
+      - key: DATABASE_URL
+        sync: false  # Set in Render dashboard — Neon PostgreSQL
 
   - type: web
-    name: buzzhive-frontend
+    name: qa-automation-playwright-front
     runtime: docker
     repo: https://github.com/victor-2026/qa-automation-playwright
     branch: main
