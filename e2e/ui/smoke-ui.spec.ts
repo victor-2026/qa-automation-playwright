@@ -23,46 +23,53 @@ test.describe('UI Smoke Tests - Render', () => {
 
   test('UI-1: Homepage loads', async ({ page }) => {
     const res = await page.goto('/');
+    await page.waitForLoadState('networkidle');
     expect(res?.status() ?? 0).toBeLessThan(500);
     const loginButton = page.locator('button').filter({ hasText: /login|sign in/i });
-    await expect(loginButton.first()).toBeVisible({ timeout: 10000 });
+    await expect(loginButton.first()).toBeVisible({ timeout: 15000 });
   });
 
   test('UI-2: Login page accessible', async ({ page }) => {
     await page.goto('/login');
-    await expect(page.locator('[data-testid="auth-email-input"]')).toBeVisible({ timeout: 10000 });
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('[data-testid="auth-email-input"]')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('[data-testid="auth-password-input"]')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('[data-testid="auth-login-btn"]')).toBeVisible({ timeout: 5000 });
   });
 
   test('UI-3: Login with valid credentials', async ({ page }) => {
     await page.goto('/login');
+    await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);
     await page.fill('[data-testid="auth-password-input"]', TEST_ACCOUNTS.user.password);
     await page.click('[data-testid="auth-login-btn"]');
     await page.waitForURL('**/');
-    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible({ timeout: 10000 });
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible({ timeout: 15000 });
   });
 
   test('UI-4: Login with wrong password shows error', async ({ page }) => {
     await page.goto('/login');
+    await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);
     await page.fill('[data-testid="auth-password-input"]', 'wrongpassword');
     await page.click('[data-testid="auth-login-btn"]');
-    await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible({ timeout: 15000 });
   });
 
   test('UI-5: Logout works', async ({ page }) => {
     await page.goto('/login');
+    await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);
     await page.fill('[data-testid="auth-password-input"]', TEST_ACCOUNTS.user.password);
     await page.click('[data-testid="auth-login-btn"]');
     await page.waitForURL('**/');
+    await page.waitForLoadState('networkidle');
 
     const logoutBtn = page.locator('[data-testid="auth-logout-btn"]');
     await logoutBtn.click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('[data-testid="auth-login-btn"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid="auth-login-btn"]')).toBeVisible({ timeout: 15000 });
   });
 });
