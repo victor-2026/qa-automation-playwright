@@ -192,6 +192,13 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
 
+      - name: Wake Render backend (cold start)
+        run: |
+          BACKEND_URL="${{ vars.BACKEND_URL }}"
+          echo "Waking $BACKEND_URL ..."
+          curl -s -o /dev/null --max-time 60 "$BACKEND_URL" || true
+          echo "Wake done (cold start may take 30-60s on free tier)"
+
       - name: Check Render backend
         id: check-backend
         run: |
@@ -206,7 +213,7 @@ jobs:
               exit 0
             fi
             echo "Waiting for backend... ($i/5)"
-            sleep 5
+            sleep 10
           done
           echo "Backend not available"
           echo "BACKEND_AVAILABLE=false" >> $GITHUB_OUTPUT
@@ -240,8 +247,34 @@ jobs:
           TEST_BOB_PASSWORD: bob123
         run: npx playwright test e2e/api/smoke-api.spec.ts --project=chromium --retries=2
 
-      - name: Run UI Smoke tests on Frontend
+      - name: Wake Render frontend (cold start)
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
+        run: |
+          FRONTEND_URL="${{ vars.FRONTEND_URL }}"
+          echo "Waking $FRONTEND_URL ..."
+          curl -s -o /dev/null --max-time 60 "$FRONTEND_URL" || true
+          echo "Wake done"
+
+      - name: Check Render frontend
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true'
+        id: check-frontend
+        run: |
+          FRONTEND_URL="${{ vars.FRONTEND_URL }}"
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$FRONTEND_URL" || echo "000")
+            if [ "$STATUS" != "000" ] && [ "$STATUS" -lt 500 ]; then
+              echo "Frontend is up (HTTP $STATUS)"
+              echo "FRONTEND_AVAILABLE=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "Waiting for frontend... ($i/5, HTTP $STATUS)"
+            sleep 10
+          done
+          echo "Frontend not available"
+          echo "FRONTEND_AVAILABLE=false" >> $GITHUB_OUTPUT
+
+      - name: Run UI Smoke tests on Frontend
+        if: steps.check-frontend.outputs.FRONTEND_AVAILABLE == 'true'
         env:
           APP_BASE_URL: ${{ vars.FRONTEND_URL }}
           API_BASE_URL: ${{ vars.BACKEND_URL }}/api

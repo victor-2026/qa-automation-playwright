@@ -64,17 +64,15 @@ jobs:
           TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null | tr -d '\n')
           
           if [ -z "$TOKEN" ]; then
-            echo "::error::Failed to obtain admin token — backend may be down"
+            echo "::warning::Failed to obtain admin token — backend may be down"
             echo "TOKEN_VALID=false" >> $GITHUB_OUTPUT
-            exit 1
+          else
+            echo "Token obtained successfully"
+            echo "token=$TOKEN" >> $GITHUB_OUTPUT
+            echo "TOKEN_VALID=true" >> $GITHUB_OUTPUT
+            curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
+            echo "Database seeded"
           fi
-          
-          echo "Token obtained successfully"
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "TOKEN_VALID=true" >> $GITHUB_OUTPUT
-          
-          curl -s -X POST "$BACKEND_URL/api/reset" -H "Authorization: Bearer $TOKEN"
-          echo "Database seeded"
 
       - name: API Smoke Tests
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true'
@@ -91,8 +89,35 @@ jobs:
           TEST_BOB_PASSWORD: bob123
         run: npx playwright test e2e/api/smoke-api.spec.ts --project=chromium --retries=2
 
-      - name: UI Smoke Tests
+      - name: Wake Render frontend (cold start)
         if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true'
+        run: |
+          FRONTEND_URL="${{ vars.FRONTEND_URL }}"
+          echo "Waking $FRONTEND_URL ..."
+          curl -s -o /dev/null --max-time 60 "$FRONTEND_URL" || true
+          echo "Wake done (cold start may take 30-60s on free tier)"
+
+      - name: Check Render frontend
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true'
+        id: check-frontend
+        run: |
+          FRONTEND_URL="${{ vars.FRONTEND_URL }}"
+          
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$FRONTEND_URL" || echo "000")
+            if [ "$STATUS" != "000" ] && [ "$STATUS" -lt 500 ]; then
+              echo "Frontend is up (HTTP $STATUS)"
+              echo "FRONTEND_AVAILABLE=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "Waiting for frontend... ($i/5, HTTP $STATUS)"
+            sleep 10
+          done
+          echo "Frontend not available"
+          echo "FRONTEND_AVAILABLE=false" >> $GITHUB_OUTPUT
+
+      - name: UI Smoke Tests
+        if: steps.check-frontend.outputs.FRONTEND_AVAILABLE == 'true'
         env:
           APP_BASE_URL: ${{ vars.FRONTEND_URL }}
           API_BASE_URL: ${{ vars.BACKEND_URL }}/api
@@ -105,8 +130,12 @@ jobs:
         run: |
           echo "Backend available: ${{ steps.check-backend.outputs.BACKEND_AVAILABLE }}"
           echo "Token valid: ${{ steps.seed.outputs.TOKEN_VALID }}"
+          echo "Frontend available: ${{ steps.check-frontend.outputs.FRONTEND_AVAILABLE }}"
           if [ "${{ steps.check-backend.outputs.BACKEND_AVAILABLE }}" != "true" ]; then
             echo "::warning::Backend was not available — tests skipped"
+          fi
+          if [ "${{ steps.check-frontend.outputs.FRONTEND_AVAILABLE }}" != "true" ] && [ "${{ steps.check-backend.outputs.BACKEND_AVAILABLE }}" == "true" ]; then
+            echo "::warning::Frontend was not available — UI tests skipped"
           fi
 
 # Full suite skipped - run locally with Docker

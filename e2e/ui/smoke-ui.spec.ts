@@ -4,14 +4,14 @@ import { TEST_ACCOUNTS } from '../setup/credentials';
 const FRONTEND_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 
 test.describe('UI Smoke Tests - Render', () => {
-  test.setTimeout(45000);
+  test.setTimeout(90000);
 
   test.beforeAll(async ({ request }) => {
-    const maxRetries = 5;
+    const maxRetries = 10;
     for (let i = 0; i < maxRetries; i++) {
       const res = await request.get(FRONTEND_URL);
       if (res.status() < 500) return;
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise(r => setTimeout(r, 5000));
     }
   });
 
