@@ -90,7 +90,7 @@ jobs:
         run: npx playwright test e2e/api/smoke-api.spec.ts --project=chromium --retries=2
 
       - name: Wake Render frontend (cold start)
-        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true'
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true' && vars.FRONTEND_URL != ''
         run: |
           FRONTEND_URL="${{ vars.FRONTEND_URL }}"
           echo "Waking $FRONTEND_URL ..."
@@ -98,10 +98,16 @@ jobs:
           echo "Wake done (cold start may take 30-60s on free tier)"
 
       - name: Check Render frontend
-        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true'
+        if: steps.check-backend.outputs.BACKEND_AVAILABLE == 'true' && steps.seed.outputs.TOKEN_VALID == 'true' && vars.FRONTEND_URL != ''
         id: check-frontend
         run: |
           FRONTEND_URL="${{ vars.FRONTEND_URL }}"
+          
+          if [ -z "$FRONTEND_URL" ]; then
+            echo "FRONTEND_URL is not set — skipping frontend check"
+            echo "FRONTEND_AVAILABLE=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           
           for i in {1..5}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$FRONTEND_URL" || echo "000")
