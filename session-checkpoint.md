@@ -89,6 +89,18 @@ But service still returns 404 (verified at 23:08 UTC: `https://buzzhive-api.onre
 
 **If Web Service with Docker:** instead of empty build command, set Dockerfile Path to `./frontend/Dockerfile` in dashboard.
 
+**Final Render config 2026-06-10 23:25 UTC:**
+- Build Command: `npm run build` (uses our package.json `build` script)
+- Publish Directory: `./dist` (uses our copied dist from build)
+
+**Verification:** All 4 Render services return 200 OK at 23:25 UTC:
+- `https://buzzhive-api.onrender.com/` → 200 (525 bytes HTML — frontend)
+- `https://qa-automation-playwright-front.onrender.com/` → 200 (525 bytes HTML — frontend)
+- `https://buzzhive-test.onrender.com/api/health` → 200 (FastAPI healthy)
+- `https://qa-automation-playwright-1.onrender.com/api/health` → 200 (FastAPI healthy)
+
+**Decision: KEEP package.json build script.** Reverting the 3 commits (`04cd024`, `82cf1d7`, `fef26ea`) would break the deploy because Render now expects `./dist` to be produced by the build command. The script is no longer dead code — it's the active production path.
+
 **Pre-existing flake (not Session 37 scope):** Contract Tests CI run #27296835453 had Posts consumer test fail with `GET /api/posts?hashtag=nonexistent → 401`. This is a flake in the consumer test where `realPostId` is sometimes not fetched (becomes "placeholder-post-id"), causing subsequent mock interactions to fail. Schema validation (17 tests) and Provider verification (2 tests) both pass consistently. Only the 1-of-5 posts consumer test is flaky.
 
 **Modified files:**
