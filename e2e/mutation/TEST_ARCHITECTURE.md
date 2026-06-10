@@ -8,11 +8,14 @@
 
 ```
 e2e/mutation/
-  api-mutation.spec.ts    — Stage 1: API Response Mutation (8 тестов)
-  db-mutation.spec.ts     — Stage 2: DB Data Mutation (4 теста)
-  chaos.spec.ts           — Stage 3: Chaos Engineering (3 теста)
-  MUTATION_PLAN.md        — План + результаты
-  TEST_ARCHITECTURE.md    — ← этот файл
+  api-mutation.spec.ts            — Stage 1: API Response Mutation (8 тестов) ✅
+  api-mutation-extended.spec.ts   — Stage 1x+1y: Extended API + P1 + HOM (15 тестов) ✅
+  db-mutation.spec.ts             — Stage 2: DB Data Mutation (8 тестов) ✅
+  chaos.spec.ts                   — Stage 3: Chaos Engineering (5 тестов) ✅
+  ui-fuzz.spec.ts                 — Stage 4: UI Fuzzing (13 тестов) ✅
+  MUTATION_PLAN.md                — План + результаты
+  TEST_ARCHITECTURE.md            — ← этот файл
+  Mutation-Test-Architecture.canvas — Visual map
 ```
 
 ## Stage 1 — API Response Mutation
@@ -53,6 +56,48 @@ await page.route('**/api/*', async route => {
 
 ---
 
+## Stage 1x — API Response Mutation (Extended)
+
+**Файл:** `e2e/mutation/api-mutation-extended.spec.ts`
+
+**Новые тесты:** MUT-009–015 (P0), HOM-001/002
+
+### Traceability Matrix
+
+| Тест | Эндпоинт | Мутация | Проверка |
+|------|----------|---------|----------|
+| MUT-009 | `GET /api/posts/feed` | `items` → `[]`, `total` → `0` | Пустой feed, empty state виден |
+| MUT-010 | `POST /api/auth/register` | статус 201 → 500 | UI показывает `auth-error-message` |
+| MUT-011 | `GET /api/posts/{id}` | статус 200 → 404 | "not found" на PostDetailPage |
+| MUT-012 | `GET /api/posts/{id}/comments` | `items` → `[]` | "no comments" state |
+| MUT-013 | `POST /api/posts/{id}/like` | статус 201 → 500 | UI показывает ошибку лайка |
+| MUT-014 | `POST /api/users/{username}/follow` | статус 201 → 500 | UI показывает ошибку фоллова |
+| MUT-015 | `GET /api/search` | `items` → `[]`, `total` → `0` | "no results" state |
+| MUT-016 | `GET /api/notifications` | `items` → `[]`, `total` → `0` | "no notifications" state |
+| MUT-017 | `GET /api/notifications/unread-count` | `count` → `0` | Badge shows 0 |
+| MUT-018 | `GET /api/bookmarks` | `items` → `[]`, `total` → `0` | "no bookmarks" state |
+| MUT-019 | `GET /api/conversations` | `items` → `[]`, `total` → `0` | "no conversations" state |
+| MUT-020 | `GET /api/admin/stats` | числа → NaN/null/string | Stat блок не падает |
+| MUT-021 | `PATCH /api/users/me` | статус 200 → 422 | UI показывает ошибку |
+| HOM-001 | `GET /api/posts/feed` + `GET /api/posts` | `items=[]` + `likes_count=0` | Обе мутации одновременно |
+| HOM-002 | `POST /api/auth/login` | статус 200 → 500 | Login fails, error message visible |
+
+**Паттерн HOM:**
+```typescript
+// Комбинация двух независимых мутаций
+await page.route('**/api/posts/feed', async route => {
+  const json = await (await route.fetch()).json();
+  json.items = [];
+  await route.fulfill({ json });
+});
+
+await page.route('**/api/auth/login', async route => {
+  await route.fulfill({ status: 500, ... });
+});
+```
+
+---
+
 ## Stage 2 — DB Data Mutation
 
 **Файл:** `e2e/mutation/db-mutation.spec.ts`
@@ -89,6 +134,10 @@ test.afterEach(async () => {
 | DBMUT-002 | `DELETE FROM posts WHERE id = $1` | "not found" на PostDetailPage | ✅ |
 | DBMUT-003 | `UPDATE posts SET content = '<script>...'` | HTML экранирован | ❌ **BUG-005** |
 | DBMUT-004 | `UPDATE posts SET likes_count = -5` | `0` или `Math.max(0, n)` | ❌ **BUG-006** |
+| DBMUT-005 | `DELETE FROM follows WHERE follower_id = alice_id` | Feed пуст или не падает | ✅ |
+| DBMUT-006 | `UPDATE users SET display_name = '<script>...'` | HTML экранирован | ✅ |
+| DBMUT-007 | `UPDATE users SET role = 'banned' WHERE email = 'admin@...'` | Админ теряет доступ | ✅ |
+| DBMUT-008 | `INSERT INTO notifications (50x)` | UI показывает уведомления | ✅ |
 
 ### Bugs Found
 
@@ -132,6 +181,22 @@ test('CHAOS-001: DB down', async ({ page, request }) => {
 | CHAOS-001 | `docker compose stop db` | Backend health → 503 | ✅ |
 | CHAOS-002 | `docker compose stop backend` | Frontend shows error (nginx 502) | ✅ |
 | CHAOS-003 | `docker compose restart backend` | После restart — все работает | ✅ |
+| CHAOS-004 | `docker compose pause backend` | Backend paused → loading spinner | ✅ |
+| CHAOS-005 | `docker compose stop db` + pg_terminate_backend | DB pool exhaustion → error | ✅ |
+
+---
+
+## Stage 4 — UI Fuzzing (Extended)
+
+**Файл:** `e2e/mutation/ui-fuzz.spec.ts`
+
+### Traceability Matrix (Extended)
+
+| Тест | Что делаем | Ожидание |
+|------|-----------|----------|
+| FUZZ-011 | Avatar upload: .txt файл | UI показывает ошибку формата |
+| FUZZ-012 | Profile bio: `<script>` в ответе API | HTML экранирован |
+| FUZZ-013 | Browser back/forward после login | Состояние консистентно |
 
 ---
 
@@ -151,17 +216,35 @@ await route.fulfill({ response, json });
 const token = await page.evaluate(() => localStorage.getItem('access_token'));
 ```
 
-### 3. DB mutation + restore
+### 3. DB mutation + auto-rollback (transaction helper)
 ```typescript
-let backup: any;
+import { PoolClient } from 'pg';
 
-test.beforeEach(async () => {
-  const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-  backup = rows[0];
-});
+async function transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('ROLLBACK');  // Автоматический откат после теста
+    return result;
+  } catch (e) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw e;
+  } finally {
+    client.release();
+  }
+}
 
-test.afterEach(async () => {
-  await pool.query('UPDATE users SET is_active = $1 WHERE email = $2', [backup.is_active, email]);
+// Использование:
+test('DBMUT-NNN: description', async ({ page }) => {
+  // ... login + prepare ...
+
+  await transaction(async client => {
+    await client.query('UPDATE users SET is_active = false WHERE email = $1', ['alice@buzzhive.com']);
+  });
+  // ← После этой строки изменения уже откатились!
+
+  // ... assertions ...
 });
 ```
 
@@ -202,6 +285,9 @@ test.setTimeout(60000);
 # Stage 1 — API Response Mutation (локально или на Render)
 npx playwright test e2e/mutation/api-mutation.spec.ts --project=chromium
 
+# Stage 1x — API Response Mutation Extended (локально или на Render)
+npx playwright test e2e/mutation/api-mutation-extended.spec.ts --project=chromium
+
 # Stage 2 — DB Data Mutation (только локально, нужен Docker PostgreSQL)
 npx playwright test e2e/mutation/db-mutation.spec.ts --project=chromium
 
@@ -238,4 +324,4 @@ npx playwright test e2e/mutation/ --project=chromium
 | Chaos только локально | Нет Docker в GHA ubuntu runner |
 | API mutation не тестирует бэкенд | Только фронтенд-обработку ответов |
 | UI Fuzzing зависит от data-testid | Тесты ломаются при изменении UI |
-| 25 тестов vs 100+ при Stryker | Без кода бэкенда — максимум возможного |
+| 49 тестов vs 100+ при Stryker | Без кода бэкенда — максимум возможного |

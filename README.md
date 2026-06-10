@@ -83,6 +83,20 @@ Docker services auto-start in CI. No extra setup needed.
 
 ---
 
+## Reporting
+
+Allure HTML-отчёт: интерактивный дашборд с историей тестов, скриншотами шагов, timeline и duration.
+
+```bash
+npm run test:allure       # run tests + generate report + open
+# or separately:
+npx allure generate allure-results --clean && npx allure open
+```
+
+After generation, report opens in browser at `http://127.0.0.1:<port>`.
+
+---
+
 ## What's Inside
 
 ### Social Network Features
@@ -429,7 +443,14 @@ tests/buzzhive.spec.ts  # 35 E2E тестов
 └── Admin        # Ban user, Dashboard
 ```
 
-### Просмотр отчёта
+### Отчёты
+
+**Allure** (рекомендуется):
+```bash
+npm run test:allure
+```
+
+**Playwright HTML**:
 ```bash
 npx playwright show-report
 ```

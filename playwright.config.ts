@@ -8,7 +8,8 @@ export default defineConfig({
   workers: 4,
   reporter: [
     ['html'],
-    ['junit', { outputFile: 'test-results/junit.xml' }]
+    ['junit', { outputFile: 'test-results/junit.xml' }],
+    ['allure-playwright']
   ],
   use: {
     baseURL: process.env.APP_BASE_URL || 'http://localhost:3000',
@@ -18,6 +19,12 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
+    {
+      name: 'contracts',
+      testDir: './contracts',
+      testMatch: '**/*.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
+    },
     {
       name: 'chromium',
       testIgnore: /mobile\.spec\.ts/,

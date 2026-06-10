@@ -17,6 +17,7 @@ dist/
 uploads/*
 !uploads/.gitkeep
 allure-results/
+allure-report/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
@@ -35,3 +36,6 @@ playwright-report/
 # Build artifacts
 **/bin/
 **/obj/
+
+# Contracts (generated)
+contracts/openapi.json

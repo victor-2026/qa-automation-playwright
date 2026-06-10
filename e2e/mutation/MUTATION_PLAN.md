@@ -1,10 +1,14 @@
 # Mutation Testing Plan — Buzzhive
 
-Based on: `ai-qa-wiki/wiki/Mutation-testing-without-code.md`
+Based on: `ai-qa-wiki/wiki/Mutation-testing-without-code.md`, `ai-qa-wiki/wiki/Mutation-testing-advanced-playwright.md`
 
 ## Overview
 
-У нас нет исходного кода бэкенда для Stryker. Вместо этого — 3 подхода мутации без кода + 1 уже готовый.
+У нас нет исходного кода бэкенда для Stryker. Вместо этого — 4 подхода мутации без кода.
+
+**Источники:**
+- [Mutation-testing-without-code](../../../ai-qa-wiki/wiki/Mutation-testing-without-code.md)
+- [Mutation-testing-advanced-playwright](../../../ai-qa-wiki/wiki/Mutation-testing-advanced-playwright.md)
 
 ---
 
@@ -12,126 +16,25 @@ Based on: `ai-qa-wiki/wiki/Mutation-testing-without-code.md`
 
 **Идея:** Перехватывать ответы бэкенда в UI-тестах и мутировать их "на лету".
 
-**Инструмент:** Playwright `page.route()` (уже есть в проекте)
-
-**Где писать:** `e2e/mutation/` — новый каталог
-
-**Сценарии:**
-
-| Мутация | Эндпоинт | Что делаем | Ожидание |
-|---------|----------|------------|----------|
-| `price`/`likes_count` → 0 | `GET /posts` | Обнуляем числовое поле | Тест на отображение лайков падает |
-| `email` → null | `GET /auth/me` | Удаляем обязательное поле | Тест профиля падает |
-| статус 200 → 500 | `POST /posts` | Эмулируем падение бэкенда | UI-тест должен показать ошибку, не зависнуть |
-| `items` → `[]` | `GET /posts` | Пустой массив вместо данных | UI должен показать "no posts" |
-| `is_verified` → false | `GET /users/{username}` | Меняем булево поле | Галочка верификации пропадает |
-
-**Пример** (из статьи, адаптированный под Buzzhive):
-```typescript
-test('MUT-001: Цена лайков обнулена', async ({ page }) => {
-  await page.route('**/api/posts*', async route => {
-    const response = await route.fetch();
-    const json = await response.json();
-    if (json.items) json.items.forEach(p => p.likes_count = 0);
-    await route.fulfill({ response, json });
-  });
-  await page.goto('/');
-  await expect(page.locator('[data-testid="like-count"]').first()).toHaveText(/[1-9]/);
-  // Тест ДОЛЖЕН упасть — лайки все 0
-});
-```
-
-**Результат:** Если тест прошёл — UI не проверяет числовые значения, слепая зона. ✅
+**Файлы:** `e2e/mutation/api-mutation.spec.ts`, `e2e/mutation/api-mutation-extended.spec.ts`
 
 ---
 
 ## 2. Chaos Engineering — Мутация среды
 
-**Идея:** Мутируем не код, а инфраструктуру проекта.
-
-**Инструмент:** Docker (docker-compose stop/start/pause)
-
-**Где писать:** `e2e/mutation/chaos.spec.ts`
-
-**Сценарии:**
-
-| Мутация | Действие | Ожидание |
-|---------|----------|----------|
-| `db` остановлена | `docker-compose stop db` | API → 500, UI → error state |
-| `backend` остановлен | `docker-compose stop backend` | Frontend → error page |
-| Сеть с задержкой | `tc qdisc add dev eth0 delay 5000ms` | Тесты timeoutятся или проверяют loading |
-
-**Пример:**
-```typescript
-test('CHAOS-001: DB down — UI показывает ошибку', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('[data-testid="posts-feed"]')).toBeVisible();
-
-  execSync('docker-compose -f ../../docker-compose.yml stop db');
-
-  await page.reload();
-  await expect(page.locator('[data-testid="error-banner"]')).toBeVisible();
-
-  execSync('docker-compose -f ../../docker-compose.yml start db');
-});
-```
-
-**Результат:** Если UI показывает пустую страницу без сообщения об ошибке — слепая зона. ✅
+**Файл:** `e2e/mutation/chaos.spec.ts`
 
 ---
 
 ## 3. DB Data Mutation
 
-**Идея:** Меняем данные в PostgreSQL во время выполнения теста.
-
-**Инструмент:** `psql` или `pg` npm-клиент (уже есть `jest + pg`)
-
-**Где писать:** `e2e/mutation/db-mutation.spec.ts`
-
-**Сценарии:**
-
-| Мутация | SQL | Ожидание |
-|---------|-----|----------|
-| Статус пользователя → banned | `UPDATE users SET is_active=false WHERE email='alice@...'` | Alice не может залогиниться |
-| Удаление поста | `DELETE FROM posts WHERE id = ?` | GET /posts/{id} → 404 |
-| XSS в content | `UPDATE posts SET content = '<script>...' WHERE id = ?` | UI экранирует HTML |
-
-**Пример:**
-```typescript
-test('DBMUT-001: Пользователь забанен во время сессии', async ({ page }) => {
-  await page.goto('/');
-  await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
-  await page.fill('[data-testid="auth-password-input"]', 'alice123');
-  await page.click('[data-testid="auth-login-btn"]');
-  await expect(page.locator('[data-testid="user-profile"]')).toBeVisible();
-
-  // Мутируем БД
-  await db.query(`UPDATE users SET is_active=false WHERE email='alice@buzzhive.com'`);
-
-  await page.reload();
-  // UI должен показать ошибку или разлогинить
-  await expect(page.locator('[data-testid="auth-login-btn"]')).toBeVisible();
-});
-```
-
-**Результат:** Если UI продолжает показывать профиль забаненного юзера — не проверяет статус. ✅
+**Файл:** `e2e/mutation/db-mutation.spec.ts`
 
 ---
 
-## 4. Fuzzing (уже есть)
+## 4. UI Fuzzing
 
-Из статьи: «Фаззинг-тестирование — подача хаотичных данных».
-
-**Уже реализовано:**
-
-| Где | Что |
-|-----|-----|
-| `csharp-backend/FuzzerTests.cs` | 19 fuzz-тестов (пустые/SQLi/unicode payloads) |
-| `csharp-backend/RaceTests.cs` | 4 race-теста (конкурентные запросы) |
-
-**Что можно добавить:**
-- Fuzzing на уровне Playwright UI: ввод спецсимволов в поля, отправка форм с мусором
-- Тип: `e2e/mutation/ui-fuzz.spec.ts`
+**Файл:** `e2e/mutation/ui-fuzz.spec.ts`
 
 ---
 
@@ -139,18 +42,24 @@ test('DBMUT-001: Пользователь забанен во время сес�
 
 | Этап | Что делаем | Файл | Тестов |
 |------|------------|------|--------|
-| 1. API Response Mutation | `page.route()` для 5 эндпоинтов | `e2e/mutation/api-mutation.spec.ts` | 8 |
-| 2. DB Data Mutation | `pg` + UPDATE/DELETE mid-test | `e2e/mutation/db-mutation.spec.ts` | 4 |
-| 3. Chaos Engineering | Docker stop + reload | `e2e/mutation/chaos.spec.ts` | 3 |
-| 4. UI Fuzzing (если нужно) | Спецсимволы, XSS в UI-поля | `e2e/mutation/ui-fuzz.spec.ts` | 5 |
+| 1. API Response Mutation (base) | `page.route()` для 5 эндпоинтов | `e2e/mutation/api-mutation.spec.ts` | 8 |
+| 2. API Response Mutation (extended) | P0: feed, register, post/{id}, comments, like | `e2e/mutation/api-mutation-extended.spec.ts` | 7 |
+| 3. HOM (Higher Order Mutations) | Комбинированные мутации | `e2e/mutation/api-mutation-extended.spec.ts` | 2 ✅ |
+| 4. DB Data Mutation | `pg` + UPDATE/DELETE mid-test | `e2e/mutation/db-mutation.spec.ts` | 8 ✅ |
+| 5. Chaos Engineering | Docker stop + reload | `e2e/mutation/chaos.spec.ts` | 3 ✅ |
+| 6. UI Fuzzing | Спецсимволы, XSS, граничные значения | `e2e/mutation/ui-fuzz.spec.ts` | 10 ✅ |
+| 7. API Response Mutation (P1) | notifications, search, follows, admin | `e2e/mutation/api-mutation-extended.spec.ts` | 6 ✅ |
+| 8. DB Data Mutation (extended) | follows, notifications, comments, roles | `e2e/mutation/db-mutation.spec.ts` | 8 ✅ |
+| 9. Chaos Extended | network delay, pool exhaustion | `e2e/mutation/chaos.spec.ts` | 2 ✅ |
+| 10. UI Fuzzing Extended | file upload, profile, back/forward | `e2e/mutation/ui-fuzz.spec.ts` | 3 ✅ |
 
-**Total planned:** ~20 mutation tests.
+**Total:** 49 mutation tests (8 API base + 9 API ext + 6 API P1 + 8 DB + 5 chaos + 13 fuzz).
 
 ---
 
-## Results (2026-05-28)
+## Results
 
-### 1. API Response Mutation — ✅ 8/8 pass
+### Stage 1 — API Response Mutation (base) ✅ 8/8 pass
 
 | Тест | Мутация | Статус | Примечание |
 |------|---------|--------|------------|
@@ -169,7 +78,7 @@ test('DBMUT-001: Пользователь забанен во время сес�
 
 ---
 
-### 2. DB Data Mutation — ⚠️ 2 bugs found
+### Stage 2 — DB Data Mutation ⚠️ 2 bugs found
 
 | Тест | Мутация | Статус | Находка |
 |------|---------|--------|---------|
@@ -189,13 +98,15 @@ test('DBMUT-001: Пользователь забанен во время сес�
 
 ---
 
-### 3. Chaos Engineering — ✅ 3/3 pass (manual)
+### Stage 3 — Chaos Engineering ✅ 5/5 pass (manual)
 
 | Тест | Мутация | Статус |
 |------|---------|--------|
 | CHAOS-001 | `docker compose stop db` | ✅ |
 | CHAOS-002 | `docker compose stop backend` | ✅ |
 | CHAOS-003 | `docker compose restart backend` | ✅ |
+| CHAOS-004 | Backend paused → loading | ✅ |
+| CHAOS-005 | DB pool exhausted → error | ✅ |
 
 **Команда:** `DOCKER_CHAOS=1 npx playwright test e2e/mutation/chaos.spec.ts --project=chromium`
 
@@ -203,14 +114,95 @@ test('DBMUT-001: Пользователь забанен во время сес�
 
 ---
 
+### Stage 4 — UI Fuzzing ✅ 13/13 pass
+
+| Тест | Сценарий | Статус |
+|------|----------|--------|
+| FUZZ-001 | Пустые поля login | ✅ |
+| FUZZ-002 | Длинный email (65–500 chars) | ✅ |
+| FUZZ-003 | SQL injection в email | ✅ |
+| FUZZ-004 | Double-click login | ✅ |
+| FUZZ-005 | Длинный post content (2000–10000) | ✅ |
+| FUZZ-006 | Unicode/CJK/RTL/emozi в post | ✅ |
+| FUZZ-007 | XSS в search | ✅ |
+| FUZZ-008 | Длинный search query (1000–10000) | ✅ |
+| FUZZ-009 | Register с существующим email | ✅ |
+| FUZZ-010 | Короткий password (1–5 chars) | ✅ |
+| FUZZ-011 | Avatar upload non-image | ✅ |
+| FUZZ-012 | Profile bio XSS | ✅ |
+| FUZZ-013 | Browser back/forward | ✅ |
+
+---
+
 ### Summary
 
 | Категория | Всего | Pass | Fail | Bugs Found |
 |-----------|-------|------|------|------------|
-| API Response Mutation | 8 | 8 | 0 | 0 |
-| DB Data Mutation | 4 | 2 | 2 | 2 (BUG-005, BUG-006) |
-| Chaos Engineering | 3 | 3 | 0 | 0 |
-| **Total** | **15** | **13** | **2** | **2** |
+| API Response Mutation (base) | 8 | 8 | 0 | 0 |
+| API Response Mutation (extended) | 9 | 9 | 0 | 0 |
+| API Response Mutation (P1) | 6 | 6 | 0 | 0 |
+| DB Data Mutation | 8 | 6 | 2 | 2 (BUG-005, BUG-006) |
+| Chaos Engineering | 5 | 5 | 0 | 0 |
+| UI Fuzzing | 13 | 13 | 0 | 0 |
+| **Total** | **49** | **47** | **2** | **2** |
+
+---
+
+## Расширенный план (Phase 2)
+
+### P0 — API Response Mutation (extended)
+
+| ID | Тест | Эндпоинт | Мутация | Ожидание |
+|----|------|----------|---------|----------|
+| MUT-009 | Feed пустой | `GET /api/posts/feed` | `items` → `[]` | UI показывает empty state |
+| MUT-010 | Register ошибка | `POST /api/auth/register` | статус 409 → 500 | UI показывает error |
+| MUT-011 | Пост не найден | `GET /api/posts/{id}` | пост → null | 404 или empty state |
+| MUT-012 | Комментарии пусты | `GET /api/posts/{id}/comments` | `items` → `[]` | "no comments" state |
+| MUT-013 | Like ошибка | `POST /api/posts/{id}/like` | статус 201 → 500 | UI показывает ошибку |
+| MUT-014 | Follow ошибка | `POST /api/users/{username}/follow` | статус 201 → 500 | UI показывает ошибку |
+| MUT-015 | Search пуст | `GET /api/search` | `items` → `[]` | "no results" state |
+
+### HOM — Higher Order Mutations
+
+| ID | Тест | Комбинация | Ожидание |
+|----|------|-----------|----------|
+| HOM-001 | Feed пустой + likes=0 | `feed.items=[]` + `posts.items[].likes_count=0` | Feed пуст, likes=0 |
+| HOM-002 | Login 500 + Feed пустой | `auth/login` 500 + `posts/feed` empty | UI показывает обе ошибки |
+
+### P1 — ✅ Done
+
+| ID | Тест | Статус |
+|----|------|--------|
+| MUT-016 | Notifications пусты | ✅ |
+| MUT-017 | Unread count zeroed | ✅ |
+| MUT-018 | Bookmarks пусты | ✅ |
+| MUT-019 | Conversations пусты | ✅ |
+| MUT-020 | Admin stats с NaN | ✅ |
+| MUT-021 | Profile update error | ✅ |
+
+### DB Mutation Extended — ✅ Done
+
+| ID | Тест | Статус |
+|----|------|--------|
+| DBMUT-005 | Follows wiped | ✅ |
+| DBMUT-006 | Display name XSS | ✅ |
+| DBMUT-007 | Role → banned | ✅ |
+| DBMUT-008 | Notifications flood (50) | ✅ |
+
+### Chaos Extended — ✅ Done
+
+| ID | Тест | Статус |
+|----|------|--------|
+| CHAOS-004 | Backend paused → loading | ✅ |
+| CHAOS-005 | DB exhausted → error | ✅ |
+
+### UI Fuzzing Extended — ✅ Done
+
+| ID | Тест | Статус |
+|----|------|--------|
+| FUZZ-011 | Avatar upload non-image | ✅ |
+| FUZZ-012 | Profile bio XSS | ✅ |
+| FUZZ-013 | Browser back/forward | ✅ |
 
 ---
 
@@ -223,3 +215,4 @@ test('DBMUT-001: Пользователь забанен во время сес�
 | `page.route()` замедляет тесты | Перехват всех запросов | Фильтр по конкретному URL |
 | `API_BASE` из credentials.ts по умолчанию Render | Локальные тесты шли на Render | Использовать `http://localhost:8000/api` напрямую |
 | `page.request` не наследует localStorage | Auth token не передаётся | Явно передавать `Authorization: Bearer` |
+| Mutation Score Fallacy | `toBeVisible()` "убивает" мутантов без проверки | Использовать `toHaveText`, `toHaveURL`, `toCount` |

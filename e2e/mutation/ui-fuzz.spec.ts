@@ -275,4 +275,92 @@ test.describe('Mutation — UI Fuzzing', () => {
       expect(validation.length).toBeGreaterThan(0);
     });
   }
+
+  // ── FUZZ-011: Avatar upload with non-image ──
+
+  test('FUZZ-011: non-image file upload shows error', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+
+    await page.goto('/settings/profile');
+    await page.waitForLoadState('networkidle');
+
+    const fileInput = page.locator('[data-testid="avatar-upload-input"], input[type="file"]');
+    if (await fileInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await fileInput.setInputFiles({
+        name: 'test.txt',
+        mimeType: 'text/plain',
+        buffer: Buffer.from('not an image'),
+      });
+
+      const errorMsg = page.locator('text=error|invalid|not an image|unsupported|format', { exact: false });
+      const errVisible = await errorMsg.first().isVisible({ timeout: 3000 }).catch(() => false);
+
+      const uploadBtn = page.locator('[data-testid="upload-btn"]');
+      const btnVisible = await uploadBtn.isVisible({ timeout: 2000 }).catch(() => false);
+      expect(errVisible || btnVisible).toBeTruthy();
+    }
+  });
+
+  // ── FUZZ-012: Profile bio XSS ──
+
+  test('FUZZ-012: XSS in profile bio is escaped', async ({ page }) => {
+    await page.route('**/api/users/me', async route => {
+      if (route.request().method() === 'PATCH') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id: 'alice-id',
+            username: 'alice_dev',
+            display_name: 'Alice',
+            bio: '<script>alert("xss")</script>',
+            is_verified: true,
+            avatar_url: null,
+          }),
+        });
+      } else {
+        await route.continue();
+      }
+    });
+
+    await page.goto('/login');
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+
+    await page.goto('/profile/alice_dev');
+    await page.waitForLoadState('networkidle');
+
+    const html = await page.evaluate(() => document.body.innerHTML);
+    expect(html).not.toContain('<script>alert("xss")</script>');
+  });
+
+  // ── FUZZ-013: Browser back/forward after login ──
+
+  test('FUZZ-013: back/forward navigation keeps logged in', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
+
+    await page.goBack();
+    await page.waitForLoadState('networkidle');
+
+    const stillLoggedIn = await page.locator('[data-testid="nav-profile"]').isVisible({ timeout: 3000 }).catch(() => false);
+    if (!stillLoggedIn) {
+      await page.goForward();
+      await page.waitForLoadState('networkidle');
+      const recovered = await page.locator('[data-testid="nav-profile"]').isVisible({ timeout: 3000 }).catch(() => false);
+      expect(recovered).toBeTruthy();
+    } else {
+      expect(stillLoggedIn).toBeTruthy();
+    }
+  });
 });

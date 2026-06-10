@@ -85,6 +85,7 @@ test.describe('Mutation — API Response', () => {
 
       const errorMsg = page.locator('[data-testid="auth-error-message"]');
       await expect(errorMsg).toBeVisible({ timeout: 3000 });
+      await expect(errorMsg).toContainText(/error|invalid|fail|bad request|forbidden|unauthorized|too many|bad gateway|service unavailable|500|502|503/i);
     });
   }
 
@@ -101,7 +102,7 @@ test.describe('Mutation — API Response', () => {
 
     await login(page);
 
-    await expect(page.locator('[data-testid^="post-card-"]').first()).not.toBeVisible({ timeout: 3000 });
+    await expect(page.locator('[data-testid^="post-card-"]')).toHaveCount(0, { timeout: 3000 });
   });
 
   // ── MUT-005: is_verified → false ──
@@ -169,8 +170,7 @@ test.describe('Mutation — API Response', () => {
     await page.reload();
     await page.waitForLoadState('networkidle');
 
-    const loginBtn = page.locator('[data-testid="auth-login-btn"]');
-    await expect(loginBtn).toBeVisible({ timeout: 5000 });
+    await expect(page).toHaveURL(/\/login/);
   });
 
   // ── MUT-008: XSS in post content ──

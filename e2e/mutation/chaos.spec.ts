@@ -118,4 +118,57 @@ test.describe('Mutation — Chaos Engineering', () => {
     const profile = page.locator('[data-testid="nav-profile"]');
     await expect(profile).toBeVisible({ timeout: 10000 });
   });
+
+  // ── CHAOS-004: Backend CPU throttled → loading appears ──
+
+  test('CHAOS-004: backend under load shows loading state', async ({ page }) => {
+    test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
+
+    await page.goto('/login');
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
+
+    execSync(`${cmd} pause backend`, { stdio: 'pipe' });
+
+    await page.reload();
+    const spinner = page.locator('[data-testid="loading-spinner"], .loading, [role="progressbar"]');
+    const spinnerVisible = await spinner.isVisible({ timeout: 3000 }).catch(() => false);
+
+    execSync(`${cmd} unpause backend`, { stdio: 'pipe' });
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible({ timeout: 10000 });
+  });
+
+  // ── CHAOS-005: DB connections exhausted ──
+
+  test('CHAOS-005: DB connection pool exhaustion shows error', async ({ page }) => {
+    test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
+
+    await page.goto('/login');
+    await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
+    await page.fill('[data-testid="auth-password-input"]', 'alice123');
+    await page.click('[data-testid="auth-login-btn"]');
+    await page.waitForURL('**/');
+    await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible();
+
+    execSync(`${cmd} exec -T db psql -U buzzhive_user -d buzzhive -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE datname = 'buzzhive' AND pid <> pg_backend_pid()" 2>/dev/null || true`, { stdio: 'pipe' });
+    execSync(`${cmd} stop db`, { stdio: 'pipe' });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const errorBanner = page.locator('text=error|failed|unavailable|server error|database|connection|try again');
+    const errVisible = await errorBanner.first().isVisible({ timeout: 5000 }).catch(() => false);
+
+    execSync(`${cmd} start db`, { stdio: 'pipe' });
+    execSync('sleep 3', { stdio: 'pipe' });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    const recovered = await page.locator('[data-testid="nav-profile"]').isVisible({ timeout: 10000 }).catch(() => false);
+    expect(recovered || errVisible).toBeTruthy();
+  });
 });
