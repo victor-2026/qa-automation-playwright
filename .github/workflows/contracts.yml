@@ -51,7 +51,9 @@ jobs:
       - name: Run Pact Consumer Tests (9 tests)
         env:
           API_BASE_URL: ${{ vars.BACKEND_URL }}
-        run: npx playwright test contracts/consumers/ --project=contracts
+        run: |
+          npx tsx contracts/consumers/auth.pact.spec.ts
+          npx tsx contracts/consumers/posts.pact.spec.ts
 
       - name: Upload pact files
         if: always()
@@ -110,4 +112,6 @@ jobs:
       - name: Run Provider Verification (2 tests)
         env:
           API_BASE_URL: ${{ vars.BACKEND_URL }}
-        run: npx playwright test contracts/provider/ --project=contracts
+        run: |
+          npx tsx contracts/provider/auth-verification.spec.ts
+          npx tsx contracts/provider/posts-verification.spec.ts
