@@ -38,6 +38,11 @@ jobs:
       - name: Clean old pact files
         run: rm -f contracts/pacts/*.json
 
+      - name: Export OpenAPI spec
+        env:
+          API_BASE_URL: ${{ vars.BACKEND_URL }}
+        run: npx tsx contracts/export-spec.ts "$API_BASE_URL"
+
       - name: Run Schema Validation (17 tests)
         env:
           API_BASE_URL: ${{ vars.BACKEND_URL }}
