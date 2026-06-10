@@ -1,0 +1,117 @@
+name: Mutation Tests
+
+on:
+  schedule:
+    - cron: '30 3 * * *'  # 03:30 UTC daily (after nightly smoke)
+  workflow_dispatch:
+
+jobs:
+  mutation-smoke:
+    name: Mutation Smoke (API + Fuzz)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate URLs
+        run: |
+          if [ -z "${{ vars.FRONTEND_URL }}" ]; then
+            echo "::error::FRONTEND_URL not set in repo variables. Set it in Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          if [ -z "${{ vars.BACKEND_URL }}" ]; then
+            echo "::error::BACKEND_URL not set in repo variables. Set it in Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          echo "FRONTEND_URL=${{ vars.FRONTEND_URL }}"
+          echo "BACKEND_URL=${{ vars.BACKEND_URL }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Wake Render frontend (cold start)
+        env:
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+        run: |
+          echo "Waking $FRONTEND_URL ..."
+          curl -s -o /dev/null --max-time 60 "$FRONTEND_URL" || true
+          echo "Wake done"
+
+      - name: Check Render frontend
+        id: check-frontend
+        env:
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+        run: |
+          echo "Testing frontend at: $FRONTEND_URL"
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$FRONTEND_URL" 2>/dev/null || echo "000")
+            if [ "$STATUS" != "000" ] && [ "$STATUS" -lt 500 ]; then
+              echo "Frontend is up (HTTP $STATUS)"
+              echo "FRONTEND_AVAILABLE=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "Waiting for frontend... ($i/5)"
+            sleep 10
+          done
+          echo "Frontend not available"
+          echo "FRONTEND_AVAILABLE=false" >> $GITHUB_OUTPUT
+
+      - name: API Mutation Tests
+        if: steps.check-frontend.outputs.FRONTEND_AVAILABLE == 'true'
+        env:
+          APP_BASE_URL: ${{ vars.FRONTEND_URL }}
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          TEST_USERNAME: alice@buzzhive.com
+          TEST_PASSWORD: alice123
+          TEST_ADMIN_EMAIL: admin@buzzhive.com
+          TEST_ADMIN_PASSWORD: admin123
+          TEST_MOD_EMAIL: mod@buzzhive.com
+          TEST_MOD_PASSWORD: mod123
+          TEST_BOB_EMAIL: bob@buzzhive.com
+          TEST_BOB_PASSWORD: bob123
+          TEST_FRANK_EMAIL: frank@buzzhive.com
+          TEST_FRANK_PASSWORD: frank123
+        run: |
+          npx playwright test e2e/mutation/api-mutation.spec.ts --project=chromium --retries=2 --reporter=list
+          npx playwright test e2e/mutation/api-mutation-extended.spec.ts --project=chromium --retries=2 --reporter=list
+
+      - name: UI Fuzzing Tests
+        if: steps.check-frontend.outputs.FRONTEND_AVAILABLE == 'true'
+        env:
+          APP_BASE_URL: ${{ vars.FRONTEND_URL }}
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          TEST_USERNAME: alice@buzzhive.com
+          TEST_PASSWORD: alice123
+          TEST_ADMIN_EMAIL: admin@buzzhive.com
+          TEST_ADMIN_PASSWORD: admin123
+          TEST_MOD_EMAIL: mod@buzzhive.com
+          TEST_MOD_PASSWORD: mod123
+          TEST_BOB_EMAIL: bob@buzzhive.com
+          TEST_BOB_PASSWORD: bob123
+          TEST_FRANK_EMAIL: frank@buzzhive.com
+          TEST_FRANK_PASSWORD: frank123
+        run: |
+          npx playwright test e2e/mutation/ui-fuzz.spec.ts --project=chromium --retries=2 --reporter=list
+
+      - name: No frontend available
+        if: steps.check-frontend.outputs.FRONTEND_AVAILABLE != 'true'
+        run: echo "⚠️ Frontend not available - skipping mutation tests"
+
+      - name: Upload test results
+        if: always() && steps.check-frontend.outputs.FRONTEND_AVAILABLE == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-results
+          path: |
+            test-results/
+            playwright-report/

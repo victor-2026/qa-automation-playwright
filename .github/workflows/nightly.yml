@@ -14,19 +14,32 @@ jobs:
     
     steps:
       - uses: actions/checkout@v5
-      
+
+      - name: Validate URLs
+        run: |
+          if [ -z "${{ vars.BACKEND_URL }}" ]; then
+            echo "::error::BACKEND_URL not set in repo variables. Set it in Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          echo "BACKEND_URL=${{ vars.BACKEND_URL }}"
+          if [ -n "${{ vars.FRONTEND_URL }}" ]; then
+            echo "FRONTEND_URL=${{ vars.FRONTEND_URL }}"
+          else
+            echo "FRONTEND_URL not set — UI smoke tests will be skipped"
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-      
+
       - name: Wake Render backend (cold start)
         run: |
           BACKEND_URL="${{ vars.BACKEND_URL }}"

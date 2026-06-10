@@ -1,0 +1,104 @@
+name: Contract Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  schema-and-consumer:
+    name: Schema + Consumer Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate URLs
+        run: |
+          if [ -z "${{ vars.BACKEND_URL }}" ]; then
+            echo "::error::BACKEND_URL not set in repo variables. Set it in Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          echo "BACKEND_URL=${{ vars.BACKEND_URL }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clean old pact files
+        run: rm -f contracts/pacts/*.json
+
+      - name: Run Schema Validation (17 tests)
+        run: npx playwright test contracts/schema-validation.spec.ts --project=chromium
+
+      - name: Run Pact Consumer Tests (9 tests)
+        run: npx playwright test contracts/consumers/ --project=chromium
+
+      - name: Upload pact files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pact-files
+          path: contracts/pacts/*.json
+          retention-days: 7
+
+  provider-verification:
+    name: Provider Verification (Render)
+    runs-on: ubuntu-latest
+    needs: schema-and-consumer
+    timeout-minutes: 15
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate URLs
+        run: |
+          if [ -z "${{ vars.BACKEND_URL }}" ]; then
+            echo "::error::BACKEND_URL not set in repo variables. Set it in Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          echo "BACKEND_URL=${{ vars.BACKEND_URL }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wake Render backend
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+        run: |
+          echo "Waking $BACKEND_URL ..."
+          curl -s -o /dev/null --max-time 60 "$BACKEND_URL" || true
+          echo "Wake done (cold start may take 30-60s on free tier)"
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$BACKEND_URL/api/health")
+            if [ "$STATUS" = "200" ]; then
+              echo "Backend healthy"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/5)"
+            sleep 10
+          done
+          echo "Backend not available"
+          exit 1
+
+      - name: Run Provider Verification (2 tests)
+        env:
+          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+        run: npx playwright test contracts/provider/ --project=chromium
