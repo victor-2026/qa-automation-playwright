@@ -34,6 +34,22 @@
 
 **Note:** As of 2026-06-10 11:15 UTC, the existing `BACKEND_URL` is still `https://buzzhive-test.onrender.com` (legacy) — confirmed by CI run #27272284630 log line `env: API_BASE_URL: https://buzzhive-test.onrender.com` (after `{{ vars.BACKEND_URL }}` substitution).
 
+**Investigation 2026-06-10 13:30 UTC — both backends compared:**
+
+| Endpoint | `buzzhive-test.onrender.com` (legacy) | `qa-automation-playwright-1.onrender.com` (new) |
+|----------|---------------------------------------|--------------------------------------------------|
+| `/api/health` | 200 (0.5s) | 200 (0.6s) |
+| `/api/auth/login` | 200 (2.5s) | 200 (2.3s) |
+| `/api/posts?hashtag=...` | 200 (0.5s) | 200 (0.6s) |
+| `/openapi.json` | **200 JSON** ✅ | **200 HTML** ❌ |
+| `/api/posts` data | same | same (shared Neon DB) |
+
+**Verdict:** Both backends proxy to the same FastAPI service (via Neon DB), but the **new service does not expose `/openapi.json`** (likely a different deployment — possibly a frontend reverse-proxy). The legacy `buzzhive-test` is the actual FastAPI service that exposes OpenAPI docs.
+
+**Decision 2026-06-10 13:30:** Keep `BACKEND_URL=buzzhive-test.onrender.com` (legacy). Updating to the new URL breaks the `contracts.yml` OpenAPI export step. If/when the new service exposes `/openapi.json`, the var can be flipped.
+
+**Frontend mismatch:** Frontend's `API_BACKEND_URL` (in render.yaml) points to `https://qa-automation-playwright-1.onrender.com` (set in commit `28c2b1d`). The new URL serves the same `/api/*` as legacy, so frontend works. But CI tests need legacy for the spec export.
+
 **Modified files:**
 - `.github/workflows/uptime.yml`
 - `.github/workflows/nightly.yml`
