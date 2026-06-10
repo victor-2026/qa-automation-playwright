@@ -77,6 +77,18 @@ But root `package.json` had no `build` script. Frontend has one but at `frontend
 
 **Status 2026-06-10 18:21 UTC:** Latest push (`fef26ea`) deployed. Next Render deploy will run with verbose logs. If status 127 persists, the verbose trace will show the failing sub-command.
 
+**Render dashboard fix attempt 2026-06-10 23:08 UTC:** User changed Build Command from `docker-compose build backend` to empty. New deploy log:
+```
+==> Empty build command; skipping build
+==> Uploading build...
+==> Your site is live 🎉
+```
+But service still returns 404 (verified at 23:08 UTC: `https://buzzhive-api.onrender.com/` → HTTP 404, body "Not Found", 10 bytes). Render skipped the build, uploaded nothing, "site is live" but no content.
+
+**Next step (user action):** Change Build Command to `npm run build` (not empty). The package.json `build` script we added in `fef26ea` will then run, producing `dist/` which Render will publish.
+
+**If Web Service with Docker:** instead of empty build command, set Dockerfile Path to `./frontend/Dockerfile` in dashboard.
+
 **Pre-existing flake (not Session 37 scope):** Contract Tests CI run #27296835453 had Posts consumer test fail with `GET /api/posts?hashtag=nonexistent → 401`. This is a flake in the consumer test where `realPostId` is sometimes not fetched (becomes "placeholder-post-id"), causing subsequent mock interactions to fail. Schema validation (17 tests) and Provider verification (2 tests) both pass consistently. Only the 1-of-5 posts consumer test is flaky.
 
 **Modified files:**
