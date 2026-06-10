@@ -57,6 +57,28 @@
 
 URL: https://github.com/victor-2026/qa-automation-playwright/actions/runs/27279847096
 
+## Render Deploy Issue (buzzhive-api) — 2026-06-10
+
+**Issue:** Service `srv-d7lumchkh4rs738knnk0` (buzzhive-api) failed every deploy with `npm error Missing script: "build"`. Render uses a Dockerfile (not in repo) that runs `npm run build` from root context. Root `package.json` had no build script.
+
+**Root cause:** The Dockerfile expects:
+- `dist/` at root level (matches `COPY --from=build /app/dist /usr/share/nginx/html`)
+- `nginx.conf` at root level (matches nginx COPY step)
+
+But root `package.json` had no `build` script. Frontend has one but at `frontend/`.
+
+**Fix (commits `04cd024` → `82cf1d7` → `fef26ea`):** Added a `build` script to root `package.json` that:
+1. `cd frontend && npm ci` — installs frontend deps
+2. `npm run build` — runs `tsc -b && vite build` (frontend's own build)
+3. Copies `dist/` and `nginx.conf` up to root level for the Dockerfile's COPY step
+4. Latest version has `set -ex` for verbose Render build logs
+
+**Verified locally:** Simulated the full Dockerfile flow in `/tmp/render-test` — dist/ and nginx.conf correctly land at root level. Build exits 0.
+
+**Status 2026-06-10 18:21 UTC:** Latest push (`fef26ea`) deployed. Next Render deploy will run with verbose logs. If status 127 persists, the verbose trace will show the failing sub-command.
+
+**Pre-existing flake (not Session 37 scope):** Contract Tests CI run #27296835453 had Posts consumer test fail with `GET /api/posts?hashtag=nonexistent → 401`. This is a flake in the consumer test where `realPostId` is sometimes not fetched (becomes "placeholder-post-id"), causing subsequent mock interactions to fail. Schema validation (17 tests) and Provider verification (2 tests) both pass consistently. Only the 1-of-5 posts consumer test is flaky.
+
 **Modified files:**
 - `.github/workflows/uptime.yml`
 - `.github/workflows/nightly.yml`
