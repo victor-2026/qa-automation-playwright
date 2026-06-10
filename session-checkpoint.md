@@ -22,6 +22,18 @@
 - `BACKEND_URL` = `https://qa-automation-playwright-1.onrender.com`
 - `FRONTEND_URL` = `https://qa-automation-playwright-front.onrender.com`
 
+**Quick link:** https://github.com/victor-2026/qa-automation-playwright/settings/variables/actions
+
+**Step-by-step:**
+1. Open the link above
+2. Click **"New repository variable"** (green button, top right)
+3. Add `BACKEND_URL` → `https://qa-automation-playwright-1.onrender.com` → Save
+4. Click **"New repository variable"** again
+5. Add `FRONTEND_URL` → `https://qa-automation-playwright-front.onrender.com` → Save
+6. Verify by re-running Uptime Monitor: https://github.com/victor-2026/qa-automation-playwright/actions/workflows/uptime.yml → "Run workflow" → main
+
+**Note:** As of 2026-06-10 11:15 UTC, the existing `BACKEND_URL` is still `https://buzzhive-test.onrender.com` (legacy) — confirmed by CI run #27272284630 log line `env: API_BASE_URL: https://buzzhive-test.onrender.com` (after `{{ vars.BACKEND_URL }}` substitution).
+
 **Modified files:**
 - `.github/workflows/uptime.yml`
 - `.github/workflows/nightly.yml`
