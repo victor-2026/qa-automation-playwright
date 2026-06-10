@@ -104,5 +104,5 @@ jobs:
 
       - name: Run Provider Verification (2 tests)
         env:
-          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          API_BASE_URL: ${{ vars.BACKEND_URL }}
         run: npx playwright test contracts/provider/ --project=contracts
