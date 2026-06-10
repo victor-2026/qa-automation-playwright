@@ -50,6 +50,13 @@
 
 **Frontend mismatch:** Frontend's `API_BACKEND_URL` (in render.yaml) points to `https://qa-automation-playwright-1.onrender.com` (set in commit `28c2b1d`). The new URL serves the same `/api/*` as legacy, so frontend works. But CI tests need legacy for the spec export.
 
+**Verification 2026-06-10 13:31 UTC:** Contract Tests run #27279847096 PASSED on legacy URL.
+- Schema + Consumer: 17 + 9 tests passed
+- Provider: 2 tests passed
+- All workflow steps green
+
+URL: https://github.com/victor-2026/qa-automation-playwright/actions/runs/27279847096
+
 **Modified files:**
 - `.github/workflows/uptime.yml`
 - `.github/workflows/nightly.yml`
