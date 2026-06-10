@@ -4,7 +4,7 @@
   "description": "**A free, open-source, full-stack social network designed specifically as a practice environment for QA automation engineers.**",
   "main": "index.js",
   "scripts": {
-    "build": "(cd frontend && npm ci --no-audit --no-fund && npm run build) && cp -r frontend/dist dist && cp frontend/nginx.conf nginx.conf",
+    "build": "set -ex; cd frontend && npm ci --no-audit --no-fund && npm run build && cd .. && mkdir -p dist && cp -r frontend/dist/. dist/ && cp frontend/nginx.conf nginx.conf && ls -la dist/ nginx.conf",
     "start": "echo 'See backend/ and frontend/ for service entry points' && exit 0",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
