@@ -40,12 +40,12 @@ jobs:
 
       - name: Run Schema Validation (17 tests)
         env:
-          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          API_BASE_URL: ${{ vars.BACKEND_URL }}
         run: npx playwright test contracts/schema-validation.spec.ts --project=contracts
 
       - name: Run Pact Consumer Tests (9 tests)
         env:
-          API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+          API_BASE_URL: ${{ vars.BACKEND_URL }}
         run: npx playwright test contracts/consumers/ --project=contracts
 
       - name: Upload pact files
