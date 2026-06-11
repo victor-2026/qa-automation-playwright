@@ -17,7 +17,7 @@ test.describe('Mutation — API Response', () => {
     await page.waitForURL('**/');
   }
 
-  // ── MUT-001: likes_count mutations ──
+  // ── MUT-001 - likes_count mutations ──
 
   const LIKES_MUTATIONS = [
     { name: 'zeroed out', value: 0, expected: '0' },
@@ -25,7 +25,7 @@ test.describe('Mutation — API Response', () => {
     { name: 'null', value: null, expected: '0' },
   ];
   for (const { name, value, expected } of LIKES_MUTATIONS) {
-    test(`MUT-001: likes_count ${name}`, async ({ page }) => {
+    test(`MUT-001 - likes_count ${name}`, async ({ page }) => {
       await page.route('**/api/posts*', async route => {
         const response = await route.fetch();
         const json = await response.json();
@@ -41,9 +41,9 @@ test.describe('Mutation — API Response', () => {
     });
   }
 
-  // ── MUT-002: author.username → null ──
+  // ── MUT-002 - author.username → null ──
 
-  test('MUT-002: author.username removed from post', async ({ page }) => {
+  test('MUT-002 - author.username removed from post', async ({ page }) => {
     await page.route('**/api/posts*', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -57,7 +57,7 @@ test.describe('Mutation — API Response', () => {
     await expect(firstAuthor).not.toBeVisible();
   });
 
-  // ── MUT-003: Login error codes ──
+  // ── MUT-003 - Login error codes ──
 
   const ERROR_CODES = [
     { status: 400, detail: 'Bad Request' },
@@ -69,7 +69,7 @@ test.describe('Mutation — API Response', () => {
     { status: 503, detail: 'Service Unavailable' },
   ];
   for (const { status, detail } of ERROR_CODES) {
-    test(`MUT-003: login returns ${status}`, async ({ page }) => {
+    test(`MUT-003 - login returns ${status}`, async ({ page }) => {
       await page.route('**/api/auth/login', async route => {
         await route.fulfill({
           status,
@@ -89,9 +89,9 @@ test.describe('Mutation — API Response', () => {
     });
   }
 
-  // ── MUT-004: items → [] empty feed ──
+  // ── MUT-004 - items → [] empty feed ──
 
-  test('MUT-004: empty posts feed', async ({ page }) => {
+  test('MUT-004 - empty posts feed', async ({ page }) => {
     await page.route('**/api/posts*', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -105,9 +105,9 @@ test.describe('Mutation — API Response', () => {
     await expect(page.locator('[data-testid^="post-card-"]')).toHaveCount(0, { timeout: 3000 });
   });
 
-  // ── MUT-005: is_verified → false ──
+  // ── MUT-005 - is_verified → false ──
 
-  test('MUT-005: user profile shows unverified', async ({ page }) => {
+  test('MUT-005 - user profile shows unverified', async ({ page }) => {
     await page.route('**/api/auth/me', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -122,9 +122,9 @@ test.describe('Mutation — API Response', () => {
     await expect(verifiedBadge).not.toBeVisible({ timeout: 3000 });
   });
 
-  // ── MUT-006: avatar_url → null ──
+  // ── MUT-006 - avatar_url → null ──
 
-  test('MUT-006: avatar missing falls back to placeholder', async ({ page }) => {
+  test('MUT-006 - avatar missing falls back to placeholder', async ({ page }) => {
     await page.route('**/api/auth/me', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -141,9 +141,9 @@ test.describe('Mutation — API Response', () => {
     await expect(img).not.toBeVisible();
   });
 
-  // ── MUT-007: Refresh token invalid → redirect to login ──
+  // ── MUT-007 - Refresh token invalid → redirect to login ──
 
-  test('MUT-007: auth/me returns 401 after login redirects to login page', async ({ page }) => {
+  test('MUT-007 - auth/me returns 401 after login redirects to login page', async ({ page }) => {
     let callCount = 0;
     await page.route('**/api/auth/me', async route => {
       callCount++;
@@ -173,7 +173,7 @@ test.describe('Mutation — API Response', () => {
     await expect(page).toHaveURL(/\/login/);
   });
 
-  // ── MUT-008: XSS in post content ──
+  // ── MUT-008 - XSS in post content ──
 
   const XSS_PAYLOADS = [
     { name: 'img onerror', value: '<img src=x onerror=alert(1)>' },
@@ -182,7 +182,7 @@ test.describe('Mutation — API Response', () => {
     { name: 'javascript URI', value: 'javascript:alert(1)' },
   ];
   for (const { name, value } of XSS_PAYLOADS) {
-    test(`MUT-008: XSS (${name}) is escaped`, async ({ page }) => {
+    test(`MUT-008 - XSS (${name}) is escaped`, async ({ page }) => {
       await page.route('**/api/posts*', async route => {
         const response = await route.fetch();
         const json = await response.json();

@@ -18,7 +18,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 1: Synonym Substitution (case insensitivity)
-  test('MET-001: Login case insensitivity', async ({ request }) => {
+  test('MET-001 - Login case insensitivity', async ({ request }) => {
     const variants = [
       'alice@buzzhive.com',
       'Alice@buzzhive.com',
@@ -49,7 +49,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 2: Parameter Permutation
-  test('MET-002: Query param order independence', async ({ request }) => {
+  test('MET-002 - Query param order independence', async ({ request }) => {
     const res1 = await request.get(`${API_BASE}/posts?page=1&per_page=10`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
       timeout: 5000,
@@ -69,7 +69,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 3: Follow/Unfollow Symmetry
-  test('MET-003: Follow-unfollow symmetry', async ({ request }) => {
+  test('MET-003 - Follow-unfollow symmetry', async ({ request }) => {
     // Check initial following count
     const initialRes = await request.get(`${API_BASE}/users/bob_photo/following`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
@@ -102,7 +102,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 4: Negation
-  test('MET-004: Existence negation', async ({ request }) => {
+  test('MET-004 - Existence negation', async ({ request }) => {
     try {
       const res1 = await request.get(`${API_BASE}/users/alice_dev`, {
         timeout: 5000,
@@ -140,7 +140,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 5: Pagination Disjoint Sets
-  test('MET-005: Pagination disjoint sets', async ({ request }) => {
+  test('MET-005 - Pagination disjoint sets', async ({ request }) => {
     try {
       const res1 = await request.get(`${API_BASE}/posts?page=1&per_page=5`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -174,7 +174,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 6: Self-follow should always fail
-  test('MET-006: Self-follow consistency', async ({ request }) => {
+  test('MET-006 - Self-follow consistency', async ({ request }) => {
     for (const user of ['alice_dev', 'bob_photo']) {
       const token = user === 'alice_dev' ? aliceToken : bobToken;
       const res = await request.post(`${API_BASE}/users/${user}/follow`, {
@@ -197,7 +197,7 @@ test.describe('Metamorphic API Tests', () => {
   });
 
   // Relation 7: Auth consistency
-  test('MET-007: Auth token consistency', async ({ request }) => {
+  test('MET-007 - Auth token consistency', async ({ request }) => {
     // Same credentials should always return same token structure
     const results = [];
     for (let i = 0; i < 3; i++) {

@@ -62,7 +62,7 @@ test.describe('Mutation — Chaos Engineering', () => {
     execSync(`${cmd} start db backend 2>/dev/null || true`, { stdio: 'ignore' });
   });
 
-  test('CHAOS-001: db down shows error on feed', async ({ page }) => {
+  test('CHAOS-001 - db down shows error on feed', async ({ page }) => {
     test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
 
     await page.goto('/login');
@@ -81,7 +81,7 @@ test.describe('Mutation — Chaos Engineering', () => {
     await expect(errorBanner.first()).toBeVisible({ timeout: 5000 });
   });
 
-  test('CHAOS-002: backend down shows error on feed', async ({ page }) => {
+  test('CHAOS-002 - backend down shows error on feed', async ({ page }) => {
     test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
 
     await page.goto('/login');
@@ -100,7 +100,7 @@ test.describe('Mutation — Chaos Engineering', () => {
     await expect(errorBanner.first()).toBeVisible({ timeout: 5000 });
   });
 
-  test('CHAOS-003: backend restart recovers', async ({ page }) => {
+  test('CHAOS-003 - backend restart recovers', async ({ page }) => {
     test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
 
     await page.goto('/login');
@@ -119,9 +119,9 @@ test.describe('Mutation — Chaos Engineering', () => {
     await expect(profile).toBeVisible({ timeout: 10000 });
   });
 
-  // ── CHAOS-004: Backend CPU throttled → loading appears ──
+  // ── CHAOS-004 - Backend CPU throttled → loading appears ──
 
-  test('CHAOS-004: backend under load shows loading state', async ({ page }) => {
+  test('CHAOS-004 - backend under load shows loading state', async ({ page }) => {
     test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
 
     await page.goto('/login');
@@ -142,9 +142,9 @@ test.describe('Mutation — Chaos Engineering', () => {
     await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible({ timeout: 10000 });
   });
 
-  // ── CHAOS-005: DB connections exhausted ──
+  // ── CHAOS-005 - DB connections exhausted ──
 
-  test('CHAOS-005: DB connection pool exhaustion shows error', async ({ page }) => {
+  test('CHAOS-005 - DB connection pool exhaustion shows error', async ({ page }) => {
     test.skip(!chaosEnabled || !cmd || isCI, 'Set DOCKER_CHAOS=1 to enable');
 
     await page.goto('/login');

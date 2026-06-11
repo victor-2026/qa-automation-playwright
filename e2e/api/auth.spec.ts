@@ -21,7 +21,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/login - Happy path
-  test('AUTH-API-001: Login with valid credentials returns 200 + tokens', async ({ request }) => {
+  test('AUTH-API-001 - Login with valid credentials returns 200 + tokens', async ({ request }) => {
     try {
       const res = await loginWithRetry(request, TEST_ACCOUNTS.user.email, TEST_ACCOUNTS.user.password, API_BASE, 2, 1000);
       expect(res.status()).toBe(200);
@@ -34,7 +34,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-002: Login returns correct token_type', async ({ request }) => {
+  test('AUTH-API-002 - Login returns correct token_type', async ({ request }) => {
     try {
       const res = await loginWithRetry(request, TEST_ACCOUNTS.user.email, TEST_ACCOUNTS.user.password, API_BASE, 2, 1000);
       expect([200, 500]).toContain(res.status());
@@ -49,7 +49,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/login - Invalid input
-  test('AUTH-API-003: Login with wrong password returns 401', async ({ request }) => {
+  test('AUTH-API-003 - Login with wrong password returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: 'wrongpassword' },
@@ -62,7 +62,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-004: Login with non-existent email returns 401', async ({ request }) => {
+  test('AUTH-API-004 - Login with non-existent email returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: 'nonexistent@test.com', password: 'anypassword' },
@@ -75,7 +75,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-005: Login with empty body returns 400/422', async ({ request }) => {
+  test('AUTH-API-005 - Login with empty body returns 400/422', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: {},
@@ -89,7 +89,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/login - Boundary values
-  test('AUTH-API-006: Login with very long password (1000 chars)', async ({ request }) => {
+  test('AUTH-API-006 - Login with very long password (1000 chars)', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: 'a'.repeat(1000) },
@@ -102,7 +102,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-007: Login with SQL injection in email', async ({ request }) => {
+  test('AUTH-API-007 - Login with SQL injection in email', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: "' OR '1'='1", password: 'anything' },
@@ -116,7 +116,7 @@ test.describe('API - Auth', () => {
   });
 
   // GET /auth/me
-  test('AUTH-API-008: /me with valid token returns 200 + user data', async ({ request }) => {
+  test('AUTH-API-008 - /me with valid token returns 200 + user data', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -134,7 +134,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-009: /me returns all required user fields', async ({ request }) => {
+  test('AUTH-API-009 - /me returns all required user fields', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -154,7 +154,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-010: /me without token returns 401/403', async ({ request }) => {
+  test('AUTH-API-010 - /me without token returns 401/403', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         timeout: 5000,
@@ -166,7 +166,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-011: /me with invalid token returns 401', async ({ request }) => {
+  test('AUTH-API-011 - /me with invalid token returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: 'Bearer invalid_token_123' },
@@ -180,7 +180,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/register
-  test('AUTH-API-012: Register with valid data returns 201', async ({ request }) => {
+  test('AUTH-API-012 - Register with valid data returns 201', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -199,7 +199,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-013: Register returns user data', async ({ request }) => {
+  test('AUTH-API-013 - Register returns user data', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -221,7 +221,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-014: Register with duplicate email returns 409', async ({ request }) => {
+  test('AUTH-API-014 - Register with duplicate email returns 409', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/register`, {
         data: {
@@ -239,7 +239,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-015: Register with duplicate username returns 409', async ({ request }) => {
+  test('AUTH-API-015 - Register with duplicate username returns 409', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -259,7 +259,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/register - Boundary values
-  test('AUTH-API-016: Register with password < 6 chars returns 422', async ({ request }) => {
+  test('AUTH-API-016 - Register with password < 6 chars returns 422', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -278,7 +278,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-017: Register with password = 6 chars (min) succeeds', async ({ request }) => {
+  test('AUTH-API-017 - Register with password = 6 chars (min) succeeds', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -297,7 +297,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-018: Register with invalid email format returns 422', async ({ request }) => {
+  test('AUTH-API-018 - Register with invalid email format returns 422', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -316,7 +316,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-019: Register with empty display_name returns 422', async ({ request }) => {
+  test('AUTH-API-019 - Register with empty display_name returns 422', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -335,7 +335,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-020: Register with username < 3 chars returns 422', async ({ request }) => {
+  test('AUTH-API-020 - Register with username < 3 chars returns 422', async ({ request }) => {
     try {
       const ts = Date.now();
       const res = await request.post(`${API_BASE}/auth/register`, {
@@ -355,7 +355,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/refresh
-  test('AUTH-API-021: Refresh with valid token returns 200', async ({ request }) => {
+  test('AUTH-API-021 - Refresh with valid token returns 200', async ({ request }) => {
     try {
       const loginRes = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
@@ -374,7 +374,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-022: Refresh with invalid token returns 400/401', async ({ request }) => {
+  test('AUTH-API-022 - Refresh with invalid token returns 400/401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/refresh`, {
         data: { refresh_token: 'invalid_token' },
@@ -387,7 +387,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-023: Refresh without body returns 422', async ({ request }) => {
+  test('AUTH-API-023 - Refresh without body returns 422', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/refresh`, {
         data: {},
@@ -401,7 +401,7 @@ test.describe('API - Auth', () => {
   });
 
   // POST /auth/logout
-  test('AUTH-API-024: Logout with valid token returns 200', async ({ request }) => {
+  test('AUTH-API-024 - Logout with valid token returns 200', async ({ request }) => {
     try {
       const loginRes = await loginWithRetry(request, TEST_ACCOUNTS.user.email, TEST_ACCOUNTS.user.password, API_BASE, 2, 1000);
       const tokens = await loginRes.json().catch(() => null);
@@ -418,7 +418,7 @@ test.describe('API - Auth', () => {
     }
   });
 
-  test('AUTH-API-025: Logout without token returns 401', async ({ request }) => {
+  test('AUTH-API-025 - Logout without token returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/auth/logout`, {
         data: {},

@@ -22,7 +22,7 @@ test.describe('API - Conversations', () => {
   });
 
   // GET /conversations
-  test('MSG-API-001: GET /conversations returns 200 with auth', async ({ request }) => {
+  test('MSG-API-001 - GET /conversations returns 200 with auth', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -35,7 +35,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-002: GET /conversations without auth returns 401', async ({ request }) => {
+  test('MSG-API-002 - GET /conversations without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         timeout: 5000,
@@ -47,7 +47,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-003: GET /conversations returns array', async ({ request }) => {
+  test('MSG-API-003 - GET /conversations returns array', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -69,7 +69,7 @@ test.describe('API - Conversations', () => {
   });
 
   // POST /conversations/dm/{username}
-  test('MSG-API-004: POST /conversations/dm/{username} starts DM', async ({ request }) => {
+  test('MSG-API-004 - POST /conversations/dm/{username} starts DM', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -87,7 +87,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-005: POST /conversations/dm/{username} without auth returns 401', async ({ request }) => {
+  test('MSG-API-005 - POST /conversations/dm/{username} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/bob`, {
         timeout: 5000,
@@ -99,7 +99,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-006: POST /conversations/dm/{username} with non-existent user returns 404', async ({ request }) => {
+  test('MSG-API-006 - POST /conversations/dm/{username} with non-existent user returns 404', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/nonexistent`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -112,7 +112,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-007: POST /conversations/dm/{username} with yourself returns 400/422', async ({ request }) => {
+  test('MSG-API-007 - POST /conversations/dm/{username} with yourself returns 400/422', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/alice`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -126,7 +126,7 @@ test.describe('API - Conversations', () => {
   });
 
   // GET /conversations/{id}
-  test('MSG-API-008: GET /conversations/{id} returns messages', async ({ request }) => {
+  test('MSG-API-008 - GET /conversations/{id} returns messages', async ({ request }) => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -149,7 +149,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-009: GET /conversations/{id} without auth returns 401', async ({ request }) => {
+  test('MSG-API-009 - GET /conversations/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations/some-id`, {
         timeout: 5000,
@@ -161,7 +161,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-010: GET /conversations/{id} not participant returns 403', async ({ request }) => {
+  test('MSG-API-010 - GET /conversations/{id} not participant returns 403', async ({ request }) => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/alice`, {
         headers: { Authorization: `Bearer ${bobToken}` },
@@ -182,7 +182,7 @@ test.describe('API - Conversations', () => {
   });
 
   // POST /conversations/{id}/read
-  test('MSG-API-011: POST /conversations/{id}/read marks as read', async ({ request }) => {
+  test('MSG-API-011 - POST /conversations/{id}/read marks as read', async ({ request }) => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -202,7 +202,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-012: POST /conversations/{id}/read without auth returns 401', async ({ request }) => {
+  test('MSG-API-012 - POST /conversations/{id}/read without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/some-id/read`, {
         timeout: 5000,
@@ -215,7 +215,7 @@ test.describe('API - Conversations', () => {
   });
 
   // DELETE /conversations/{id}
-  test('MSG-API-013: DELETE /conversations/{id} deletes conversation', async ({ request }) => {
+  test('MSG-API-013 - DELETE /conversations/{id} deletes conversation', async ({ request }) => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -235,7 +235,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-014: DELETE /conversations/{id} without auth returns 401', async ({ request }) => {
+  test('MSG-API-014 - DELETE /conversations/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.delete(`${API_BASE}/conversations/some-id`, {
         timeout: 5000,
@@ -248,7 +248,7 @@ test.describe('API - Conversations', () => {
   });
 
   // Edge cases
-  test('MSG-API-015: Empty conversations list is valid', async ({ request }) => {
+  test('MSG-API-015 - Empty conversations list is valid', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -265,7 +265,7 @@ test.describe('API - Conversations', () => {
     }
   });
 
-  test('MSG-API-016: Pagination works', async ({ request }) => {
+  test('MSG-API-016 - Pagination works', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations?page=1&per_page=5`, {
         headers: { Authorization: `Bearer ${aliceToken}` },

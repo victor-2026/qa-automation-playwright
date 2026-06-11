@@ -11,7 +11,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   // ── Login fuzzing ──
 
-  test('FUZZ-001: login with empty fields shows validation', async ({ page }) => {
+  test('FUZZ-001 - login with empty fields shows validation', async ({ page }) => {
     await page.goto('/login');
     await page.click('[data-testid="auth-login-btn"]');
 
@@ -22,7 +22,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   const EMAIL_LENGTHS = [65, 128, 254, 500] as const;
   for (const len of EMAIL_LENGTHS) {
-    test(`FUZZ-002: login with ${len}-char email is handled`, async ({ page }) => {
+    test(`FUZZ-002 - login with ${len}-char email is handled`, async ({ page }) => {
       const longEmail = 'a'.repeat(len) + '@test.com';
 
       let intercepted = false;
@@ -53,7 +53,7 @@ test.describe('Mutation — UI Fuzzing', () => {
     { name: 'semicolon', value: "semi'colon--@test.com" },
   ];
   for (const { name, value } of SQLI_PAYLOADS) {
-    test(`FUZZ-003: SQL injection (${name}) is handled`, async ({ page }) => {
+    test(`FUZZ-003 - SQL injection (${name}) is handled`, async ({ page }) => {
       let intercepted = false;
       await page.route('**/api/auth/login', async route => {
         intercepted = true;
@@ -74,7 +74,7 @@ test.describe('Mutation — UI Fuzzing', () => {
     });
   }
 
-  test('FUZZ-004: login rapid double-click sends single request', async ({ page }) => {
+  test('FUZZ-004 - login rapid double-click sends single request', async ({ page }) => {
     let requestCount = 0;
     await page.route('**/api/auth/login', async route => {
       requestCount++;
@@ -99,7 +99,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   const CONTENT_LENGTHS = [2000, 3000, 5000, 10000] as const;
   for (const len of CONTENT_LENGTHS) {
-    test(`FUZZ-005: create post with ${len}-char content`, async ({ page }) => {
+    test(`FUZZ-005 - create post with ${len}-char content`, async ({ page }) => {
       await page.goto('/login');
       await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
       await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -137,7 +137,7 @@ test.describe('Mutation — UI Fuzzing', () => {
     { name: 'Mixed scripts', text: 'Привет مرحبا こんにちは 🎉' },
   ];
   for (const { name, text } of UNICODE_SAMPLES) {
-    test(`FUZZ-006: post with unicode (${name})`, async ({ page }) => {
+    test(`FUZZ-006 - post with unicode (${name})`, async ({ page }) => {
       await page.goto('/login');
       await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
       await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -180,7 +180,7 @@ test.describe('Mutation — UI Fuzzing', () => {
     { name: 'onfocus', query: '<input onfocus=alert(1) autofocus>' },
   ];
   for (const { name, query } of XSS_VECTORS) {
-    test(`FUZZ-007: search XSS (${name}) is escaped`, async ({ page }) => {
+    test(`FUZZ-007 - search XSS (${name}) is escaped`, async ({ page }) => {
       await page.goto('/login');
       await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
       await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -209,7 +209,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   const SEARCH_LENGTHS = [1000, 5000, 10000] as const;
   for (const len of SEARCH_LENGTHS) {
-    test(`FUZZ-008: search with ${len}-char query`, async ({ page }) => {
+    test(`FUZZ-008 - search with ${len}-char query`, async ({ page }) => {
       await page.goto('/login');
       await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
       await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -239,7 +239,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   // ── Register fuzzing ──
 
-  test('FUZZ-009: register with existing email shows conflict', async ({ page }) => {
+  test('FUZZ-009 - register with existing email shows conflict', async ({ page }) => {
     await page.route('**/api/auth/register', async route => {
       await route.fulfill({
         status: 409,
@@ -262,7 +262,7 @@ test.describe('Mutation — UI Fuzzing', () => {
 
   const SHORT_PASSWORDS = ['a', 'ab', 'abc', 'abcd', 'abcde'] as const;
   for (const pw of SHORT_PASSWORDS) {
-    test(`FUZZ-010: register with ${pw.length}-char password blocked`, async ({ page }) => {
+    test(`FUZZ-010 - register with ${pw.length}-char password blocked`, async ({ page }) => {
       await page.goto('/register');
       await page.fill('[data-testid="auth-email-input"]', 'new@test.com');
       await page.fill('[data-testid="auth-username-input"]', 'newuser');
@@ -276,9 +276,9 @@ test.describe('Mutation — UI Fuzzing', () => {
     });
   }
 
-  // ── FUZZ-011: Avatar upload with non-image ──
+  // ── FUZZ-011 - Avatar upload with non-image ──
 
-  test('FUZZ-011: non-image file upload shows error', async ({ page }) => {
+  test('FUZZ-011 - non-image file upload shows error', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -305,9 +305,9 @@ test.describe('Mutation — UI Fuzzing', () => {
     }
   });
 
-  // ── FUZZ-012: Profile bio XSS ──
+  // ── FUZZ-012 - Profile bio XSS ──
 
-  test('FUZZ-012: XSS in profile bio is escaped', async ({ page }) => {
+  test('FUZZ-012 - XSS in profile bio is escaped', async ({ page }) => {
     await page.route('**/api/users/me', async route => {
       if (route.request().method() === 'PATCH') {
         await route.fulfill({
@@ -340,9 +340,9 @@ test.describe('Mutation — UI Fuzzing', () => {
     expect(html).not.toContain('<script>alert("xss")</script>');
   });
 
-  // ── FUZZ-013: Browser back/forward after login ──
+  // ── FUZZ-013 - Browser back/forward after login ──
 
-  test('FUZZ-013: back/forward navigation keeps logged in', async ({ page }) => {
+  test('FUZZ-013 - back/forward navigation keeps logged in', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');

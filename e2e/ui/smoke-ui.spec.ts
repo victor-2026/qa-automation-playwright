@@ -21,7 +21,7 @@ test.describe('UI Smoke Tests - Render', () => {
     }
   });
 
-  test('UI-1: Homepage loads', async ({ page }) => {
+  test('UI-1 - Homepage loads', async ({ page }) => {
     const res = await page.goto('/');
     await page.waitForLoadState('networkidle');
     expect(res?.status() ?? 0).toBeLessThan(500);
@@ -29,7 +29,7 @@ test.describe('UI Smoke Tests - Render', () => {
     await expect(loginButton.first()).toBeVisible({ timeout: 15000 });
   });
 
-  test('UI-2: Login page accessible', async ({ page }) => {
+  test('UI-2 - Login page accessible', async ({ page }) => {
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
     await expect(page.locator('[data-testid="auth-email-input"]')).toBeVisible({ timeout: 15000 });
@@ -37,7 +37,7 @@ test.describe('UI Smoke Tests - Render', () => {
     await expect(page.locator('[data-testid="auth-login-btn"]')).toBeVisible({ timeout: 5000 });
   });
 
-  test('UI-3: Login with valid credentials', async ({ page }) => {
+  test('UI-3 - Login with valid credentials', async ({ page }) => {
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);
@@ -48,7 +48,7 @@ test.describe('UI Smoke Tests - Render', () => {
     await expect(page.locator('[data-testid="nav-profile"]')).toBeVisible({ timeout: 15000 });
   });
 
-  test('UI-4: Login with wrong password shows error', async ({ page }) => {
+  test('UI-4 - Login with wrong password shows error', async ({ page }) => {
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);
@@ -57,7 +57,7 @@ test.describe('UI Smoke Tests - Render', () => {
     await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible({ timeout: 15000 });
   });
 
-  test('UI-5: Logout works', async ({ page }) => {
+  test('UI-5 - Logout works', async ({ page }) => {
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
     await page.fill('[data-testid="auth-email-input"]', TEST_ACCOUNTS.user.email);

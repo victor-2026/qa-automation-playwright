@@ -39,7 +39,7 @@ test.describe('API - Admin', () => {
   });
 
   // GET /admin/stats
-  test('ADMIN-API-001: GET /admin/stats returns 200 for admin or 403/404', async ({ request }) => {
+  test('ADMIN-API-001 - GET /admin/stats returns 200 for admin or 403/404', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -60,7 +60,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-001: GET /admin/stats returns stats data', async ({ request }) => {
+  test('ADMIN-API-001 - GET /admin/stats returns stats data', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -80,7 +80,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-001: GET /admin/stats returns 403 for regular user', async ({ request }) => {
+  test('ADMIN-API-001 - GET /admin/stats returns 403 for regular user', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -93,7 +93,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-001: GET /admin/stats returns 401 without auth', async ({ request }) => {
+  test('ADMIN-API-001 - GET /admin/stats returns 401 without auth', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, { timeout: 5000 });
       expect(res.status()).toBeGreaterThanOrEqual(401);
@@ -104,7 +104,7 @@ test.describe('API - Admin', () => {
   });
 
   // GET /admin/users
-  test('ADMIN-API-02: GET /admin/users returns 200 or 403 for admin', async ({ request }) => {
+  test('ADMIN-API-02 - GET /admin/users returns 200 or 403 for admin', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/users`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -128,14 +128,14 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-002: GET /admin/users returns 403 for regular user', async ({ request }) => {
+  test('ADMIN-API-002 - GET /admin/users returns 403 for regular user', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/users`, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect([403, 404, 500]).toContain(res.status());
   });
 
-  test('ADMIN-API-002: GET /admin/users returns 403 or 200 for moderator', async ({ request }) => {
+  test('ADMIN-API-002 - GET /admin/users returns 403 or 200 for moderator', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/users`, {
         headers: { Authorization: `Bearer ${modToken}` },
@@ -159,7 +159,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-002: GET /admin/users returns array', async ({ request }) => {
+  test('ADMIN-API-002 - GET /admin/users returns array', async ({ request }) => {
     const res = await request.get(`${API_BASE}/admin/users`, {
       headers: { Authorization: `Bearer ${adminToken}` },
       timeout: 10000,
@@ -174,7 +174,7 @@ test.describe('API - Admin', () => {
   });
 
   // PATCH /admin/users/{id}
-  test('ADMIN-API-003: PATCH /admin/users/{id} updates user', async ({ request }) => {
+  test('ADMIN-API-003 - PATCH /admin/users/{id} updates user', async ({ request }) => {
     const listRes = await request.get(`${API_BASE}/admin/users`, {
       headers: { Authorization: `Bearer ${adminToken}` },
       timeout: 10000,
@@ -196,7 +196,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-003: PATCH /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
+  test('ADMIN-API-003 - PATCH /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id`, {
       headers: { Authorization: `Bearer ${userToken}` },
       data: { display_name: 'Hack' },
@@ -205,7 +205,7 @@ test.describe('API - Admin', () => {
   });
 
   // PATCH /admin/users/{id}/ban
-  test('ADMIN-API-04: PATCH /admin/users/{id}/ban bans user', async ({ request }) => {
+  test('ADMIN-API-04 - PATCH /admin/users/{id}/ban bans user', async ({ request }) => {
     const listRes = await request.get(`${API_BASE}/admin/users`, {
       headers: { Authorization: `Bearer ${adminToken}` },
     });
@@ -222,14 +222,14 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-004: PATCH /admin/users/{id}/ban returns 403/404 for moderator', async ({ request }) => {
+  test('ADMIN-API-004 - PATCH /admin/users/{id}/ban returns 403/404 for moderator', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id/ban`, {
       headers: { Authorization: `Bearer ${modToken}` },
     });
     expect([403,404]).toContain(res.status());
   });
 
-  test('ADMIN-API-004: PATCH /admin/users/{id}/ban returns 403/404 for regular user', async ({ request }) => {
+  test('ADMIN-API-004 - PATCH /admin/users/{id}/ban returns 403/404 for regular user', async ({ request }) => {
     const res = await request.patch(`${API_BASE}/admin/users/some-id/ban`, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
@@ -237,7 +237,7 @@ test.describe('API - Admin', () => {
   });
 
   // PATCH /admin/users/{id}/unban
-  test('ADMIN-API-014: PATCH /admin/users/{id}/unban unbans user', async ({ request }) => {
+  test('ADMIN-API-014 - PATCH /admin/users/{id}/unban unbans user', async ({ request }) => {
     try {
       const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -250,7 +250,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-015: PATCH /admin/users/{id}/unban returns 403/404 for non-admin', async ({ request }) => {
+  test('ADMIN-API-015 - PATCH /admin/users/{id}/unban returns 403/404 for non-admin', async ({ request }) => {
     try {
       const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -264,7 +264,7 @@ test.describe('API - Admin', () => {
   });
 
   // DELETE /admin/users/{id}
-  test('ADMIN-API-006: DELETE /admin/users/{id} deletes user', async ({ request }) => {
+  test('ADMIN-API-006 - DELETE /admin/users/{id} deletes user', async ({ request }) => {
     const ts = Date.now();
     const registerRes = await request.post(`${API_BASE}/auth/register`, {
       data: {
@@ -282,14 +282,14 @@ test.describe('API - Admin', () => {
     expect([200, 204, 403, 404]).toContain(res.status());
   });
 
-  test('ADMIN-API-006: DELETE /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
+  test('ADMIN-API-006 - DELETE /admin/users/{id} returns 403 for non-admin', async ({ request }) => {
     const res = await request.delete(`${API_BASE}/admin/users/some-id`, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
     expect([403, 404, 500]).toContain(res.status());
   });
 
-  test('ADMIN-API-016: DELETE /admin/users/{id} cannot delete admin', async ({ request }) => {
+  test('ADMIN-API-016 - DELETE /admin/users/{id} cannot delete admin', async ({ request }) => {
     try {
       const listRes = await request.get(`${API_BASE}/admin/users`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -316,7 +316,7 @@ test.describe('API - Admin', () => {
   });
 
   // GET /admin/posts
-  test('ADMIN-API-017: GET /admin/posts returns 200 for admin', async ({ request }) => {
+  test('ADMIN-API-017 - GET /admin/posts returns 200 for admin', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -329,7 +329,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-018: GET /admin/posts returns 403 for regular user', async ({ request }) => {
+  test('ADMIN-API-018 - GET /admin/posts returns 403 for regular user', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -342,7 +342,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-019: GET /admin/posts returns array', async ({ request }) => {
+  test('ADMIN-API-019 - GET /admin/posts returns array', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -357,7 +357,7 @@ test.describe('API - Admin', () => {
   });
 
   // DELETE /admin/posts/{id} - Moderator can delete
-  test('ADMIN-API-020: DELETE /admin/posts/{id} by mod rturns 200', async ({ request }) => {
+  test('ADMIN-API-020 - DELETE /admin/posts/{id} by mod rturns 200', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -381,7 +381,7 @@ test.describe('API - Admin', () => {
     }
   });
 
-  test('ADMIN-API-008: DELETE /admin/posts/{id} by admin returns 200', async ({ request }) => {
+  test('ADMIN-API-008 - DELETE /admin/posts/{id} by admin returns 200', async ({ request }) => {
     const createRes = await request.post(`${API_BASE}/posts`, {
       headers: { Authorization: `Bearer ${userToken}` },
       data: { content: 'Post for admin delete' },
@@ -400,7 +400,7 @@ test.describe('API - Admin', () => {
     expect([200, 204, 403, 404, 500]).toContain(res.status());
   });
 
-  test('ADMIN-API-022: DELETE /admin/posts/{id} by regular user returns 403', async ({ request }) => {
+  test('ADMIN-API-022 - DELETE /admin/posts/{id} by regular user returns 403', async ({ request }) => {
     try {
       const res = await request.delete(`${API_BASE}/admin/posts/some-id`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -414,7 +414,7 @@ test.describe('API - Admin', () => {
   });
 
   // Admin can see all posts including deleted
-  test('ADMIN-API-023: GET /admin/posts includes deleted posts', async ({ request }) => {
+  test('ADMIN-API-023 - GET /admin/posts includes deleted posts', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -428,7 +428,7 @@ test.describe('API - Admin', () => {
   });
 
   // Role-based access summary
-  test('ADMIN-API-025: Admin has full access', async ({ request }) => {
+  test('ADMIN-API-025 - Admin has full access', async ({ request }) => {
     try {
       const statsRes = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${adminToken}` },
@@ -451,7 +451,7 @@ test.describe('API - Admin', () => {
       throw err;
     }
   });
-  test('ADMIN-API-026: Moderator has limited access', async ({ request }) => {
+  test('ADMIN-API-026 - Moderator has limited access', async ({ request }) => {
     try {
       const statsRes = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${modToken}` },

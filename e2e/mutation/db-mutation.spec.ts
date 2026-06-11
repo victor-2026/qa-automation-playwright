@@ -71,7 +71,7 @@ test.describe('Mutation — DB Data', () => {
     await pool.end();
   });
 
-  test('DBMUT-001: banned user is logged out on reload', async ({ page }) => {
+  test('DBMUT-001 - banned user is logged out on reload', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -90,7 +90,7 @@ test.describe('Mutation — DB Data', () => {
     await expect(loginBtn).toBeVisible({ timeout: 5000 });
   });
 
-  test('DBMUT-002: deleted post shows not found', async ({ page }) => {
+  test('DBMUT-002 - deleted post shows not found', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -115,7 +115,7 @@ test.describe('Mutation — DB Data', () => {
     await expect(page.getByText('not found', { exact: false }).first()).toBeVisible({ timeout: 5000 });
   });
 
-  test('DBMUT-003: XSS in DB content is escaped by UI', async ({ page }) => {
+  test('DBMUT-003 - XSS in DB content is escaped by UI', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -143,7 +143,7 @@ test.describe('Mutation — DB Data', () => {
     expect(html).toContain('&lt;');
   });
 
-  test('DBMUT-004: negative likes_count handled gracefully', async ({ page }) => {
+  test('DBMUT-004 - negative likes_count handled gracefully', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -171,9 +171,9 @@ test.describe('Mutation — DB Data', () => {
     expect(Number(text)).toBeGreaterThanOrEqual(0);
   });
 
-  // ── DBMUT-005: Follows wiped → empty feed ──
+  // ── DBMUT-005 - Follows wiped → empty feed ──
 
-  test('DBMUT-005: wiped follows shows empty feed', async ({ page }) => {
+  test('DBMUT-005 - wiped follows shows empty feed', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -195,9 +195,9 @@ test.describe('Mutation — DB Data', () => {
     expect(count).toBeGreaterThanOrEqual(0);
   });
 
-  // ── DBMUT-006: Display name XSS in DB ──
+  // ── DBMUT-006 - Display name XSS in DB ──
 
-  test('DBMUT-006: XSS in display name is escaped by UI', async ({ page }) => {
+  test('DBMUT-006 - XSS in display name is escaped by UI', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');
@@ -223,9 +223,9 @@ test.describe('Mutation — DB Data', () => {
     }
   });
 
-  // ── DBMUT-007: Admin role → banned ──
+  // ── DBMUT-007 - Admin role → banned ──
 
-  test('DBMUT-007: admin demoted to banned loses access', async ({ page }) => {
+  test('DBMUT-007 - admin demoted to banned loses access', async ({ page }) => {
     await transaction(async client => {
       await client.query("UPDATE users SET role = 'banned' WHERE email = 'admin@buzzhive.com'");
     });
@@ -241,9 +241,9 @@ test.describe('Mutation — DB Data', () => {
     expect(onLoginPage).toBeTruthy();
   });
 
-  // ── DBMUT-008: Notifications flood ──
+  // ── DBMUT-008 - Notifications flood ──
 
-  test('DBMUT-008: flood of notifications does not break UI', async ({ page }) => {
+  test('DBMUT-008 - flood of notifications does not break UI', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="auth-email-input"]', 'alice@buzzhive.com');
     await page.fill('[data-testid="auth-password-input"]', 'alice123');

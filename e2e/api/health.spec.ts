@@ -43,12 +43,12 @@ test.describe('API - Health', () => {
   });
 
   // GET /api/health
-  test('HEALTH-API-001: GET /health returns 200', async ({ request }) => {
+  test('HEALTH-API-001 - GET /health returns 200', async ({ request }) => {
     const res = await getHealthResponse(request);
     expect(res.status()).toBe(200);
   });
 
-   test('HEALTH-API-002: GET /health returns healthy status', async ({ request }) => {
+   test('HEALTH-API-002 - GET /health returns healthy status', async ({ request }) => {
      const res = await getHealthResponse(request);
      expect(res.status()).toBe(200);
      
@@ -67,27 +67,27 @@ test.describe('API - Health', () => {
      }
    });
 
-   test('HEALTH-API-003: GET /health handles 500 error gracefully', async ({ request }) => {
+   test('HEALTH-API-003 - GET /health handles 500 error gracefully', async ({ request }) => {
      // Note: This test assumes we can somehow make the health endpoint return 500
      // In practice, this might require mocking or specific test configuration
      // For now, we'll document that this is a placeholder for when we can test error conditions
      // test.skip('Requires test setup to simulate health endpoint returning 500');
    });
 
-   test('HEALTH-API-004: GET /health handles 503 error gracefully', async ({ request }) => {
+   test('HEALTH-API-004 - GET /health handles 503 error gracefully', async ({ request }) => {
      // Note: This test assumes we can somehow make the health endpoint return 503
      // In practice, this might require mocking or specific test configuration
      // test.skip('Requires test setup to simulate health endpoint returning 503');
    });
 
-   test('HEALTH-API-005: GET /health handles timeout gracefully', async ({ request }) => {
+   test('HEALTH-API-005 - GET /health handles timeout gracefully', async ({ request }) => {
      // Note: Testing actual timeout is complex in E2E tests
      // This documents the expectation that our timeout handling works
      // test.skip('Timeout testing requires specialized test setup');
    });
 
   // GET /api/bookmarks
-   test('HEALTH-API-006: GET /bookmarks returns 200 with auth', async ({ request }) => {
+   test('HEALTH-API-006 - GET /bookmarks returns 200 with auth', async ({ request }) => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
          headers: { Authorization: `Bearer ${aliceToken}` },
@@ -100,7 +100,7 @@ test.describe('API - Health', () => {
      }
    });
 
-   test('HEALTH-API-007: GET /bookmarks without auth returns 401', async ({ request }) => {
+   test('HEALTH-API-007 - GET /bookmarks without auth returns 401', async ({ request }) => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
          timeout: 5000,
@@ -112,7 +112,7 @@ test.describe('API - Health', () => {
      }
    });
 
-   test('HEALTH-API-008: GET /bookmarks returns array', async ({ request }) => {
+   test('HEALTH-API-008 - GET /bookmarks returns array', async ({ request }) => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
          headers: { Authorization: `Bearer ${aliceToken}` },

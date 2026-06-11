@@ -22,7 +22,7 @@ test.describe('API - Posts', () => {
   });
 
   // GET /posts - List (requires auth)
-  test('POST-API-001: GET /posts returns 200 or auth required', async ({ request }) => {
+  test('POST-API-001 - GET /posts returns 200 or auth required', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts`, {
         timeout: 5000,
@@ -34,7 +34,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-002: GET /posts with auth returns array', async ({ request }) => {
+  test('POST-API-002 - GET /posts with auth returns array', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -56,7 +56,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-003: GET /posts pagination params work', async ({ request }) => {
+  test('POST-API-003 - GET /posts pagination params work', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts?page=1&per_page=10`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -69,7 +69,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-004: GET /posts with invalid page returns 422', async ({ request }) => {
+  test('POST-API-004 - GET /posts with invalid page returns 422', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts?page=-1`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -83,7 +83,7 @@ test.describe('API - Posts', () => {
   });
 
   // POST /posts - Create
-  test('POST-API-005: POST /posts creates post returns 201', async ({ request }) => {
+  test('POST-API-005 - POST /posts creates post returns 201', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -97,7 +97,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-006: POST /posts returns post data', async ({ request }) => {
+  test('POST-API-006 - POST /posts returns post data', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -113,7 +113,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-007: POST /posts without auth returns 401', async ({ request }) => {
+  test('POST-API-007 - POST /posts without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         data: { content: 'Test post' },
@@ -126,7 +126,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-008: POST /posts with empty content returns 422', async ({ request }) => {
+  test('POST-API-008 - POST /posts with empty content returns 422', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -140,7 +140,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-009: POST /posts with 1 char content succeeds', async ({ request }) => {
+  test('POST-API-009 - POST /posts with 1 char content succeeds', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -154,7 +154,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-010: POST /posts with 2000 chars succeeds', async ({ request }) => {
+  test('POST-API-010 - POST /posts with 2000 chars succeeds', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -168,7 +168,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-011: POST /posts with 2001 chars returns 422', async ({ request }) => {
+  test('POST-API-011 - POST /posts with 2001 chars returns 422', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -182,7 +182,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-012: POST /posts with XSS script tag', async ({ request }) => {
+  test('POST-API-012 - POST /posts with XSS script tag', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -197,7 +197,7 @@ test.describe('API - Posts', () => {
   });
 
   // GET /posts/feed
-  test('POST-API-013: GET /posts/feed with auth returns 200', async ({ request }) => {
+  test('POST-API-013 - GET /posts/feed with auth returns 200', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts/feed`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -210,7 +210,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-014: GET /posts/feed without auth returns 401', async ({ request }) => {
+  test('POST-API-014 - GET /posts/feed without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts/feed`, {
         timeout: 5000,
@@ -223,7 +223,7 @@ test.describe('API - Posts', () => {
   });
 
   // GET /posts/{id}
-  test('POST-API-015: GET /posts/{id} returns 200 for existing post', async ({ request }) => {
+  test('POST-API-015 - GET /posts/{id} returns 200 for existing post', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -244,7 +244,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-016: GET /posts/{id} returns 404 for non-existent', async ({ request }) => {
+  test('POST-API-016 - GET /posts/{id} returns 404 for non-existent', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts/00000000-0000-0000-0000-000000000000`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -257,7 +257,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-017: GET /posts/{id} with invalid UUID returns 422/404', async ({ request }) => {
+  test('POST-API-017 - GET /posts/{id} with invalid UUID returns 422/404', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts/not-a-uuid`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -271,7 +271,7 @@ test.describe('API - Posts', () => {
   });
 
   // PATCH /posts/{id} - Edit
-  test('POST-API-018: PATCH /posts/{id} updates content', async ({ request }) => {
+  test('POST-API-018 - PATCH /posts/{id} updates content', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -292,7 +292,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-019: PATCH /posts/{id} without auth returns 401', async ({ request }) => {
+  test('POST-API-019 - PATCH /posts/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.patch(`${API_BASE}/posts/some-id`, {
         data: { content: 'Updated' },
@@ -305,7 +305,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-020: PATCH /posts/{id} of another user returns 403', async ({ request }) => {
+  test('POST-API-020 - PATCH /posts/{id} of another user returns 403', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -327,7 +327,7 @@ test.describe('API - Posts', () => {
   });
 
   // DELETE /posts/{id}
-  test('POST-API-021: DELETE /posts/{id} by owner returns 200/204', async ({ request }) => {
+  test('POST-API-021 - DELETE /posts/{id} by owner returns 200/204', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -347,7 +347,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-022: DELETE /posts/{id} without auth returns 401', async ({ request }) => {
+  test('POST-API-022 - DELETE /posts/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.delete(`${API_BASE}/posts/some-id`, {
         timeout: 5000,
@@ -359,7 +359,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-023: DELETE /posts/{id} of another user returns 403', async ({ request }) => {
+  test('POST-API-023 - DELETE /posts/{id} of another user returns 403', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -380,7 +380,7 @@ test.describe('API - Posts', () => {
   });
 
   // POST /posts/{id}/like
-  test('POST-API-024: POST /posts/{id}/like returns 200', async ({ request }) => {
+  test('POST-API-024 - POST /posts/{id}/like returns 200', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -401,7 +401,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-025: POST /posts/{id}/like without auth returns 401', async ({ request }) => {
+  test('POST-API-025 - POST /posts/{id}/like without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts/some-id/like`, {
         timeout: 5000,
@@ -413,7 +413,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-026: POST /posts/{id}/like twice returns 409', async ({ request }) => {
+  test('POST-API-026 - POST /posts/{id}/like twice returns 409', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -439,7 +439,7 @@ test.describe('API - Posts', () => {
   });
 
   // DELETE /posts/{id}/like
-  test('POST-API-027: DELETE /posts/{id}/like unlikes', async ({ request }) => {
+  test('POST-API-027 - DELETE /posts/{id}/like unlikes', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -465,7 +465,7 @@ test.describe('API - Posts', () => {
   });
 
   // POST /posts/{id}/comments
-  test('POST-API-028: POST /posts/{id}/comments creates comment', async ({ request }) => {
+  test('POST-API-028 - POST /posts/{id}/comments creates comment', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -486,7 +486,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-029: POST /posts/{id}/comments without auth returns 401', async ({ request }) => {
+  test('POST-API-029 - POST /posts/{id}/comments without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts/some-id/comments`, {
         data: { content: 'Comment' },
@@ -499,7 +499,7 @@ test.describe('API - Posts', () => {
     }
   });
 
-  test('POST-API-030: POST /posts/{id}/comments with empty content returns 422', async ({ request }) => {
+  test('POST-API-030 - POST /posts/{id}/comments with empty content returns 422', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -521,7 +521,7 @@ test.describe('API - Posts', () => {
   });
 
   // GET /posts/{id}/comments
-  test('POST-API-010: GET /posts/{id}/comments returns list', async ({ request }) => {
+  test('POST-API-010 - GET /posts/{id}/comments returns list', async ({ request }) => {
     try {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },

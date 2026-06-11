@@ -21,7 +21,7 @@ test.describe('Load Test — Stress', () => {
     await warmup(request);
   });
 
-  test('STRESS-001: concurrent login spike', async ({ browser }) => {
+  test('STRESS-001 - concurrent login spike', async ({ browser }) => {
     test.setTimeout(120000);
 
     const contexts = await Promise.all(
@@ -51,14 +51,14 @@ test.describe('Load Test — Stress', () => {
     const successCount = results.filter(r => r.ok).length;
     const avgTime = results.reduce((s, r) => s + r.time, 0) / results.length;
 
-    console.log(`=== STRESS-001: ${CONCURRENT_USERS} users spike ===`);
+    console.log(`=== STRESS-001 - ${CONCURRENT_USERS} users spike ===`);
     console.log(`Success: ${successCount}/${CONCURRENT_USERS}`);
     console.log(`Avg time: ${avgTime.toFixed(0)}ms`);
 
     expect(successCount).toBeGreaterThanOrEqual(Math.ceil(CONCURRENT_USERS * 0.5));
   });
 
-  test('STRESS-002: rapid post creation', async ({ browser }) => {
+  test('STRESS-002 - rapid post creation', async ({ browser }) => {
     test.setTimeout(120000);
     const postCount = IS_RENDER ? 3 : 10;
 
@@ -93,13 +93,13 @@ test.describe('Load Test — Stress', () => {
     await ctx.close();
 
     const successCount = results.filter(r => r.ok).length;
-    console.log(`=== STRESS-002: ${postCount} rapid posts ===`);
+    console.log(`=== STRESS-002 - ${postCount} rapid posts ===`);
     console.log(`Success: ${successCount}/${postCount}`);
 
     expect(successCount).toBeGreaterThanOrEqual(Math.ceil(postCount * 0.5));
   });
 
-  test('STRESS-003: API burst (sequential)', async ({ request }) => {
+  test('STRESS-003 - API burst (sequential)', async ({ request }) => {
     test.setTimeout(60000);
     const burstCount = IS_RENDER ? 15 : 50;
 
@@ -134,7 +134,7 @@ test.describe('Load Test — Stress', () => {
     const avgTime = results.reduce((s, r) => s + r.time, 0) / results.length;
     const rateLimited = results.filter(r => r.status === 429).length;
 
-    console.log(`=== STRESS-003: ${burstCount} API burst ===`);
+    console.log(`=== STRESS-003 - ${burstCount} API burst ===`);
     console.log(`Success: ${successCount}/${burstCount}`);
     console.log(`Avg time: ${avgTime.toFixed(0)}ms`);
     console.log(`Rate limited: ${rateLimited}`);

@@ -17,17 +17,17 @@ test.describe('Buzzhive Social Network - Performance', () => {
     }
   });
   
-  test('PERF-001: Login page loads under 2 seconds', async ({ page, loginPage }) => {
+  test('PERF-001 - Login page loads under 2 seconds', async ({ page, loginPage }) => {
     const startTime = Date.now();
     await page.goto('/login');
     await page.waitForLoadState('domcontentloaded');
     const loadTime = Date.now() - startTime;
     
     expect(loadTime).toBeLessThan(2000);
-    console.log(`✅ PERF-001: Login page loaded in ${loadTime}ms (< 2000ms)`);
+    console.log(`✅ PERF-001 - Login page loaded in ${loadTime}ms (< 2000ms)`);
   });
   
-  test('PERF-001: Feed loads under 3 seconds', async ({ page, loginPage }) => {
+  test('PERF-001 - Feed loads under 3 seconds', async ({ page, loginPage }) => {
     await loginPage.goto('/login');
     await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
@@ -37,10 +37,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     const loadTime = Date.now() - startTime;
     
     expect(loadTime).toBeLessThan(3000);
-    console.log(`✅ PERF-001: Feed loaded in ${loadTime}ms (< 3000ms)`);
+    console.log(`✅ PERF-001 - Feed loaded in ${loadTime}ms (< 3000ms)`);
   });
   
-  test('PERF-001: API response time under 500ms', async ({ page, loginPage }) => {
+  test('PERF-001 - API response time under 500ms', async ({ page, loginPage }) => {
     const startTime = Date.now();
     await loginPage.goto('/login');
     await loginPage.login('alice@buzzhive.com', 'alice123');
@@ -49,10 +49,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     const apiTime = Date.now() - startTime;
     
     console.log(`API response: ${apiTime}ms`);
-    console.log(`✅ PERF-001: API response time measured`);
+    console.log(`✅ PERF-001 - API response time measured`);
   });
   
-  test('PERF-002: Page navigation under 1 second', async ({ page, loginPage }) => {
+  test('PERF-002 - Page navigation under 1 second', async ({ page, loginPage }) => {
     await loginPage.goto('/login');
     await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
@@ -63,10 +63,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     const navTime = Date.now() - startTime;
     
     expect(navTime).toBeLessThan(1000);
-    console.log(`✅ PERF-002: Navigation completed in ${navTime}ms (< 1000ms)`);
+    console.log(`✅ PERF-002 - Navigation completed in ${navTime}ms (< 1000ms)`);
   });
   
-  test('PERF-002: Post creation under 2 seconds', async ({ page, loginPage }) => {
+  test('PERF-002 - Post creation under 2 seconds', async ({ page, loginPage }) => {
     await loginPage.goto('/login');
     await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
@@ -80,10 +80,10 @@ test.describe('Buzzhive Social Network - Performance', () => {
     const postTime = Date.now() - startTime;
     
     expect(postTime).toBeLessThan(2000);
-    console.log(`✅ PERF-002: Post created in ${postTime}ms (< 2000ms)`);
+    console.log(`✅ PERF-002 - Post created in ${postTime}ms (< 2000ms)`);
   });
   
-  test('PERF-003: Multiple rapid actions handled', async ({ page, loginPage }) => {
+  test('PERF-003 - Multiple rapid actions handled', async ({ page, loginPage }) => {
     await loginPage.goto('/login');
     await loginPage.login('alice@buzzhive.com', 'alice123');
     await page.waitForURL('**/');
@@ -97,6 +97,6 @@ test.describe('Buzzhive Social Network - Performance', () => {
       const actionTime = Date.now() - startTime;
       console.log(`${action}: ${actionTime}ms`);
     }
-    console.log('✅ PERF-003: Rapid navigation handled');
+    console.log('✅ PERF-003 - Rapid navigation handled');
   });
 });

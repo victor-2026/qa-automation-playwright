@@ -23,7 +23,7 @@ test.describe('API - Notifications', () => {
   });
 
   // GET /notifications
-  test('NOTIF-API-001: GET /notifications returns 200 with auth', async ({ request }) => {
+  test('NOTIF-API-001 - GET /notifications returns 200 with auth', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -36,7 +36,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-002: GET /notifications without auth returns 401', async ({ request }) => {
+  test('NOTIF-API-002 - GET /notifications without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         timeout: 15000,
@@ -48,7 +48,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-003: GET /notifications returns array', async ({ request }) => {
+  test('NOTIF-API-003 - GET /notifications returns array', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -66,7 +66,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-004: GET /notifications has required fields', async ({ request }) => {
+  test('NOTIF-API-004 - GET /notifications has required fields', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -90,7 +90,7 @@ test.describe('API - Notifications', () => {
   });
 
   // GET /notifications/unread-count
-  test('NOTIF-API-005: GET /notifications/unread-count returns count', async ({ request }) => {
+  test('NOTIF-API-005 - GET /notifications/unread-count returns count', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -103,7 +103,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-006: GET /notifications/unread-count returns number', async ({ request }) => {
+  test('NOTIF-API-006 - GET /notifications/unread-count returns number', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -120,7 +120,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-007: GET /notifications/unread-count without auth returns 401', async ({ request }) => {
+  test('NOTIF-API-007 - GET /notifications/unread-count without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications/unread-count`, {
         timeout: 15000,
@@ -133,7 +133,7 @@ test.describe('API - Notifications', () => {
   });
 
   // POST /notifications/read-all
-  test('NOTIF-API-008: POST /notifications/read-all marks all read', async ({ request }) => {
+  test('NOTIF-API-008 - POST /notifications/read-all marks all read', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/read-all`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -146,7 +146,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-009: POST /notifications/read-all without auth returns 401', async ({ request }) => {
+  test('NOTIF-API-009 - POST /notifications/read-all without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/read-all`, {
         timeout: 15000,
@@ -158,7 +158,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-010: POST /notifications/read-all then unread-count is 0', async ({ request }) => {
+  test('NOTIF-API-010 - POST /notifications/read-all then unread-count is 0', async ({ request }) => {
     try {
       await request.post(`${API_BASE}/notifications/read-all`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -180,7 +180,7 @@ test.describe('API - Notifications', () => {
   });
 
   // POST /notifications/{id}/read
-  test('NOTIF-API-011: POST /notifications/{id}/read marks one read', async ({ request }) => {
+  test('NOTIF-API-011 - POST /notifications/{id}/read marks one read', async ({ request }) => {
     try {
       const listRes = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -203,7 +203,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-012: POST /notifications/{id}/read without auth returns 401', async ({ request }) => {
+  test('NOTIF-API-012 - POST /notifications/{id}/read without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/some-id/read`, {
         timeout: 15000,
@@ -215,7 +215,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-013: POST /notifications/{id}/read with non-existent id returns 404', async ({ request }) => {
+  test('NOTIF-API-013 - POST /notifications/{id}/read with non-existent id returns 404', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/notifications/00000000-0000-0000-0000-000000000000/read`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -229,7 +229,7 @@ test.describe('API - Notifications', () => {
   });
 
   // Notification types
-  test('NOTIF-API-014: Notifications have valid types', async ({ request }) => {
+  test('NOTIF-API-014 - Notifications have valid types', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -251,7 +251,7 @@ test.describe('API - Notifications', () => {
     }
   });
 
-  test('NOTIF-API-015: Notifications have actor field', async ({ request }) => {
+  test('NOTIF-API-015 - Notifications have actor field', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
@@ -271,7 +271,7 @@ test.describe('API - Notifications', () => {
   });
 
   // Pagination
-  test('NOTIF-API-016: GET /notifications with pagination', async ({ request }) => {
+  test('NOTIF-API-016 - GET /notifications with pagination', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/notifications?page=1&per_page=10`, {
         headers: { Authorization: `Bearer ${aliceToken}` },

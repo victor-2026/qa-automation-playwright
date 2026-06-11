@@ -164,7 +164,7 @@ test.beforeAll(() => {
   if (!process.env.DOCKER_CHAOS) test.skip();
 });
 
-test('CHAOS-001: DB down', async ({ page, request }) => {
+test('CHAOS-001 - DB down', async ({ page, request }) => {
   execSync(`${COMPOSE} stop db`);
   const res = await request.get(`${API}/health`);
   expect(res.status()).toBe(503);

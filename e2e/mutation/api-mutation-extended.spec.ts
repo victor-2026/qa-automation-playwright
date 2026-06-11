@@ -17,9 +17,9 @@ test.describe('Mutation — API Response Extended', () => {
     await page.waitForURL('**/');
   }
 
-  // ── MUT-009: Feed empty ──
+  // ── MUT-009 - Feed empty ──
 
-  test('MUT-009: empty feed shows no posts', async ({ page }) => {
+  test('MUT-009 - empty feed shows no posts', async ({ page }) => {
     await page.route('**/api/posts**', async route => {
       await route.fulfill({
         status: 200,
@@ -35,9 +35,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(feedItems).toHaveCount(0, { timeout: 5000 });
   });
 
-  // ── MUT-010: Register error 500 ──
+  // ── MUT-010 - Register error 500 ──
 
-  test('MUT-010: register shows error on 500', async ({ page }) => {
+  test('MUT-010 - register shows error on 500', async ({ page }) => {
     await page.route('**/api/auth/register', async route => {
       await route.fulfill({
         status: 500,
@@ -58,9 +58,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(errorMsg).toContainText(/error|internal|fail|500/i);
   });
 
-  // ── MUT-011: Post not found ──
+  // ── MUT-011 - Post not found ──
 
-  test('MUT-011: non-existent post shows not found', async ({ page }) => {
+  test('MUT-011 - non-existent post shows not found', async ({ page }) => {
     await page.route('**/api/posts/*', async route => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
@@ -81,9 +81,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(notFound.first()).toBeVisible({ timeout: 5000 });
   });
 
-  // ── MUT-012: Comments empty ──
+  // ── MUT-012 - Comments empty ──
 
-  test('MUT-012: empty comments section', async ({ page }) => {
+  test('MUT-012 - empty comments section', async ({ page }) => {
     await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -105,9 +105,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(commentCount).toHaveCount(0, { timeout: 3000 });
   });
 
-  // ── MUT-013: Like fails ──
+  // ── MUT-013 - Like fails ──
 
-  test('MUT-013: like failure shows error', async ({ page }) => {
+  test('MUT-013 - like failure shows error', async ({ page }) => {
     let likeAttempted = false;
     await page.route('**/api/posts/**/like', async route => {
       if (route.request().method() === 'POST') {
@@ -133,9 +133,9 @@ test.describe('Mutation — API Response Extended', () => {
     expect(likeAttempted).toBeTruthy();
   });
 
-  // ── MUT-014: Follow fails ──
+  // ── MUT-014 - Follow fails ──
 
-  test('MUT-014: follow failure shows error', async ({ page }) => {
+  test('MUT-014 - follow failure shows error', async ({ page }) => {
     let followAttempted = false;
     await page.route('**/api/users/**/follow', async route => {
       if (route.request().method() === 'POST') {
@@ -162,9 +162,9 @@ test.describe('Mutation — API Response Extended', () => {
     expect(followAttempted).toBeTruthy();
   });
 
-  // ── MUT-015: Search empty ──
+  // ── MUT-015 - Search empty ──
 
-  test('MUT-015: empty search shows no results', async ({ page }) => {
+  test('MUT-015 - empty search shows no results', async ({ page }) => {
     await page.route('**/api/search*', async route => {
       await route.fulfill({
         status: 200,
@@ -185,9 +185,9 @@ test.describe('Mutation — API Response Extended', () => {
     }
   });
 
-  // ── HOM-001: Feed empty + likes zeroed ──
+  // ── HOM-001 - Feed empty + likes zeroed ──
 
-  test('HOM-001: empty feed and zero likes combined', async ({ page }) => {
+  test('HOM-001 - empty feed and zero likes combined', async ({ page }) => {
     await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
@@ -202,9 +202,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(feedItems).toHaveCount(0, { timeout: 5000 });
   });
 
-  // ── HOM-002: Login 500 + feed empty ──
+  // ── HOM-002 - Login 500 + feed empty ──
 
-  test('HOM-002: login fails and feed empty on retry', async ({ page }) => {
+  test('HOM-002 - login fails and feed empty on retry', async ({ page }) => {
     let loginAttempts = 0;
     await page.route('**/api/auth/login', async route => {
       loginAttempts++;
@@ -227,9 +227,9 @@ test.describe('Mutation — API Response Extended', () => {
     expect(loginAttempts).toBeGreaterThanOrEqual(1);
   });
 
-  // ── MUT-016: Notifications empty ──
+  // ── MUT-016 - Notifications empty ──
 
-  test('MUT-016: empty notifications list', async ({ page }) => {
+  test('MUT-016 - empty notifications list', async ({ page }) => {
     await page.route('**/api/notifications**', async route => {
       if (route.request().url().includes('/unread-count')) {
         await route.fulfill({
@@ -259,9 +259,9 @@ test.describe('Mutation — API Response Extended', () => {
     }
   });
 
-  // ── MUT-017: Unread count zeroed ──
+  // ── MUT-017 - Unread count zeroed ──
 
-  test('MUT-017: unread count shows zero', async ({ page }) => {
+  test('MUT-017 - unread count shows zero', async ({ page }) => {
     await page.route('**/api/notifications/unread-count', async route => {
       await route.fulfill({
         status: 200,
@@ -280,9 +280,9 @@ test.describe('Mutation — API Response Extended', () => {
     }
   });
 
-  // ── MUT-018: Bookmarks empty ──
+  // ── MUT-018 - Bookmarks empty ──
 
-  test('MUT-018: empty bookmarks list', async ({ page }) => {
+  test('MUT-018 - empty bookmarks list', async ({ page }) => {
     await page.route('**/api/bookmarks**', async route => {
       await route.fulfill({
         status: 200,
@@ -300,9 +300,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(bookmarkItems).toHaveCount(0, { timeout: 3000 });
   });
 
-  // ── MUT-019: Conversations empty ──
+  // ── MUT-019 - Conversations empty ──
 
-  test('MUT-019: empty conversations list', async ({ page }) => {
+  test('MUT-019 - empty conversations list', async ({ page }) => {
     await page.route('**/api/conversations**', async route => {
       await route.fulfill({
         status: 200,
@@ -320,9 +320,9 @@ test.describe('Mutation — API Response Extended', () => {
     await expect(convList).toHaveCount(0, { timeout: 3000 });
   });
 
-  // ── MUT-020: Admin stats with NaN ──
+  // ── MUT-020 - Admin stats with NaN ──
 
-  test('MUT-020: admin stats handles malformed numbers', async ({ page }) => {
+  test('MUT-020 - admin stats handles malformed numbers', async ({ page }) => {
     await page.route('**/api/admin/stats', async route => {
       await route.fulfill({
         status: 200,
@@ -354,9 +354,9 @@ test.describe('Mutation — API Response Extended', () => {
     }
   });
 
-  // ── MUT-021: Profile update fails ──
+  // ── MUT-021 - Profile update fails ──
 
-  test('MUT-021: profile update error is shown', async ({ page }) => {
+  test('MUT-021 - profile update error is shown', async ({ page }) => {
     await page.route('**/api/users/me', async route => {
       if (route.request().method() === 'PATCH') {
         await route.fulfill({
