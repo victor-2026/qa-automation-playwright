@@ -20,12 +20,6 @@ client.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response?.status === 429 && !originalRequest._retry429) {
-      originalRequest._retry429 = true
-      await new Promise(r => setTimeout(r, 30000))
-      return client(originalRequest)
-    }
-
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
       const refreshToken = localStorage.getItem('refresh_token')
