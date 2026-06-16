@@ -301,13 +301,24 @@ test.describe('API - Admin', () => {
       }
       const body = await listRes.json();
       const users = body.items || body;
-      const admin = users.find((u: any) => u.role === 'admin');
-      if (admin) {
-        const res = await request.delete(`${API_BASE}/admin/users/${admin.id}`, {
+      const admins = users.filter((u: any) => u.role === 'admin');
+      // SAFETY: only test delete on admin if there are 2+ admins (otherwise we'd deactivate the only one)
+      test.skip(admins.length < 2, 'Only one admin in system — skip to avoid deactivating it');
+      if (admins.length >= 2) {
+        // Pick an admin that is NOT the test admin (not the one we're logged in as)
+        // First get current admin's id via /auth/me
+        const meRes = await request.get(`${API_BASE}/auth/me`, {
           headers: { Authorization: `Bearer ${adminToken}` },
-          timeout: 10000,
         });
-        expect([400, 401, 403, 409, 500]).toContain(res.status());
+        const me = await meRes.json();
+        const otherAdmin = admins.find((u: any) => u.id !== me.id);
+        if (otherAdmin) {
+          const res = await request.delete(`${API_BASE}/admin/users/${otherAdmin.id}`, {
+            headers: { Authorization: `Bearer ${adminToken}` },
+            timeout: 10000,
+          });
+          expect([400, 401, 403, 409, 500]).toContain(res.status());
+        }
       }
     } catch (err) {
       console.error('ADMIN-API-016 error', err);
