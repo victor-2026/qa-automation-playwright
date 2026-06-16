@@ -422,7 +422,11 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 - Workflow file: committed to main
 - **VERIFIED:** workflow #27613760994 SUCCESS (4m30s) — Launch #1 created
 - **Test results:** 11 passed, 0 failed (smoke-api.spec.ts)
-- **Allure TestOps UI:** https://victor2026.testops.cloud/project/2 — Launch visible
+- **EXPANDED:** workflow #27619132507 (8m55s) — Launch #34 created
+  - **141 passed, 9 failed** (e2e/api/ — full API suite)
+  - 9 failures uploaded to Allure TestOps as findings
+  - Failure cause: not yet analyzed (likely Render backend flakiness or real bugs)
+- **Allure TestOps UI:** https://victor2026.testops.cloud/project/2 — Launches visible
 
 ## Active API Endpoints (Allure TestOps)
 - `https://victor2026.testops.cloud` — Trial instance
@@ -433,10 +437,12 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 ## Next Steps
 1. ~~Trigger workflow~~ ✅ DONE — workflow #27613760994 SUCCESS
 2. ~~Verify launch appears in Allure TestOps UI~~ ✅ DONE — Launch #1, 11 passed
-3. Enable cron (`0 6 * * *`) for daily runs (after pilot confirmed by user)
-4. OrangeHRM: push to GitHub, set same secrets with `ALLURE_PROJECT_ID=1`
-5. Trial ends ~2026-06-30 — set calendar reminder 5 days before
-6. **Decision point:** continue ($39-117/mo) or revert (remove workflow)
+3. ~~Enable cron (`0 6 * * *`) for daily runs~~ ✅ DONE — commit 07be9a2
+4. ~~Expand to e2e/api/ (9 files)~~ ✅ DONE — 141 passed, 9 failed, 6.9m, Launch #34
+5. **Analyze 9 failures from Launch #34** — render backend bugs or test flake?
+6. OrangeHRM: push to GitHub, set same secrets with `ALLURE_PROJECT_ID=1`
+7. Trial ends ~2026-06-30 — set calendar reminder 5 days before
+8. **Decision point:** continue ($39-117/mo) or revert (remove workflow)
 
 ## Trial Cost Tracking
 - Trial: 14 days (until ~2026-06-30)
