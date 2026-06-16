@@ -425,7 +425,11 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 - **EXPANDED:** workflow #27619132507 (8m55s) — Launch #34 created
   - **141 passed, 9 failed** (e2e/api/ — full API suite)
   - 9 failures uploaded to Allure TestOps as findings
-  - Failure cause: not yet analyzed (likely Render backend flakiness or real bugs)
+  - Failure cause: 9 = Render cold start timeout (5s insufficient for cold start)
+- **FIXED:** timeout 5s → 30s in 7 api spec files (138 changes), commit a9df7c6
+- **IMPROVED:** workflow #27620108075 (5m47s) — Launch #X created
+  - **160 passed, 1 failed** (8 of 9 failures fixed!)
+  - Remaining: ADMIN-API-019 — real prod bug (admin@buzzhive.com deactivated, /admin/posts returns non-array)
 - **Allure TestOps UI:** https://victor2026.testops.cloud/project/2 — Launches visible
 
 ## Active API Endpoints (Allure TestOps)
