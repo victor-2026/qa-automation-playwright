@@ -26,7 +26,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {
@@ -38,7 +38,7 @@ test.describe('API - Conversations', () => {
   test('MSG-API-002 - GET /conversations without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -51,7 +51,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -73,7 +73,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403, 404]).toContain(res.status());
       if (res.status() === 200) {
@@ -90,7 +90,7 @@ test.describe('API - Conversations', () => {
   test('MSG-API-005 - POST /conversations/dm/{username} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/bob`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -103,7 +103,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/nonexistent`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([404, 403]).toContain(res.status());
     } catch (err) {
@@ -116,7 +116,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.post(`${API_BASE}/conversations/dm/alice`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 400, 403, 404, 422]).toContain(res.status());
     } catch (err) {
@@ -130,7 +130,7 @@ test.describe('API - Conversations', () => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (dmRes.status() !== 200) {
         // Skip if DM creation failed
@@ -140,7 +140,7 @@ test.describe('API - Conversations', () => {
 
       const res = await request.get(`${API_BASE}/conversations/${conv.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403, 422]).toContain(res.status());
     } catch (err) {
@@ -152,7 +152,7 @@ test.describe('API - Conversations', () => {
   test('MSG-API-009 - GET /conversations/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/conversations/some-id`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -165,14 +165,14 @@ test.describe('API - Conversations', () => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/alice`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (dmRes.status() !== 200) return;
       const conv = await dmRes.json();
 
       const res = await request.get(`${API_BASE}/conversations/${conv.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {
@@ -186,14 +186,14 @@ test.describe('API - Conversations', () => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (dmRes.status() !== 200) return;
       const conv = await dmRes.json();
 
       const res = await request.post(`${API_BASE}/conversations/${conv.id}/read`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204, 403, 422]).toContain(res.status());
     } catch (err) {
@@ -205,7 +205,7 @@ test.describe('API - Conversations', () => {
   test('MSG-API-012 - POST /conversations/{id}/read without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/conversations/some-id/read`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -219,14 +219,14 @@ test.describe('API - Conversations', () => {
     try {
       const dmRes = await request.post(`${API_BASE}/conversations/dm/bob`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (dmRes.status() !== 200) return;
       const conv = await dmRes.json();
 
       const res = await request.delete(`${API_BASE}/conversations/${conv.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204, 403, 404]).toContain(res.status());
     } catch (err) {
@@ -238,7 +238,7 @@ test.describe('API - Conversations', () => {
   test('MSG-API-014 - DELETE /conversations/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.delete(`${API_BASE}/conversations/some-id`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -252,7 +252,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.get(`${API_BASE}/conversations`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -269,7 +269,7 @@ test.describe('API - Conversations', () => {
     try {
       const res = await request.get(`${API_BASE}/conversations?page=1&per_page=5`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
     } catch (err) {

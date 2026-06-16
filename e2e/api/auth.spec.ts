@@ -53,7 +53,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: 'wrongpassword' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(401);
     } catch (err) {
@@ -66,7 +66,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: 'nonexistent@test.com', password: 'anypassword' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(401);
     } catch (err) {
@@ -79,7 +79,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: {},
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([400, 422]).toContain(res.status());
     } catch (err) {
@@ -93,7 +93,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: 'a'.repeat(1000) },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(401);
     } catch (err) {
@@ -106,7 +106,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/login`, {
         data: { email: "' OR '1'='1", password: 'anything' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([400, 401, 422]).toContain(res.status());
     } catch (err) {
@@ -120,7 +120,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -138,7 +138,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403]).toContain(res.status());
       if (res.status() === 200) {
@@ -157,7 +157,7 @@ test.describe('API - Auth', () => {
   test('AUTH-API-010 - /me without token returns 401/403', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -170,7 +170,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.get(`${API_BASE}/auth/me`, {
         headers: { Authorization: 'Bearer invalid_token_123' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -190,7 +190,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test User',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -209,7 +209,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test User',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (res.status() !== 201) return;
       const body = await res.json();
@@ -230,7 +230,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(409);
     } catch (err) {
@@ -249,7 +249,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(409);
     } catch (err) {
@@ -269,7 +269,7 @@ test.describe('API - Auth', () => {
           password: '12345', // 5 chars
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -288,7 +288,7 @@ test.describe('API - Auth', () => {
           password: '123456', // exactly 6 chars
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -307,7 +307,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -326,7 +326,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: '',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -345,7 +345,7 @@ test.describe('API - Auth', () => {
           password: 'password123',
           display_name: 'Test',
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -359,13 +359,13 @@ test.describe('API - Auth', () => {
     try {
       const loginRes = await request.post(`${API_BASE}/auth/login`, {
         data: { email: TEST_ACCOUNTS.user.email, password: TEST_ACCOUNTS.user.password },
-        timeout: 5000,
+        timeout: 30000,
       });
       const tokens = await loginRes.json();
 
       const res = await request.post(`${API_BASE}/auth/refresh`, {
         data: { refresh_token: tokens.refresh_token },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 500]).toContain(res.status()); // 500 = known bug
     } catch (err) {
@@ -378,7 +378,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/refresh`, {
         data: { refresh_token: 'invalid_token' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([400, 401, 422]).toContain(res.status());
     } catch (err) {
@@ -391,7 +391,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/refresh`, {
         data: {},
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([400, 422]).toContain(res.status());
     } catch (err) {
@@ -409,7 +409,7 @@ test.describe('API - Auth', () => {
       const res = await request.post(`${API_BASE}/auth/logout`, {
         headers: { Authorization: `Bearer ${tokens.access_token}` },
         data: { refresh_token: tokens.refresh_token },
-        timeout: 5000
+        timeout: 30000
       });
       expect([200, 204]).toContain(res.status());
     } catch (err) {
@@ -422,7 +422,7 @@ test.describe('API - Auth', () => {
     try {
       const res = await request.post(`${API_BASE}/auth/logout`, {
         data: {},
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {

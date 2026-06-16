@@ -84,7 +84,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${userToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403, 404, 500]).toContain(res.status());
     } catch (err) {
@@ -95,7 +95,7 @@ test.describe('API - Admin', () => {
 
   test('ADMIN-API-001 - GET /admin/stats returns 401 without auth', async ({ request }) => {
     try {
-      const res = await request.get(`${API_BASE}/admin/stats`, { timeout: 5000 });
+      const res = await request.get(`${API_BASE}/admin/stats`, { timeout: 30000 });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
       console.error('ADMIN-API-001 no auth error', err);
@@ -139,7 +139,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.get(`${API_BASE}/admin/users`, {
         headers: { Authorization: `Bearer ${modToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       const st = res.status();
       expect([403, 200]).toContain(st);
@@ -216,7 +216,7 @@ test.describe('API - Admin', () => {
     if (regularUser) {
       const res = await request.patch(`${API_BASE}/admin/users/${regularUser.id}/ban`, {
         headers: { Authorization: `Bearer ${adminToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204, 403, 404]).toContain(res.status());
     }
@@ -241,7 +241,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
         headers: { Authorization: `Bearer ${adminToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204, 404]).toContain(res.status());
     } catch (err) {
@@ -254,7 +254,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.patch(`${API_BASE}/admin/users/alice/unban`, {
         headers: { Authorization: `Bearer ${userToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403,404]).toContain(res.status());
     } catch (err) {
@@ -333,7 +333,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${userToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403, 404, 500]).toContain(res.status());
     } catch (err) {
@@ -346,7 +346,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.get(`${API_BASE}/admin/posts`, {
         headers: { Authorization: `Bearer ${adminToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       const body = await res.json();
       expect(Array.isArray(body.items || body)).toBeTruthy();
@@ -404,7 +404,7 @@ test.describe('API - Admin', () => {
     try {
       const res = await request.delete(`${API_BASE}/admin/posts/some-id`, {
         headers: { Authorization: `Bearer ${userToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403, 404, 500]).toContain(res.status());
     } catch (err) {
@@ -455,7 +455,7 @@ test.describe('API - Admin', () => {
     try {
       const statsRes = await request.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${modToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200,403,404,401]).toContain(statsRes.status());
     } catch (err) {

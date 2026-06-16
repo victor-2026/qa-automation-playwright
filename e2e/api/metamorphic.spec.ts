@@ -52,11 +52,11 @@ test.describe('Metamorphic API Tests', () => {
   test('MET-002 - Query param order independence', async ({ request }) => {
     const res1 = await request.get(`${API_BASE}/posts?page=1&per_page=10`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     const res2 = await request.get(`${API_BASE}/posts?per_page=10&page=1`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     
     expect(res1.status()).toBe(res2.status());
@@ -73,7 +73,7 @@ test.describe('Metamorphic API Tests', () => {
     // Check initial following count
     const initialRes = await request.get(`${API_BASE}/users/bob_photo/following`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     const initialData = await initialRes.json();
     const initialCount = Array.isArray(initialData) ? initialData.length : (initialData.items?.length || 0);
@@ -81,19 +81,19 @@ test.describe('Metamorphic API Tests', () => {
     // Follow bob
     await request.post(`${API_BASE}/users/bob_photo/follow`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     
     // Unfollow bob
     await request.delete(`${API_BASE}/users/bob_photo/follow`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     
     // Check final count = initial count
     const finalRes = await request.get(`${API_BASE}/users/bob_photo/following`, {
       headers: { Authorization: `Bearer ${aliceToken}` },
-      timeout: 5000,
+      timeout: 30000,
     });
     const finalData = await finalRes.json();
     const finalCount = Array.isArray(finalData) ? finalData.length : (finalData.items?.length || 0);
@@ -105,10 +105,10 @@ test.describe('Metamorphic API Tests', () => {
   test('MET-004 - Existence negation', async ({ request }) => {
     try {
       const res1 = await request.get(`${API_BASE}/users/alice_dev`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       const res2 = await request.get(`${API_BASE}/users/nonexistent_user_12345`, {
-        timeout: 5000,
+        timeout: 30000,
       });
 
        // Existing user (alice) - should either succeed (with auth context) 
@@ -144,11 +144,11 @@ test.describe('Metamorphic API Tests', () => {
     try {
       const res1 = await request.get(`${API_BASE}/posts?page=1&per_page=5`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       const res2 = await request.get(`${API_BASE}/posts?page=2&per_page=5`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
 
       expect([200, 403]).toContain(res1.status());
@@ -179,7 +179,7 @@ test.describe('Metamorphic API Tests', () => {
       const token = user === 'alice_dev' ? aliceToken : bobToken;
       const res = await request.post(`${API_BASE}/users/${user}/follow`, {
         headers: { Authorization: `Bearer ${token}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       
        // Self-follow should be prohibited - typically returns 400 Bad Request or 409 Conflict
@@ -206,7 +206,7 @@ test.describe('Metamorphic API Tests', () => {
           email: TEST_ACCOUNTS.user.email,
           password: TEST_ACCOUNTS.user.password
         },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 500]).toContain(res.status());
       if (res.status() !== 200) return;

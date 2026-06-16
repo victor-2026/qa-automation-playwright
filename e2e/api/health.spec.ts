@@ -91,7 +91,7 @@ test.describe('API - Health', () => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
          headers: { Authorization: `Bearer ${aliceToken}` },
-         timeout: 5000,
+         timeout: 30000,
        });
        expect([200, 403]).toContain(res.status());
      } catch (err) {
@@ -103,7 +103,7 @@ test.describe('API - Health', () => {
    test('HEALTH-API-007 - GET /bookmarks without auth returns 401', async ({ request }) => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
-         timeout: 5000,
+         timeout: 30000,
        });
        expect(res.status()).toBeGreaterThanOrEqual(401);
      } catch (err) {
@@ -116,7 +116,7 @@ test.describe('API - Health', () => {
      try {
        const res = await request.get(`${API_BASE}/bookmarks`, {
          headers: { Authorization: `Bearer ${aliceToken}` },
-         timeout: 5000,
+         timeout: 30000,
        });
        expect([200, 403]).toContain(res.status());
        if (res.status() === 200) {

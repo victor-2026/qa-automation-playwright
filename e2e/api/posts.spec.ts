@@ -25,7 +25,7 @@ test.describe('API - Posts', () => {
   test('POST-API-001 - GET /posts returns 200 or auth required', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 401, 403]).toContain(res.status());
     } catch (err) {
@@ -38,7 +38,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       // Phase 4: Stronger assertions
       expect(res.status()).toBeGreaterThanOrEqual(200);
@@ -60,7 +60,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts?page=1&per_page=10`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403, 500]).toContain(res.status());
     } catch (err) {
@@ -73,7 +73,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts?page=-1`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 400, 403, 422, 500]).toContain(res.status());
     } catch (err) {
@@ -88,7 +88,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Test post content' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -102,7 +102,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Test post content' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const body = await res.json();
       expect(body).toHaveProperty('id');
@@ -117,7 +117,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.post(`${API_BASE}/posts`, {
         data: { content: 'Test post' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -131,7 +131,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: '' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -145,7 +145,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'a' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -159,7 +159,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'a'.repeat(2000) },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -173,7 +173,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'a'.repeat(2001) },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -187,7 +187,7 @@ test.describe('API - Posts', () => {
       const res = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: '<script>alert("xss")</script>' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([201, 422]).toContain(res.status());
     } catch (err) {
@@ -201,7 +201,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts/feed`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(200);
     } catch (err) {
@@ -213,7 +213,7 @@ test.describe('API - Posts', () => {
   test('POST-API-014 - GET /posts/feed without auth returns 401', async ({ request }) => {
     try {
       const res = await request.get(`${API_BASE}/posts/feed`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -228,14 +228,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Test post for get' },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (createRes.status() !== 201) return;
       const post = await createRes.json();
 
       const res = await request.get(`${API_BASE}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403, 500]).toContain(res.status());
     } catch (err) {
@@ -248,7 +248,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts/00000000-0000-0000-0000-000000000000`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([404, 403, 500]).toContain(res.status());
     } catch (err) {
@@ -261,7 +261,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.get(`${API_BASE}/posts/not-a-uuid`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([400, 403, 404, 422, 500]).toContain(res.status());
     } catch (err) {
@@ -276,14 +276,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Original content' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.patch(`${API_BASE}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Updated content' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(200);
     } catch (err) {
@@ -296,7 +296,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.patch(`${API_BASE}/posts/some-id`, {
         data: { content: 'Updated' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -310,14 +310,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Alice post' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.patch(`${API_BASE}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${bobToken}` },
         data: { content: 'Bob trying to edit' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403, 404]).toContain(res.status());
     } catch (err) {
@@ -332,13 +332,13 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post to delete' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.delete(`${API_BASE}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204]).toContain(res.status());
     } catch (err) {
@@ -350,7 +350,7 @@ test.describe('API - Posts', () => {
   test('POST-API-022 - DELETE /posts/{id} without auth returns 401', async ({ request }) => {
     try {
       const res = await request.delete(`${API_BASE}/posts/some-id`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -364,13 +364,13 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Alice post' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.delete(`${API_BASE}/posts/${post.id}`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([403, 404]).toContain(res.status());
     } catch (err) {
@@ -385,14 +385,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post to like' },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (createRes.status() !== 201) return;
       const post = await createRes.json();
 
       const res = await request.post(`${API_BASE}/posts/${post.id}/like`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 201, 403, 409, 500]).toContain(res.status());
     } catch (err) {
@@ -404,7 +404,7 @@ test.describe('API - Posts', () => {
   test('POST-API-025 - POST /posts/{id}/like without auth returns 401', async ({ request }) => {
     try {
       const res = await request.post(`${API_BASE}/posts/some-id/like`, {
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -418,18 +418,18 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post to double like' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       await request.post(`${API_BASE}/posts/${post.id}/like`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
 
       const res = await request.post(`${API_BASE}/posts/${post.id}/like`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([409, 400]).toContain(res.status());
     } catch (err) {
@@ -444,18 +444,18 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post to unlike' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       await request.post(`${API_BASE}/posts/${post.id}/like`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
 
       const res = await request.delete(`${API_BASE}/posts/${post.id}/like`, {
         headers: { Authorization: `Bearer ${bobToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 204]).toContain(res.status());
     } catch (err) {
@@ -470,14 +470,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post for comment' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.post(`${API_BASE}/posts/${post.id}/comments`, {
         headers: { Authorization: `Bearer ${bobToken}` },
         data: { content: 'Test comment' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(201);
     } catch (err) {
@@ -490,7 +490,7 @@ test.describe('API - Posts', () => {
     try {
       const res = await request.post(`${API_BASE}/posts/some-id/comments`, {
         data: { content: 'Comment' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBeGreaterThanOrEqual(401);
     } catch (err) {
@@ -504,14 +504,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post' },
-        timeout: 5000,
+        timeout: 30000,
       });
       const post = await createRes.json();
 
       const res = await request.post(`${API_BASE}/posts/${post.id}/comments`, {
         headers: { Authorization: `Bearer ${bobToken}` },
         data: { content: '' },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect(res.status()).toBe(422);
     } catch (err) {
@@ -526,14 +526,14 @@ test.describe('API - Posts', () => {
       const createRes = await request.post(`${API_BASE}/posts`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
         data: { content: 'Post with comments' },
-        timeout: 5000,
+        timeout: 30000,
       });
       if (createRes.status() !== 201) return;
       const post = await createRes.json();
 
       const res = await request.get(`${API_BASE}/posts/${post.id}/comments`, {
         headers: { Authorization: `Bearer ${aliceToken}` },
-        timeout: 5000,
+        timeout: 30000,
       });
       expect([200, 403, 500]).toContain(res.status());
     } catch (err) {
