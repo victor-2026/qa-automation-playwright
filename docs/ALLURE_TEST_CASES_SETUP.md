@@ -23,7 +23,7 @@ You should see:
 
 ---
 
-## Step 2: Create Test Case TC-001 (Manual: User Registration)
+## Step 2: Create Test Case TC-001: User can register via UI
 
 **Click path:** Test Cases (left sidebar) → + Create (top right)
 
@@ -52,7 +52,7 @@ Fill the form:
 
 ---
 
-## Step 3: Create Test Case TC-002 (Auto: Login)
+## Step 3: Create Test Case TC-002: Login with valid credentials returns 200 + token
 
 **Click path:** Test Cases → + Create
 
@@ -76,7 +76,7 @@ Fill the form:
 
 ---
 
-## Step 4: Create Test Case TC-003 (Manual: Deactivated Account)
+## Step 4: Create Test Case TC-003: Login with deactivated account returns 400
 
 **Click path:** Test Cases → + Create
 
@@ -101,7 +101,7 @@ Fill the form:
 
 ---
 
-## Step 5: Create Test Case TC-004 (Auto: XSS Sanitization)
+## Step 5: Create Test Case TC-004: POST /posts rejects XSS script tag
 
 **Click path:** Test Cases → + Create
 
@@ -126,7 +126,7 @@ Fill the form:
 
 ---
 
-## Step 6: Create Test Case TC-005 (Manual: Mod Cannot Ban Admin)
+## Step 6: Create Test Case TC-005: Moderator cannot ban admin user
 
 **Click path:** Test Cases → + Create
 
@@ -152,7 +152,7 @@ Fill the form:
 
 ---
 
-## Step 7: Create Test Case TC-006 (Manual: Password Reset)
+## Step 7: Create Test Case TC-006: Password reset via email flow
 
 **Click path:** Test Cases → + Create
 
@@ -183,7 +183,7 @@ Fill the form:
 
 ---
 
-## Step 8: Create Test Case TC-007 (Manual: Avatar Upload)
+## Step 8: Create Test Case TC-007: User can upload avatar (image file)
 
 **Click path:** Test Cases → + Create
 
@@ -211,7 +211,7 @@ Fill the form:
 
 ---
 
-## Step 9: Create Test Case TC-008 (Auto: Read Receipts)
+## Step 9: Create Test Case TC-008: POST /conversations/{id}/read marks conversation as read
 
 **Click path:** Test Cases → + Create
 
@@ -237,7 +237,7 @@ Fill the form:
 
 ---
 
-## Step 10: Create Test Case TC-009 (Auto: Bookmarks)
+## Step 10: Create Test Case TC-009: GET /bookmarks returns 200 with auth
 
 **Click path:** Test Cases → + Create
 
