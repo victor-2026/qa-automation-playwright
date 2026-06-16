@@ -8,7 +8,42 @@
 
 ## Goal
 
-Add 9 manual + auto test cases and 1 test plan in Allure TestOps UI. Each click below is a step you take in the browser. I'll do the actual clicking — you stay on the page.
+Add 9 test cases and 1 test plan in Allure TestOps UI. Each click below is a step you take in the browser. I'll do the actual clicking — you stay on the page.
+
+---
+
+## Important: Form Fields May Differ
+
+The form fields below are based on **standard** Allure TestOps Test Case fields. Your trial instance may have:
+- **Different field names** (e.g. "Type" might be "Workflow" or "Status")
+- **Missing fields** (e.g. no "Priority" if not configured)
+- **Custom fields** (if your admin added them)
+
+**Fields confirmed to exist in this trial:**
+- **Name** — always required
+- **Description** — free text, optional
+- **Tags** — comma-separated list, optional
+- **Steps** — list of test steps (description + expected result), optional
+- **Comments** — comments on test case
+- **Issues** — link to issues (Jira, GitHub, etc.)
+- **Test keys** — test ID (e.g. TC-001)
+- **Members** — assigned people
+- **Owner** — owner (default: victor2026)
+- **Custom Fields** — custom fields
+- **Mutes** — notification settings
+- **Relations** — links to other test cases
+
+**For each test case below, fill in at minimum:**
+1. **Name** (required)
+2. **Description** (recommended — paste the "Description" field from the table)
+3. **Tags** (paste the "Tags" field as comma-separated)
+4. **Steps** (paste the numbered steps)
+
+**Skip optional fields** unless you have a specific need. Do NOT invent Type/Priority/Layer — they don't exist in this trial.
+
+**Workflow** is set globally (Default Manual / Default Automated) and doesn't appear in the create form.
+
+---
 
 ---
 
@@ -32,10 +67,8 @@ Fill the form:
 |-------|-------|
 | Name | TC-001: User can register via UI |
 | Description | Verify new user can register through the web form on http://localhost:3000/register. Should receive confirmation, be logged in, redirected to feed. |
-| Type | Manual |
-| Priority | Critical |
-| Layer | E2E |
 | Tags | `registration`, `ui`, `smoke` |
+| Owner | `victor2026` |
 
 **Steps** (click + Add Step for each):
 1. Navigate to http://localhost:3000/register
@@ -60,10 +93,9 @@ Fill the form:
 |-------|-------|
 | Name | TC-002: Login with valid credentials returns 200 + token |
 | Description | API test: POST /api/auth/login with valid email/password returns 200 + access_token. Automated via Playwright (e2e/api/auth.spec.ts → AUTH-API-001). |
-| Type | Automated |
-| Priority | Critical |
-| Layer | API |
 | Tags | `auth`, `api`, `smoke` |
+| Test keys | `AUTH-API-001` |
+| Owner | `victor2026` |
 
 **Steps** (click + Add Step for each):
 1. POST /api/auth/login with `{"email": "alice@buzzhive.com", "password": "alice123"}`
@@ -84,10 +116,8 @@ Fill the form:
 |-------|-------|
 | Name | TC-003: Login with deactivated account returns 400 |
 | Description | Verify backend rejects login for deactivated accounts. Real bug found via Allure TestOps: previous test runs accidentally deactivated admin@buzzhive.com. |
-| Type | Manual |
-| Priority | High |
-| Layer | API |
 | Tags | `auth`, `deactivated`, `regression` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. POST /api/auth/login with `{"email": "frank@buzzhive.com", "password": "frank123"}` (frank is banned by default)
@@ -109,10 +139,9 @@ Fill the form:
 |-------|-------|
 | Name | TC-004: POST /posts rejects XSS script tag |
 | Description | Verify backend sanitizes or rejects HTML/script content in posts. Automated via Playwright (e2e/api/posts.spec.ts → POST-API-018). |
-| Type | Automated |
-| Priority | High |
-| Layer | API |
 | Tags | `security`, `xss`, `posts` |
+| Test keys | `POST-API-018` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. POST /api/posts with `{"content": "<script>alert('xss')</script>"}`
@@ -134,10 +163,8 @@ Fill the form:
 |-------|-------|
 | Name | TC-005: Moderator cannot ban admin user |
 | Description | Security boundary: moderator role has limited powers. Should NOT be able to ban/deactivate admin accounts. This was a real bug found via soft-delete pattern. |
-| Type | Manual |
-| Priority | Critical |
-| Layer | API |
 | Tags | `security`, `rbac`, `admin`, `moderator` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. Login as `mod@buzzhive.com / mod123` → get modToken
@@ -160,10 +187,8 @@ Fill the form:
 |-------|-------|
 | Name | TC-006: Password reset via email flow |
 | Description | Verify password reset flow: user requests reset → email sent → link clicked → password changed → can login with new password. NOT covered by automation. |
-| Type | Manual |
-| Priority | High |
-| Layer | E2E |
 | Tags | `auth`, `email`, `password-reset` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. Navigate to http://localhost:3000/forgot-password
@@ -191,10 +216,8 @@ Fill the form:
 |-------|-------|
 | Name | TC-007: User can upload avatar (image file) |
 | Description | Verify avatar upload works: select file → upload → preview → save. NOT covered by automation. |
-| Type | Manual |
-| Priority | Medium |
-| Layer | E2E |
 | Tags | `profile`, `upload`, `ui` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. Login as alice@buzzhive.com
@@ -219,10 +242,9 @@ Fill the form:
 |-------|-------|
 | Name | TC-008: POST /conversations/{id}/read marks conversation as read |
 | Description | Verify read receipt functionality. Automated via Playwright (e2e/api/conversations.spec.ts → MSG-API-011). |
-| Type | Automated |
-| Priority | Medium |
-| Layer | API |
 | Tags | `messaging`, `conversations`, `read-receipts` |
+| Test keys | `MSG-API-011` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. Login as alice@buzzhive.com → get userToken
@@ -245,10 +267,9 @@ Fill the form:
 |-------|-------|
 | Name | TC-009: GET /bookmarks returns 200 with auth |
 | Description | Verify bookmarks endpoint requires auth and returns user's bookmarks. Automated via Playwright (e2e/api/health.spec.ts → HEALTH-API-006). |
-| Type | Automated |
-| Priority | Medium |
-| Layer | API |
 | Tags | `bookmarks`, `api` |
+| Test keys | `HEALTH-API-006` |
+| Owner | `victor2026` |
 
 **Steps:**
 1. GET /api/bookmarks without auth → expect 401
