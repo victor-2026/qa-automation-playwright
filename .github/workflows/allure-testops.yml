@@ -41,9 +41,9 @@ jobs:
           allure-token: ${{ secrets.ALLURE_TOKEN }}
           allure-project-id: ${{ secrets.ALLURE_PROJECT_ID }}
 
-      - name: Run smoke tests with Allure TestOps upload
+      - name: Run API tests with Allure TestOps upload
         run: |
-          allurectl watch -- npx playwright test e2e/api/smoke-api.spec.ts --project=chromium
+          allurectl watch -- npx playwright test e2e/api/ --project=chromium
         env:
           API_BASE_URL: ${{ vars.BACKEND_URL }}/api
           APP_BASE_URL: ${{ vars.FRONTEND_URL }}
