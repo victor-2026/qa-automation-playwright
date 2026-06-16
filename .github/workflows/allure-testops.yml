@@ -6,10 +6,9 @@
 name: allure-testops
 
 on:
-  workflow_dispatch:  # Manual trigger only — for first testing
-  # TODO: uncomment for daily CI after pilot
-  # schedule:
-  #   - cron: '0 6 * * *'  # Daily 06:00 UTC
+  workflow_dispatch:  # Manual trigger (for ad-hoc runs)
+  schedule:
+    - cron: '0 6 * * *'  # Daily 06:00 UTC
 
 env:
   ALLURE_RESULTS: "allure-results"
