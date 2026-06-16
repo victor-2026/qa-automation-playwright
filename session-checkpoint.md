@@ -420,7 +420,9 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 ## Verification Results
 - GitHub Secrets: confirmed via `gh secret list` (3 allure secrets present)
 - Workflow file: committed to main
-- **NOT YET VERIFIED:** workflow run (requires user OK to trigger)
+- **VERIFIED:** workflow #27613760994 SUCCESS (4m30s) — Launch #1 created
+- **Test results:** 11 passed, 0 failed (smoke-api.spec.ts)
+- **Allure TestOps UI:** https://victor2026.testops.cloud/project/2 — Launch visible
 
 ## Active API Endpoints (Allure TestOps)
 - `https://victor2026.testops.cloud` — Trial instance
@@ -429,11 +431,12 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 - Token: `76a8006c-10dc-4bce-958b-cd85d9251eea` (in GitHub Secrets, not in this file)
 
 ## Next Steps
-1. **Trigger workflow** (user OK required) — Actions → allure-testops → Run workflow
-2. Verify launch appears in Allure TestOps UI
-3. After success: enable cron (`0 6 * * *`) for daily runs
+1. ~~Trigger workflow~~ ✅ DONE — workflow #27613760994 SUCCESS
+2. ~~Verify launch appears in Allure TestOps UI~~ ✅ DONE — Launch #1, 11 passed
+3. Enable cron (`0 6 * * *`) for daily runs (after pilot confirmed by user)
 4. OrangeHRM: push to GitHub, set same secrets with `ALLURE_PROJECT_ID=1`
 5. Trial ends ~2026-06-30 — set calendar reminder 5 days before
+6. **Decision point:** continue ($39-117/mo) or revert (remove workflow)
 
 ## Trial Cost Tracking
 - Trial: 14 days (until ~2026-06-30)
