@@ -253,9 +253,20 @@ If any gate fails, the test is not production-ready.
 
 ## Communication — Full File Paths (MANDATORY)
 
-When referencing files in chat, use `file://` URL (clickable via `Cmd+Click`):
-- ❌ `/Users/victor/Projects/.../file.md` → ✅ `file:///Users/victor/Projects/.../file.md`
-- Works in: opencode TUI, iTerm2, lazygit, Ghostty
-- Multiple files: list with `file://` prefix, user opens in batch
-- Pair with `open file://...` or `code /path` for copy-paste
-- Full rule + examples: `~/.opencode-memory.md` → "Communication Style — File Paths"
+In opencode-desktop TUI (macOS):
+- Cmd+Click = select whole line (NOT a hyperlink)
+- Ctrl+Click = select single word/extension
+- file:// URLs / markdown links = NOT clickable
+
+**Always provide: full absolute path + bash code block with `code` (or `open`) command.**
+
+Example:
+```
+File: /Users/victor/.../file.md
+\`\`\`bash
+code /Users/victor/.../file.md
+\`\`\`
+```
+
+For multiple files: one bash code block with multiple `code` lines.
+Full rule + examples: `~/.opencode-memory.md` → "Communication Style — File Paths"
