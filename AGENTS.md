@@ -229,9 +229,35 @@ Use this short repeatable format:
 - Next step: ...
 ```
 
+## Quality Gates (3-Layer Model)
+
+Every AI-generated test must pass these 6 gates before shipping. Based on Anton Gulin's 3-Layer Architecture (Orchestration → Execution → Evidence).
+
+| Gate | Pass condition | Layer |
+|------|---------------|-------|
+| Scope | The test maps to one named risk | Orchestration |
+| Data | Test data setup is explicit | Orchestration |
+| State | Browser state is controlled | Execution |
+| Run | The test passes in CI | Execution |
+| Evidence | Trace or equivalent proof exists | Evidence |
+| Review | A human can explain the failure mode | Evidence |
+
+If any gate fails, the test is not production-ready.
+
 ## AGENTS.md Constraints
 
 - **No secrets** — never store tokens, passwords, API keys in this file
 - **No dated facts** — avoid dates that become stale; use relative time
 - **No model-specific instructions** — rules must work with any AI model
 - **Size ≤ 32 KiB** — file must fit in one context window
+
+
+## Communication — Full File Paths (MANDATORY)
+
+When referencing files in chat responses, **ALWAYS use full absolute paths** (e.g. `/Users/victor/Projects/qa-automation-sandbox/...`). User context-switches between 5+ projects and "where is it?" wastes 5-15 sec per question.
+
+- ❌ "Open the docs" → ✅ "Open `/Users/victor/.../docs/...`"
+- Relative paths OK in: commit messages, code comments, in-repo docs
+- Full rule + examples: `~/.opencode-memory.md` → "Communication Style — File Paths"
+
+
