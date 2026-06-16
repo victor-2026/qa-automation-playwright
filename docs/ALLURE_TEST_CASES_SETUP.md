@@ -21,7 +21,7 @@ Some fields may be hidden under "..." menu or advanced settings — scroll or ex
 - **Description** — free text
 - **Type** — Manual / Automated (dropdown; if "Generate code" was clicked, may auto-set to Automated)
 - **Priority** — Critical / High / Medium / Low
-- **Layer** — E2E / API / Unit / etc.
+- **Layer** — API / UI / Unit (standard dropdown)
 - **Status** — current workflow status
 - **Tags** — comma-separated
 - **Test keys** — test ID (auto TCs only)
@@ -57,7 +57,7 @@ Fill the form:
 | Tags | `registration`, `ui`, `smoke` |
 | Type | Manual |
 | Priority | Critical |
-| Layer | E2E |
+| Layer | UI |
 | Owner | `victor2026` |
 
 **Steps** (click + Add Step for each):
@@ -192,7 +192,7 @@ Fill the form:
 | Tags | `auth`, `email`, `password-reset` |
 | Type | Manual |
 | Priority | High |
-| Layer | E2E |
+| Layer | UI |
 | Owner | `victor2026` |
 
 **Steps:**
@@ -224,7 +224,7 @@ Fill the form:
 | Tags | `profile`, `upload`, `ui` |
 | Type | Manual |
 | Priority | Medium |
-| Layer | E2E |
+| Layer | UI |
 | Owner | `victor2026` |
 
 **Steps:**
