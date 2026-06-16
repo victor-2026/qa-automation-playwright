@@ -251,13 +251,11 @@ If any gate fails, the test is not production-ready.
 - **No model-specific instructions** — rules must work with any AI model
 - **Size ≤ 32 KiB** — file must fit in one context window
 
-
 ## Communication — Full File Paths (MANDATORY)
 
-When referencing files in chat responses, **ALWAYS use full absolute paths** (e.g. `/Users/victor/Projects/qa-automation-sandbox/...`). User context-switches between 5+ projects and "where is it?" wastes 5-15 sec per question.
-
-- ❌ "Open the docs" → ✅ "Open `/Users/victor/.../docs/...`"
-- Relative paths OK in: commit messages, code comments, in-repo docs
+When referencing files in chat, use `file://` URL (clickable via `Cmd+Click`):
+- ❌ `/Users/victor/Projects/.../file.md` → ✅ `file:///Users/victor/Projects/.../file.md`
+- Works in: opencode TUI, iTerm2, lazygit, Ghostty
+- Multiple files: list with `file://` prefix, user opens in batch
+- Pair with `open file://...` or `code /path` for copy-paste
 - Full rule + examples: `~/.opencode-memory.md` → "Communication Style — File Paths"
-
-
