@@ -1,0 +1,5 @@
+[
+  {"date": "2026-06-03", "mutation_passed": 28, "mutation_total": 34, "contract_schema": 17, "contract_consumer": 9, "contract_provider": 2, "e2e_total": 2000},
+  {"date": "2026-06-08", "mutation_passed": 34, "mutation_total": 34, "contract_schema": 17, "contract_consumer": 9, "contract_provider": 2, "e2e_total": 2000},
+  {"date": "2026-06-18", "mutation_passed": 34, "mutation_total": 34, "contract_schema": 17, "contract_consumer": 9, "contract_provider": 2, "e2e_total": 2000}
+]

@@ -1,0 +1,9 @@
+[
+  {"date": "2026-05-31", "phase": "Phase 0", "passed": 10, "total": 51, "coverage_pct": 20, "modules_covered": 4, "pom_count": 0, "smoke_tests": 0},
+  {"date": "2026-06-01", "phase": "Phase 1", "passed": 11, "total": 51, "coverage_pct": 22, "modules_covered": 4, "pom_count": 5, "smoke_tests": 7},
+  {"date": "2026-06-03", "phase": "Phase 2", "passed": 17, "total": 51, "coverage_pct": 33, "modules_covered": 8, "pom_count": 9, "smoke_tests": 12},
+  {"date": "2026-06-04", "phase": "Phase 2", "passed": 22, "total": 51, "coverage_pct": 43, "modules_covered": 8, "pom_count": 11, "smoke_tests": 15},
+  {"date": "2026-06-05", "phase": "Phase 3", "passed": 25, "total": 51, "coverage_pct": 49, "modules_covered": 11, "pom_count": 12, "smoke_tests": 22},
+  {"date": "2026-06-08", "phase": "Phase 3", "passed": 33, "total": 51, "coverage_pct": 65, "modules_covered": 12, "pom_count": 12, "smoke_tests": 22},
+  {"date": "2026-06-18", "phase": "Phase 4", "passed": 37, "total": 51, "coverage_pct": 73, "modules_covered": 14, "pom_count": 14, "smoke_tests": 25}
+]

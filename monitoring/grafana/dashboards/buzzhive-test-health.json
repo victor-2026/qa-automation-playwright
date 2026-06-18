@@ -1,0 +1,169 @@
+{
+  "title": "Buzzhive \u2014 Test Health & Stability",
+  "uid": "buzzhive-test-health",
+  "panels": [
+    {
+      "title": "Pass Rate & API Coverage (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "pass_rate",
+              "text": "Pass Rate %",
+              "type": "number"
+            },
+            {
+              "selector": "api_coverage_pct",
+              "text": "API Cov %",
+              "type": "number"
+            },
+            {
+              "selector": "flaky_count",
+              "text": "Flaky",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Test Suite Growth",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "tests_total",
+              "text": "Total Tests",
+              "type": "number"
+            },
+            {
+              "selector": "tests_pass",
+              "text": "Passing",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Health Log",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 24,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "string"
+            },
+            {
+              "selector": "pass_rate",
+              "text": "Pass %",
+              "type": "number"
+            },
+            {
+              "selector": "api_coverage_pct",
+              "text": "API %",
+              "type": "number"
+            },
+            {
+              "selector": "flaky_count",
+              "text": "Flaky",
+              "type": "number"
+            },
+            {
+              "selector": "tests_pass",
+              "text": "Passing",
+              "type": "number"
+            },
+            {
+              "selector": "tests_total",
+              "text": "Total",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "buzzhive",
+    "tests"
+  ],
+  "time": {
+    "from": "2026-05-14",
+    "to": "now"
+  }
+}

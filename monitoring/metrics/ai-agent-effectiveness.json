@@ -1,0 +1,8 @@
+[
+  {"agent": "KISS Sorcar (Nemotron free)", "task": "POM + spec", "runs": 1, "passed": 1, "steps": 16, "cost_usd": 0.00, "model": "Nemotron 120B free", "time_min": 2, "output": "runnable .ts"},
+  {"agent": "KISS Sorcar (DeepSeek V3.2)", "task": "POM + spec + fixtures", "runs": 1, "passed": 1, "steps": 16, "cost_usd": 0.01, "model": "DeepSeek V3.2", "time_min": 2, "output": "runnable .ts"},
+  {"agent": "KISS Sorcar (DeepSeek V3.2)", "task": "Fix 8 TS errors", "runs": 1, "passed": 1, "steps": 10, "cost_usd": 0.04, "model": "DeepSeek V3.2", "time_min": 3, "output": "refactored POMs + specs"},
+  {"agent": "Autonoma", "task": "Discovery + specs", "runs": 1, "passed": 1, "steps": 5, "cost_usd": 0.00, "model": "GPT-4 mini", "time_min": 10, "output": "28 .md specs + 6 factories"},
+  {"agent": "Webwright", "task": "POM + spec", "runs": 50, "passed": 1, "steps": 100, "cost_usd": 2.37, "model": "Claude + GPT", "time_min": 2400, "output": "1 broken POM + test"},
+  {"agent": "Manual (human)", "task": "POM + spec", "runs": 1, "passed": 1, "steps": 0, "cost_usd": 0.00, "model": "Human", "time_min": 15, "output": "hand-written .ts"}
+]

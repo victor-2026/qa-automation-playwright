@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Metrics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#d8d9da;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:24px}
+h1{font-size:20px;margin-bottom:4px}
+.subtitle{color:#8e8e8e;font-size:13px;margin-bottom:20px}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tab{padding:8px 16px;background:#1e1e2d;border:1px solid #333;border-radius:6px;color:#8e8e8e;cursor:pointer;font-size:13px}
+.tab.active{background:#3274d9;color:#fff;border-color:#3274d9}
+.page{display:none}
+.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px;margin-bottom:20px}
+.card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;padding:16px}
+.card-title{font-size:14px;color:#8e8e8e;margin-bottom:12px}
+.chart-wrap{position:relative;height:280px}
+.kpi-row{display:flex;gap:16px;margin-bottom:20px}
+.kpi{flex:1;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;padding:20px;text-align:center}
+.kpi-value{font-size:36px;font-weight:600}
+.kpi-label{font-size:12px;color:#8e8e8e;margin-top:4px}
+.green{color:#73bf69}
+.orange{color:#ff9830}
+.blue{color:#5794f2}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3e}
+th{color:#8e8e8e;font-weight:500}
+td{color:#d8d9da}
+</style>
+</head>
+<body>
+<h1>QA Metrics Dashboard</h1>
+<div class="subtitle">Buzzhive + OrangeHRM — AI Agent Testing Portfolio</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('orangehrm')">🟠 OrangeHRM — Coverage</div>
+  <div class="tab" onclick="switchTab('buzzhive-health')">🔵 Buzzhive — Test Health</div>
+  <div class="tab" onclick="switchTab('buzzhive-gates')">🟢 Buzzhive — Quality Gates</div>
+</div>
+
+<div id="orangehrm" class="page active">
+  <div class="kpi-row" id="oh-kpis"></div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Coverage Trend (%)</div>
+      <div class="chart-wrap"><canvas id="oh-coverage"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Module Growth</div>
+      <div class="chart-wrap"><canvas id="oh-modules"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Phase Timeline</div>
+    <table id="oh-table"><thead><tr><th>Date</th><th>Phase</th><th>Pass</th><th>Total</th><th>Cov%</th><th>Modules</th><th>POMs</th><th>Smoke</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div id="buzzhive-health" class="page">
+  <div class="kpi-row" id="bh-kpis"></div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Pipeline Pass Rate & API Coverage (%)</div>
+      <div class="chart-wrap"><canvas id="bh-pass"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Test Suite Growth</div>
+      <div class="chart-wrap"><canvas id="bh-growth"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Health Log</div>
+    <table id="bh-table"><thead><tr><th>Date</th><th>Pass Rate%</th><th>API Cov%</th><th>Flaky</th><th>Passing</th><th>Total</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div id="buzzhive-gates" class="page">
+  <div class="kpi-row" id="bg-kpis"></div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Mutation Score</div>
+      <div class="chart-wrap"><canvas id="bg-mutation"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Contract Tests</div>
+      <div class="chart-wrap"><canvas id="bg-contract"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Quality Gates Log</div>
+    <table id="bg-table"><thead><tr><th>Date</th><th>Mutation</th><th>Schema</th><th>Consumer</th><th>Provider</th><th>E2E</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<script>
+const BASE = '/metrics';
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[onclick*="${id}"]`).classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+async function loadJSON(name) {
+  return (await fetch(`${BASE}/${name}.json`)).json();
+}
+
+function lineChart(canvasId, labels, datasets) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {labels, datasets: datasets.map((d,i) => ({
+      label: d.label, data: d.data, borderColor: ['#5794f2','#73bf69','#ff9830','#e04f5f'][i],
+      backgroundColor: ['rgba(87,148,242,0.1)','rgba(115,191,105,0.1)'][i],
+      fill: true, tension: 0.3, pointRadius: 4, pointHitRadius: 8
+    }))},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend: {labels: {color: '#8e8e8e', font: {size: 11}}}},
+      scales: {
+        x: {grid: {color: '#2a2a3e'}, ticks: {color: '#8e8e8e', font: {size: 10}}},
+        y: {grid: {color: '#2a2a3e'}, ticks: {color: '#8e8e8e', font: {size: 10}}}
+      }
+    }
+  });
+}
+
+function barChart(canvasId, labels, datasets) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {labels, datasets: datasets.map((d,i) => ({
+      label: d.label, data: d.data, backgroundColor: ['#5794f2','#73bf69','#ff9830','#e04f5f'][i],
+      borderRadius: 4
+    }))},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend: {labels: {color: '#8e8e8e', font: {size: 11}}}},
+      scales: {
+        x: {grid: {display: false}, ticks: {color: '#8e8e8e', font: {size: 10}}},
+        y: {grid: {color: '#2a2a3e'}, ticks: {color: '#8e8e8e', font: {size: 10}}}
+      }
+    }
+  });
+}
+
+function kpiHTML(label, value, cls) {
+  return `<div class="kpi"><div class="kpi-value ${cls}">${value}</div><div class="kpi-label">${label}</div></div>`;
+}
+
+// ====== ORANGEHRM ======
+loadJSON('orangehrm-coverage').then(data => {
+  const last = data[data.length-1];
+  document.getElementById('oh-kpis').innerHTML =
+    kpiHTML('Coverage', last.coverage_pct+'%', 'green') +
+    kpiHTML('Tests Passing', last.passed, 'blue') +
+    kpiHTML('Modules', last.modules_covered+'/12', 'orange') +
+    kpiHTML('Smoke Tests', last.smoke_tests, 'blue');
+
+  lineChart('oh-coverage', data.map(d=>d.date), [
+    {label: 'Coverage %', data: data.map(d=>d.coverage_pct)},
+  ]);
+  barChart('oh-modules', data.map(d=>d.date), [
+    {label: 'Modules Covered', data: data.map(d=>d.modules_covered)},
+    {label: 'POMs', data: data.map(d=>d.pom_count)},
+  ]);
+
+  const tbody = document.querySelector('#oh-table tbody');
+  data.reverse().forEach(d => {
+    tbody.innerHTML += `<tr><td>${d.date}</td><td>${d.phase}</td><td>${d.passed}</td><td>${d.total}</td><td>${d.coverage_pct}%</td><td>${d.modules_covered}</td><td>${d.pom_count}</td><td>${d.smoke_tests}</td></tr>`;
+  });
+});
+
+// ====== BUZZHIVE HEALTH ======
+loadJSON('buzzhive-test-health').then(data => {
+  const last = data[data.length-1];
+  document.getElementById('bh-kpis').innerHTML =
+    kpiHTML('Pass Rate', last.pass_rate+'%', 'green') +
+    kpiHTML('API Coverage', last.api_coverage_pct+'%', 'blue') +
+    kpiHTML('Flaky Tests', last.flaky_count, last.flaky_count===0?'green':'orange') +
+    kpiHTML('Total Tests', last.tests_total, 'blue');
+
+  lineChart('bh-pass', data.map(d=>d.date), [
+    {label: 'Pass Rate %', data: data.map(d=>d.pass_rate)},
+    {label: 'API Coverage %', data: data.map(d=>d.api_coverage_pct)},
+  ]);
+  lineChart('bh-growth', data.map(d=>d.date), [
+    {label: 'Total Tests', data: data.map(d=>d.tests_total)},
+    {label: 'Passing Tests', data: data.map(d=>d.tests_pass)},
+  ]);
+
+  const tbody = document.querySelector('#bh-table tbody');
+  data.reverse().forEach(d => {
+    tbody.innerHTML += `<tr><td>${d.date}</td><td>${d.pass_rate}%</td><td>${d.api_coverage_pct}%</td><td>${d.flaky_count}</td><td>${d.tests_pass}</td><td>${d.tests_total}</td></tr>`;
+  });
+});
+
+// ====== BUZZHIVE GATES ======
+loadJSON('buzzhive-quality-gates').then(data => {
+  const last = data[data.length-1];
+  document.getElementById('bg-kpis').innerHTML =
+    kpiHTML('Mutation', last.mutation_passed+'/'+last.mutation_total, 'green') +
+    kpiHTML('Contract Schema', last.contract_schema, 'blue') +
+    kpiHTML('Contract Consumer', last.contract_consumer, 'blue') +
+    kpiHTML('Contract Provider', last.contract_provider, 'blue');
+
+  barChart('bg-mutation', data.map(d=>d.date), [
+    {label: 'Mutation Passed', data: data.map(d=>d.mutation_passed)},
+    {label: 'Mutation Total', data: data.map(d=>d.mutation_total)},
+  ]);
+  barChart('bg-contract', data.map(d=>d.date), [
+    {label: 'Schema', data: data.map(d=>d.contract_schema)},
+    {label: 'Consumer', data: data.map(d=>d.contract_consumer)},
+    {label: 'Provider', data: data.map(d=>d.contract_provider)},
+  ]);
+
+  const tbody = document.querySelector('#bg-table tbody');
+  data.reverse().forEach(d => {
+    tbody.innerHTML += `<tr><td>${d.date}</td><td>${d.mutation_passed}/${d.mutation_total}</td><td>${d.contract_schema}</td><td>${d.contract_consumer}</td><td>${d.contract_provider}</td><td>${d.e2e_total}</td></tr>`;
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><title>QA Metrics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#d8d9da;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:24px}
+h1{font-size:20px;margin-bottom:4px}
+.sub{color:#8e8e8e;font-size:13px;margin-bottom:20px}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tb{padding:8px 16px;background:#1e1e2d;border:1px solid #333;border-radius:6px;color:#8e8e8e;cursor:pointer;font-size:13px}
+.tb.a{background:#3274d9;color:#fff;border-color:#3274d9}
+.pg{display:none}
+.pg.a{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px;margin-bottom:20px}
+.card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;padding:16px}
+.ct{font-size:14px;color:#8e8e8e;margin-bottom:12px}
+.cw{position:relative;height:280px}
+.kr{display:flex;gap:16px;margin-bottom:20px}
+.kp{flex:1;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;padding:20px;text-align:center}
+.kv{font-size:36px;font-weight:600}
+.kl{font-size:12px;color:#8e8e8e;margin-top:4px}
+.gr{color:#73bf69}.or{color:#ff9830}.bl{color:#5794f2}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3e}
+th{color:#8e8e8e;font-weight:500}td{color:#d8d9da}
+</style></head><body>
+<h1>QA Metrics Dashboard</h1><div class="sub">Buzzhive + OrangeHRM — AI Agent Testing Portfolio</div>
+<div class="tabs">
+<div class="tb a" onclick="sw('oh')">OrangeHRM — Coverage</div>
+<div class="tb" onclick="sw('bh')">Buzzhive — Test Health</div>
+<div class="tb" onclick="sw('bqg')">Buzzhive — Quality Gates</div>
+</div>
+<div id="oh" class="pg a"><div class="kr" id="ohk"></div><div class="grid"><div class="card"><div class="ct">Coverage Trend (%)</div><div class="cw"><canvas id="cc"></canvas></div></div><div class="card"><div class="ct">Module Growth</div><div class="cw"><canvas id="cm"></canvas></div></div></div><div class="card"><div class="ct">Phase Timeline</div><table id="ot"><thead><tr><th>Date</th><th>Phase</th><th>Pass</th><th>Total</th><th>Cov%</th><th>Modules</th><th>POMs</th><th>Smoke</th></tr></thead><tbody></tbody></table></div></div>
+<div id="bh" class="pg"><div class="kr" id="bhk"></div><div class="grid"><div class="card"><div class="ct">Pipeline Pass Rate & API Coverage (%)</div><div class="cw"><canvas id="bp"></canvas></div></div><div class="card"><div class="ct">Test Suite Growth</div><div class="cw"><canvas id="bgr"></canvas></div></div></div><div class="card"><div class="ct">Health Log</div><table id="bt"><thead><tr><th>Date</th><th>Pass%</th><th>API%</th><th>Flaky</th><th>Passing</th><th>Total</th></tr></thead><tbody></tbody></table></div></div>
+<div id="bqg" class="pg"><div class="kr" id="bgk"></div><div class="grid"><div class="card"><div class="ct">Mutation Score</div><div class="cw"><canvas id="bm"></canvas></div></div><div class="card"><div class="ct">Contract Tests</div><div class="cw"><canvas id="bc"></canvas></div></div></div><div class="card"><div class="ct">Quality Gates Log</div><table id="bt2"><thead><tr><th>Date</th><th>Mutation</th><th>Schema</th><th>Consumer</th><th>Provider</th><th>E2E</th></tr></thead><tbody></tbody></table></div></div>
+<script>
+const D = {"orangehrm-coverage": [{"date": "2026-05-31", "phase": "Phase 0", "passed": 10, "total": 51, "coverage_pct": 20, "modules_covered": 4, "pom_count": 0, "smoke_tests": 0}, {"date": "2026-06-01", "phase": "Phase 1", "passed": 11, "total": 51, "coverage_pct": 22, "modules_covered": 4, "pom_count": 5, "smoke_tests": 7}, {"date": "2026-06-03", "phase": "Phase 2", "passed": 17, "total": 51, "coverage_pct": 33, "modules_covered": 8, "pom_count": 9, "smoke_tests": 12}, {"date": "2026-06-04", "phase": "Phase 2", "passed": 22, "total": 51, "coverage_pct": 43, "modules_covered": 8, "pom_count": 11, "smoke_tests": 15}, {"date": "2026-06-05", "phase": "Phase 3", "passed": 25, "total": 51, "coverage_pct": 49, "modules_covered": 11, "pom_count": 12, "smoke_tests": 22}, {"date": "2026-06-08", "phase": "Phase 3", "passed": 33, "total": 51, "coverage_pct": 65, "modules_covered": 12, "pom_count": 12, "smoke_tests": 22}], "buzzhive-test-health": [{"date": "2026-05-15", "tests_total": 489, "tests_pass": 381, "pass_rate": 78, "api_coverage_pct": 44, "flaky_count": 12}, {"date": "2026-05-17", "tests_total": 2000, "tests_pass": 1680, "pass_rate": 84, "api_coverage_pct": 67, "flaky_count": 8}, {"date": "2026-05-19", "tests_total": 2000, "tests_pass": 1780, "pass_rate": 89, "api_coverage_pct": 82, "flaky_count": 4}, {"date": "2026-05-24", "tests_total": 2000, "tests_pass": 1820, "pass_rate": 91, "api_coverage_pct": 88, "flaky_count": 2}, {"date": "2026-05-28", "tests_total": 2000, "tests_pass": 1850, "pass_rate": 92.5, "api_coverage_pct": 92, "flaky_count": 1}, {"date": "2026-06-03", "tests_total": 2000, "tests_pass": 1880, "pass_rate": 94, "api_coverage_pct": 94, "flaky_count": 0}], "buzzhive-quality-gates": [{"date": "2026-06-03", "mutation_passed": 28, "mutation_total": 34, "contract_schema": 17, "contract_consumer": 9, "contract_provider": 2, "e2e_total": 2000}, {"date": "2026-06-08", "mutation_passed": 34, "mutation_total": 34, "contract_schema": 17, "contract_consumer": 9, "contract_provider": 2, "e2e_total": 2000}], "buzzhive-api-latency": [{"endpoint": "GET /health", "p50_ms": 2, "p95_ms": 15, "p99_ms": 45, "success_rate": 100, "requests": 200}, {"endpoint": "POST /auth/login", "p50_ms": 85, "p95_ms": 210, "p99_ms": 480, "success_rate": 99.5, "requests": 200}, {"endpoint": "GET /posts", "p50_ms": 45, "p95_ms": 180, "p99_ms": 350, "success_rate": 99, "requests": 200}, {"endpoint": "POST /posts", "p50_ms": 110, "p95_ms": 290, "p99_ms": 520, "success_rate": 98, "requests": 100}, {"endpoint": "GET /users", "p50_ms": 35, "p95_ms": 150, "p99_ms": 310, "success_rate": 99.5, "requests": 200}, {"endpoint": "GET /auth/me", "p50_ms": 25, "p95_ms": 90, "p99_ms": 200, "success_rate": 100, "requests": 200}]};
+
+function sw(id){document.querySelectorAll(".tb").forEach(t=>t.classList.remove("a"));document.querySelectorAll(".pg").forEach(p=>p.classList.remove("a"));document.querySelector(".tb[onclick*='"+id+"']").classList.add("a");document.getElementById(id).classList.add("a")}
+
+function ln(id,labels,datasets){
+ const c=document.getElementById(id).getContext("2d");
+ new Chart(c,{type:"line",data:{labels,datasets:datasets.map((d,i)=>({label:d.label,data:d.data,borderColor:["#5794f2","#73bf69","#ff9830","#e04f5f"][i],backgroundColor:["rgba(87,148,242,0.1)","rgba(115,191,105,0.1)"][i],fill:true,tension:0.3,pointRadius:4}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#8e8e8e",font:{size:11}}}},scales:{x:{grid:{color:"#2a2a3e"},ticks:{color:"#8e8e8e",font:{size:10}}},y:{grid:{color:"#2a2a3e"},ticks:{color:"#8e8e8e",font:{size:10}}}}}})}
+
+function br(id,labels,datasets){
+ const c=document.getElementById(id).getContext("2d");
+ new Chart(c,{type:"bar",data:{labels,datasets:datasets.map((d,i)=>({label:d.label,data:d.data,backgroundColor:["#5794f2","#73bf69","#ff9830","#e04f5f"][i],borderRadius:4}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#8e8e8e",font:{size:11}}}},scales:{x:{grid:{display:false},ticks:{color:"#8e8e8e",font:{size:10}}},y:{grid:{color:"#2a2a3e"},ticks:{color:"#8e8e8e",font:{size:10}}}}}})}
+
+function kpi(l,v,c){return'<div class="kp"><div class="kv '+c+'">'+v+'</div><div class="kl">'+l+'</div></div>'}
+
+// OrangeHRM
+(function(){
+ let d=D["orangehrm-coverage"],l=d[d.length-1];
+ document.getElementById("ohk").innerHTML=kpi("Coverage",l.coverage_pct+"%","gr")+kpi("Tests Passing",l.passed,"bl")+kpi("Modules",l.modules_covered+"/12","or")+kpi("Smoke Tests",l.smoke_tests,"bl");
+ ln("cc",d.map(x=>x.date),[{label:"Coverage %",data:d.map(x=>x.coverage_pct)}]);
+ br("cm",d.map(x=>x.date),[{label:"Modules",data:d.map(x=>x.modules_covered)},{label:"POMs",data:d.map(x=>x.pom_count)}]);
+ let tb=document.querySelector("#ot tbody");
+ d.slice().reverse().forEach(x=>tb.innerHTML+='<tr><td>'+x.date+'</td><td>'+x.phase+'</td><td>'+x.passed+'</td><td>'+x.total+'</td><td>'+x.coverage_pct+'%</td><td>'+x.modules_covered+'</td><td>'+x.pom_count+'</td><td>'+x.smoke_tests+'</td></tr>');
+})();
+
+// Buzzhive Health
+(function(){
+ let d=D["buzzhive-test-health"],l=d[d.length-1];
+ document.getElementById("bhk").innerHTML=kpi("Pass Rate",l.pass_rate+"%","gr")+kpi("API Coverage",l.api_coverage_pct+"%","bl")+kpi("Flaky",l.flaky_count,l.flaky_count===0?"gr":"or")+kpi("Total Tests",l.tests_total,"bl");
+ ln("bp",d.map(x=>x.date),[{label:"Pass Rate %",data:d.map(x=>x.pass_rate)},{label:"API Cov %",data:d.map(x=>x.api_coverage_pct)}]);
+ ln("bgr",d.map(x=>x.date),[{label:"Total Tests",data:d.map(x=>x.tests_total)},{label:"Passing",data:d.map(x=>x.tests_pass)}]);
+ let tb=document.querySelector("#bt tbody");
+ d.slice().reverse().forEach(x=>tb.innerHTML+='<tr><td>'+x.date+'</td><td>'+x.pass_rate+'%</td><td>'+x.api_coverage_pct+'%</td><td>'+x.flaky_count+'</td><td>'+x.tests_pass+'</td><td>'+x.tests_total+'</td></tr>');
+})();
+
+// Buzzhive Quality Gates
+(function(){
+ let d=D["buzzhive-quality-gates"],l=d[d.length-1];
+ document.getElementById("bgk").innerHTML=kpi("Mutation",l.mutation_passed+"/"+l.mutation_total,"gr")+kpi("Contract Schema",l.contract_schema,"bl")+kpi("Consumer",l.contract_consumer,"bl")+kpi("Provider",l.contract_provider,"bl");
+ br("bm",d.map(x=>x.date),[{label:"Mutation Pass",data:d.map(x=>x.mutation_passed)},{label:"Total",data:d.map(x=>x.mutation_total)}]);
+ br("bc",d.map(x=>x.date),[{label:"Schema",data:d.map(x=>x.contract_schema)},{label:"Consumer",data:d.map(x=>x.contract_consumer)},{label:"Provider",data:d.map(x=>x.contract_provider)}]);
+ let tb=document.querySelector("#bt2 tbody");
+ d.slice().reverse().forEach(x=>tb.innerHTML+='<tr><td>'+x.date+'</td><td>'+x.mutation_passed+'/'+x.mutation_total+'</td><td>'+x.contract_schema+'</td><td>'+x.contract_consumer+'</td><td>'+x.contract_provider+'</td><td>'+x.e2e_total+'</td></tr>');
+})();
+</script></body></html>

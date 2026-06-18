@@ -1,0 +1,137 @@
+{
+  "title": "OrangeHRM \u2014 Coverage & Growth",
+  "uid": "orangehrm-coverage",
+  "panels": [
+    {
+      "title": "Coverage Trend (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-31\", \"phase\": \"Phase 0\", \"passed\": 10, \"total\": 51, \"coverage_pct\": 20, \"modules_covered\": 4, \"pom_count\": 0, \"smoke_tests\": 0}, {\"date\": \"2026-06-01\", \"phase\": \"Phase 1\", \"passed\": 11, \"total\": 51, \"coverage_pct\": 22, \"modules_covered\": 4, \"pom_count\": 5, \"smoke_tests\": 7}, {\"date\": \"2026-06-03\", \"phase\": \"Phase 2\", \"passed\": 17, \"total\": 51, \"coverage_pct\": 33, \"modules_covered\": 8, \"pom_count\": 9, \"smoke_tests\": 12}, {\"date\": \"2026-06-04\", \"phase\": \"Phase 2\", \"passed\": 22, \"total\": 51, \"coverage_pct\": 43, \"modules_covered\": 8, \"pom_count\": 11, \"smoke_tests\": 15}, {\"date\": \"2026-06-05\", \"phase\": \"Phase 3\", \"passed\": 25, \"total\": 51, \"coverage_pct\": 49, \"modules_covered\": 11, \"pom_count\": 12, \"smoke_tests\": 22}, {\"date\": \"2026-06-08\", \"phase\": \"Phase 3\", \"passed\": 33, \"total\": 51, \"coverage_pct\": 65, \"modules_covered\": 12, \"pom_count\": 12, \"smoke_tests\": 22}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "coverage_pct",
+              "text": "Coverage %",
+              "type": "number"
+            },
+            {
+              "selector": "passed",
+              "text": "Tests Pass",
+              "type": "number"
+            },
+            {
+              "selector": "modules_covered",
+              "text": "Modules",
+              "type": "number"
+            },
+            {
+              "selector": "smoke_tests",
+              "text": "Smoke",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Phase Timeline",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-31\", \"phase\": \"Phase 0\", \"passed\": 10, \"total\": 51, \"coverage_pct\": 20, \"modules_covered\": 4, \"pom_count\": 0, \"smoke_tests\": 0}, {\"date\": \"2026-06-01\", \"phase\": \"Phase 1\", \"passed\": 11, \"total\": 51, \"coverage_pct\": 22, \"modules_covered\": 4, \"pom_count\": 5, \"smoke_tests\": 7}, {\"date\": \"2026-06-03\", \"phase\": \"Phase 2\", \"passed\": 17, \"total\": 51, \"coverage_pct\": 33, \"modules_covered\": 8, \"pom_count\": 9, \"smoke_tests\": 12}, {\"date\": \"2026-06-04\", \"phase\": \"Phase 2\", \"passed\": 22, \"total\": 51, \"coverage_pct\": 43, \"modules_covered\": 8, \"pom_count\": 11, \"smoke_tests\": 15}, {\"date\": \"2026-06-05\", \"phase\": \"Phase 3\", \"passed\": 25, \"total\": 51, \"coverage_pct\": 49, \"modules_covered\": 11, \"pom_count\": 12, \"smoke_tests\": 22}, {\"date\": \"2026-06-08\", \"phase\": \"Phase 3\", \"passed\": 33, \"total\": 51, \"coverage_pct\": 65, \"modules_covered\": 12, \"pom_count\": 12, \"smoke_tests\": 22}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "string"
+            },
+            {
+              "selector": "phase",
+              "text": "Phase",
+              "type": "string"
+            },
+            {
+              "selector": "passed",
+              "text": "Tests Pass",
+              "type": "number"
+            },
+            {
+              "selector": "total",
+              "text": "Total Cases",
+              "type": "number"
+            },
+            {
+              "selector": "coverage_pct",
+              "text": "Coverage %",
+              "type": "number"
+            },
+            {
+              "selector": "modules_covered",
+              "text": "Modules",
+              "type": "number"
+            },
+            {
+              "selector": "pom_count",
+              "text": "POMs",
+              "type": "number"
+            },
+            {
+              "selector": "smoke_tests",
+              "text": "Smoke",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "orangehrm",
+    "coverage"
+  ],
+  "time": {
+    "from": "2026-05-30",
+    "to": "now"
+  }
+}

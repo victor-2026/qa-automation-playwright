@@ -1,0 +1,280 @@
+{
+  "title": "AI Agent \u2014 Test Generation Effectiveness",
+  "uid": "ai-agent-effectiveness",
+  "panels": [
+    {
+      "title": "Success Rate & Cost per Agent",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "agent",
+              "text": "Agent",
+              "type": "string"
+            },
+            {
+              "selector": "runs",
+              "text": "Runs",
+              "type": "number"
+            },
+            {
+              "selector": "passed",
+              "text": "Passed",
+              "type": "number"
+            },
+            {
+              "selector": "cost_usd",
+              "text": "Cost $",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Time per Task (minutes, log scale)",
+      "type": "barchart",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "agent",
+              "text": "Agent",
+              "type": "string"
+            },
+            {
+              "selector": "time_min",
+              "text": "Time (min)",
+              "type": "number"
+            },
+            {
+              "selector": "steps",
+              "text": "Steps",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Agent Comparison",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 24,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "agent",
+              "text": "Agent",
+              "type": "string"
+            },
+            {
+              "selector": "task",
+              "text": "Task",
+              "type": "string"
+            },
+            {
+              "selector": "model",
+              "text": "Model",
+              "type": "string"
+            },
+            {
+              "selector": "runs",
+              "text": "Runs",
+              "type": "number"
+            },
+            {
+              "selector": "passed",
+              "text": "Passed",
+              "type": "number"
+            },
+            {
+              "selector": "steps",
+              "text": "Steps",
+              "type": "number"
+            },
+            {
+              "selector": "cost_usd",
+              "text": "Cost $",
+              "type": "number"
+            },
+            {
+              "selector": "time_min",
+              "text": "Time (min)",
+              "type": "number"
+            },
+            {
+              "selector": "output",
+              "text": "Output",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Agent Cost Efficiency ($/passing test)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 6,
+        "h": 3
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"agent\": \"KISS Sorcar (best)\", \"cost_per_pass\": 0.01}, {\"agent\": \"Autonoma\", \"cost_per_pass\": 0.00}, {\"agent\": \"Webwright\", \"cost_per_pass\": 2.37}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "cost_per_pass",
+              "text": "$/pass",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "orange",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Total Spend",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 13,
+        "w": 6,
+        "h": 3
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"total_spend\": 2.42}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "total_spend",
+              "text": "Total Spent",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        }
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "ai",
+    "agent",
+    "comparison",
+    "testing"
+  ],
+  "time": {
+    "from": "now-60d",
+    "to": "now"
+  }
+}

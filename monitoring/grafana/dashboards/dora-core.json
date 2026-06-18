@@ -1,0 +1,207 @@
+{
+  "title": "DORA Core \u2014 QA Metrics",
+  "uid": "dora-core",
+  "panels": [
+    {
+      "title": "Change Failure Rate (CFR) \u2014 Mutation Caught",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "mutation_caught",
+              "text": "Mutations Caught",
+              "type": "number"
+            },
+            {
+              "selector": "mutation_total",
+              "text": "Total Mutations",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "CI/CD Pipeline Stability (%)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "pipe_pass",
+              "text": "Pipeline Pass %",
+              "type": "number"
+            },
+            {
+              "selector": "flaky_count",
+              "text": "Flaky Tests",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Regression Time (hours) \u2014 Lead Time for Changes",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "regression_hours",
+              "text": "Regression (hours)",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "DORA Level",
+      "type": "table",
+      "gridPos": {
+        "x": 12,
+        "y": 7,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "string"
+            },
+            {
+              "selector": "mutation_caught",
+              "text": "Mutations Caught",
+              "type": "number"
+            },
+            {
+              "selector": "mutation_total",
+              "text": "Total Mutations",
+              "type": "number"
+            },
+            {
+              "selector": "flaky_count",
+              "text": "Flaky",
+              "type": "number"
+            },
+            {
+              "selector": "pipe_pass",
+              "text": "Pipeline %",
+              "type": "number"
+            },
+            {
+              "selector": "regression_hours",
+              "text": "Regr (hrs)",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "dora",
+    "qa",
+    "elite"
+  ],
+  "time": {
+    "from": "2026-05-14",
+    "to": "now"
+  }
+}

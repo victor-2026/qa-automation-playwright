@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  grafana:
+    image: grafana/grafana:11.6.0
+    container_name: qa-grafana
+    ports:
+      - "3003:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Editor
+    volumes:
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    restart: unless-stopped

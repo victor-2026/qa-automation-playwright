@@ -1,0 +1,6 @@
+[
+  {"date": "2026-05-15", "mutation_caught": 0, "mutation_total": 34, "flaky_count": 12, "pipe_pass": 78, "regression_hours": 48},
+  {"date": "2026-05-28", "mutation_caught": 28, "mutation_total": 34, "flaky_count": 1, "pipe_pass": 92.5, "regression_hours": 4},
+  {"date": "2026-06-03", "mutation_caught": 34, "mutation_total": 34, "flaky_count": 0, "pipe_pass": 94, "regression_hours": 4},
+  {"date": "2026-06-18", "mutation_caught": 34, "mutation_total": 34, "flaky_count": 0, "pipe_pass": 94, "regression_hours": 4}
+]

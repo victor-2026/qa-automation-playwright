@@ -1,0 +1,175 @@
+{
+  "title": "Buzzhive \u2014 Quality Gates",
+  "uid": "buzzhive-quality-gates",
+  "panels": [
+    {
+      "title": "Mutation Score",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-06-03\", \"mutation_passed\": 28, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}, {\"date\": \"2026-06-08\", \"mutation_passed\": 34, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "mutation_passed",
+              "text": "Passed",
+              "type": "number"
+            },
+            {
+              "selector": "mutation_total",
+              "text": "Total",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Contract Tests",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-06-03\", \"mutation_passed\": 28, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}, {\"date\": \"2026-06-08\", \"mutation_passed\": 34, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "contract_schema",
+              "text": "Schema",
+              "type": "number"
+            },
+            {
+              "selector": "contract_consumer",
+              "text": "Consumer",
+              "type": "number"
+            },
+            {
+              "selector": "contract_provider",
+              "text": "Provider",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "title": "Gates Summary",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 24,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "infinity"
+          },
+          "type": "json",
+          "source": "inline",
+          "data": "[{\"date\": \"2026-06-03\", \"mutation_passed\": 28, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}, {\"date\": \"2026-06-08\", \"mutation_passed\": 34, \"mutation_total\": 34, \"contract_schema\": 17, \"contract_consumer\": 9, \"contract_provider\": 2, \"e2e_total\": 2000}]",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "string"
+            },
+            {
+              "selector": "mutation_passed",
+              "text": "Mut Pass",
+              "type": "number"
+            },
+            {
+              "selector": "mutation_total",
+              "text": "Mut Total",
+              "type": "number"
+            },
+            {
+              "selector": "contract_schema",
+              "text": "Schema",
+              "type": "number"
+            },
+            {
+              "selector": "contract_consumer",
+              "text": "Consumer",
+              "type": "number"
+            },
+            {
+              "selector": "contract_provider",
+              "text": "Provider",
+              "type": "number"
+            },
+            {
+              "selector": "e2e_total",
+              "text": "E2E Total",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "buzzhive",
+    "mutation",
+    "contract"
+  ],
+  "time": {
+    "from": "2026-05-30",
+    "to": "now"
+  }
+}

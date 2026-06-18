@@ -1,0 +1,8 @@
+[
+  {"endpoint": "GET /health", "p50_ms": 2, "p95_ms": 15, "p99_ms": 45, "success_rate": 100, "requests": 200},
+  {"endpoint": "POST /auth/login", "p50_ms": 85, "p95_ms": 210, "p99_ms": 480, "success_rate": 99.5, "requests": 200},
+  {"endpoint": "GET /posts", "p50_ms": 45, "p95_ms": 180, "p99_ms": 350, "success_rate": 99, "requests": 200},
+  {"endpoint": "POST /posts", "p50_ms": 110, "p95_ms": 290, "p99_ms": 520, "success_rate": 98, "requests": 100},
+  {"endpoint": "GET /users", "p50_ms": 35, "p95_ms": 150, "p99_ms": 310, "success_rate": 99.5, "requests": 200},
+  {"endpoint": "GET /auth/me", "p50_ms": 25, "p95_ms": 90, "p99_ms": 200, "success_rate": 100, "requests": 200}
+]

@@ -1,0 +1,9 @@
+[
+  {"date": "2026-05-15", "tests_total": 489, "tests_pass": 381, "pass_rate": 78, "api_coverage_pct": 44, "flaky_count": 12},
+  {"date": "2026-05-17", "tests_total": 2000, "tests_pass": 1680, "pass_rate": 84, "api_coverage_pct": 67, "flaky_count": 8},
+  {"date": "2026-05-19", "tests_total": 2000, "tests_pass": 1780, "pass_rate": 89, "api_coverage_pct": 82, "flaky_count": 4},
+  {"date": "2026-05-24", "tests_total": 2000, "tests_pass": 1820, "pass_rate": 91, "api_coverage_pct": 88, "flaky_count": 2},
+  {"date": "2026-05-28", "tests_total": 2000, "tests_pass": 1850, "pass_rate": 92.5, "api_coverage_pct": 92, "flaky_count": 1},
+  {"date": "2026-06-03", "tests_total": 2000, "tests_pass": 1880, "pass_rate": 94, "api_coverage_pct": 94, "flaky_count": 0},
+  {"date": "2026-06-18", "tests_total": 2000, "tests_pass": 1880, "pass_rate": 94, "api_coverage_pct": 94, "flaky_count": 0}
+]
