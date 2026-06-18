@@ -1,2 +1,7 @@
 User-agent: *
 Disallow: /
+
+# LinkedIn needs to verify links — allow DORA reports
+User-agent: LinkedInBot
+Allow: /qa-automation-playwright/docs/dora/
+Disallow: /
