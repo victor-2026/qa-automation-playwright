@@ -40,4 +40,10 @@ Centralised DORA metrics dashboard for QA Automation Sandbox projects.
 
 ---
 
-[Grafana Dashboard →](http://localhost:3003/d/dora-core/dora-core-e28094-qa-metrics)
+## Grafana Dashboard
+
+![DORA Core — QA Metrics](grafana-dora-core.png)
+
+*Snapshot: 2026-06-18 — 4 panels: CFR, Pipeline Stability, Regression Time, DORA Level*
+
+[Open in Grafana →](http://localhost:3003/d/dora-core/dora-core-e28094-qa-metrics)
