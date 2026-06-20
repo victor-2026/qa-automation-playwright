@@ -1,0 +1,11 @@
+{
+  "run": 2,
+  "condition": "without-skill",
+  "timestamp": "2026-06-19T23:24:34.883Z",
+  "hasPageRoute": true,
+  "hasNullInjection": true,
+  "testFails": true,
+  "overallPass": true,
+  "errors": [],
+  "output": "Error: Cannot find module '../fixtures'\nRequire stack:\n- /Users/victor/Projects/qa-automation-sandbox/e2e/fault-injection-test.spec.ts\n- /Users/victor/Projects/qa-automation-sandbox/node_modules/playwright/lib/transform/transform.js\n- /Users/victor/Projects/qa-automation-sandbox/node_modules/playwright/lib/common/configLoader.js\n- /Users/victor/Projects/qa-automation-sandbox/node_modules/playwright/lib/testActions.js\n- /Users/victor/Projects/qa-automation-sandbox/node_modules/playwright/lib/program.js\n- /Users/victor/Projects/qa-automation-sandbox/node_modules/@playwright/test/cli.js\n\n   at fault-injection-test.spec.ts:1\n\n> 1 | import { test, expect } from '../fixtures';\n    | ^\n  2 |\n  3 | test.describe('Posts API — Fault Injection (without skill)', () => {\n  4 |   test('injects null into post title via page.route() and verifies mutation is caught', async ({ page, request }) => {\n    at Object.<anonymous> (/Users/victor/Projects/qa-automation-sandbox/e2e/fault-injection-test.spec.ts:1:1)\n\nError: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.\n\n\u001b[1A\u001b[2K"
+}

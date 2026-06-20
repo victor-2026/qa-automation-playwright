@@ -1,0 +1,12 @@
+{
+  "run": 3,
+  "condition": "without-skill",
+  "timestamp": "2026-06-19T23:33:06.734Z",
+  "hasValidLoginTest": true,
+  "hasInvalidLoginTest": true,
+  "hasBodyValidation": true,
+  "testsPass": true,
+  "overallPass": true,
+  "errors": [],
+  "output": "\nRunning 8 tests using 4 workers\n\n\u001b[1A\u001b[2K[1/8] [chromium] › e2e/rest-api-qa-test.spec.ts:6:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with valid credentials returns 200 and token\n\u001b[1A\u001b[2K[2/8] [Mobile Chrome] › e2e/rest-api-qa-test.spec.ts:6:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with valid credentials returns 200 and token\n\u001b[1A\u001b[2K[3/8] [Mobile Safari Plus] › e2e/rest-api-qa-test.spec.ts:6:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with valid credentials returns 200 and token\n\u001b[1A\u001b[2K[4/8] [Mobile Safari] › e2e/rest-api-qa-test.spec.ts:6:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with valid credentials returns 200 and token\n\u001b[1A\u001b[2K[5/8] [Mobile Chrome] › e2e/rest-api-qa-test.spec.ts:19:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with invalid password returns 401 and error message\n\u001b[1A\u001b[2K[6/8] [chromium] › e2e/rest-api-qa-test.spec.ts:19:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with invalid password returns 401 and error message\n\u001b[1A\u001b[2K[7/8] [Mobile Safari Plus] › e2e/rest-api-qa-test.spec.ts:19:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with invalid password returns 401 and error message\n\u001b[1A\u001b[2K[8/8] [Mobile Safari] › e2e/rest-api-qa-test.spec.ts:19:7 › Buzzhive Auth API Tests (without skill) › POST /api/auth/login with invalid password returns 401 and error message\n\u001b[1A\u001b[2K  8 passed (6.9s)\n"
+}

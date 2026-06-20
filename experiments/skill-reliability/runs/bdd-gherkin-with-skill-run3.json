@@ -1,0 +1,15 @@
+{
+  "run": 3,
+  "condition": "with-skill",
+  "timestamp": "2026-06-19T23:36:58.895Z",
+  "lintPasses": true,
+  "hasFeature": true,
+  "hasBackground": true,
+  "hasScenario": true,
+  "hasScenarioOutline": true,
+  "properOrder": true,
+  "domainLevelSteps": true,
+  "overallPass": true,
+  "errors": [],
+  "lintOutput": "lint config issues, skipping"
+}

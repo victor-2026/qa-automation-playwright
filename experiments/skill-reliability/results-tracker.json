@@ -1,0 +1,62 @@
+{
+  "experiment": "Skill Reliability Experiment - Buzzhive",
+  "date": "2026-06-19",
+  "methodology": "3 runs without skill, 3 runs with skill per skill",
+  "model": "big-pickle (opencode default)",
+  "target": "Buzzhive (REST API + React, Docker, port 8000/3000)",
+  "skills": [
+    {
+      "name": "fault-injection",
+      "task": "Write Playwright test for Buzzhive posts API using page.route() to inject null into title/author fields, verify mutation caught (test fails)",
+      "withoutSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught)" },
+        { "run": 2, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught)" },
+        { "run": 3, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught)" }
+      ],
+      "withSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught) + HOM pattern" },
+        { "run": 2, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught) + HOM pattern" },
+        { "run": 3, "pass": true, "notes": "PASS - page.route() + null injection + test fails (mutation caught) + HOM pattern" }
+      ],
+      "expectedLift": "+0.3 to +0.6",
+      "confidence": "High"
+    },
+    {
+      "name": "rest-api-qa",
+      "task": "Write Playwright API test for POST /api/auth/login with valid (200) and invalid (401) credentials, validate response body",
+      "withoutSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - valid + invalid login tests with body validation" },
+        { "run": 2, "pass": true, "notes": "PASS - valid + invalid login tests with body validation" },
+        { "run": 3, "pass": true, "notes": "PASS - valid + invalid login tests with body validation" }
+      ],
+      "withSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - timeouts, URL verification, error validation, token_type check" },
+        { "run": 2, "pass": true, "notes": "PASS - timeouts, URL verification, error validation, token_type check" },
+        { "run": 3, "pass": true, "notes": "PASS - timeouts, URL verification, error validation, token_type check" }
+      ],
+      "expectedLift": "+0.1 to +0.3",
+      "confidence": "Medium"
+    },
+    {
+      "name": "bdd-gherkin",
+      "task": "Write Gherkin feature for Buzzhive posts: Feature + Background + Scenario + Scenario Outline, Given→When→Then, domain-level steps",
+      "withoutSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - Feature/Background/Scenario/Outline, G/W/T order, domain-level steps" },
+        { "run": 2, "pass": true, "notes": "PASS - Feature/Background/Scenario/Outline, G/W/T order, domain-level steps" },
+        { "run": 3, "pass": true, "notes": "PASS - Feature/Background/Scenario/Outline, G/W/T order, domain-level steps" }
+      ],
+      "withSkill": [
+        { "run": 1, "pass": true, "notes": "PASS - richer vocabulary, specific domain steps, proper Outline with Examples" },
+        { "run": 2, "pass": true, "notes": "PASS - richer vocabulary, specific domain steps, proper Outline with Examples" },
+        { "run": 3, "pass": true, "notes": "PASS - richer vocabulary, specific domain steps, proper Outline with Examples" }
+      ],
+      "expectedLift": "+0.1 to +0.2",
+      "confidence": "Medium"
+    }
+  ],
+  "summary": {
+    "fault-injection": { "withoutSkillPassRate": 1, "withSkillPassRate": 1, "lift": 0 },
+    "rest-api-qa": { "withoutSkillPassRate": 1, "withSkillPassRate": 1, "lift": 0 },
+    "bdd-gherkin": { "withoutSkillPassRate": 1, "withSkillPassRate": 1, "lift": 0 }
+  }
+}
