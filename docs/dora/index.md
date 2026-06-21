@@ -3,26 +3,69 @@ title: DORA Monthly Reports
 layout: default
 ---
 
+<link rel="stylesheet" href="style.css">
+
 # DORA Monthly Reports
 
 Centralised DORA metrics dashboard for QA Automation Sandbox projects.
 
 ---
 
+## Quick Dashboard
+
+<div class="dashboard-grid">
+  <div class="metric-card">
+    <h3>Buzzhive CFR</h3>
+    <div class="value cfr-good">6%</div>
+    <div class="trend trend-down">↓ from 7.5%</div>
+  </div>
+  <div class="metric-card">
+    <h3>Lead Time</h3>
+    <div class="value lt-good">4h</div>
+    <div class="trend trend-flat">Stable</div>
+  </div>
+  <div class="metric-card">
+    <h3>MTTR</h3>
+    <div class="value lt-good">4h</div>
+    <div class="trend trend-flat">Stable</div>
+  </div>
+  <div class="metric-card">
+    <h3>Mutation CFR</h3>
+    <div class="value mut-good">100%</div>
+    <div class="trend trend-up">↑ from 82%</div>
+  </div>
+  <div class="metric-card">
+    <h3>Flaky Tests</h3>
+    <div class="value flaky-good">0</div>
+    <div class="trend trend-down">↓ from 1</div>
+  </div>
+  <div class="metric-card">
+    <h3>OrangeHRM Coverage</h3>
+    <div class="value cov-warn">73%</div>
+    <div class="trend trend-up">↑ from 20%</div>
+  </div>
+</div>
+
+---
+
 ## Buzzhive (qa-automation-sandbox)
+
+<div class="table-wrapper">
 
 | Month | CFR | Lead Time | MTTR | Mutation CFR | Flaky | Trend |
 |-------|-----|-----------|------|--------------|-------|-------|
-| [May 2026](buzzhive/2026-05.md) | 7.5% | 4h | 4h | 28/34 | 1 | — |
-| [June 2026](buzzhive/2026-06.md) | 6% | 4h | 4h | 34/34 | 0 | ↓ |
+| [May 2026](buzzhive/2026-05.md) | <span class="cfr-warn">7.5%</span> | <span class="lt-warn">4h</span> | <span class="lt-warn">4h</span> | <span class="mut-warn">28/34</span> | <span class="flaky-warn">1</span> | <span class="trend-flat">—</span> |
+| [June 2026](buzzhive/2026-06.md) | <span class="cfr-good">6%</span> | <span class="lt-good">4h</span> | <span class="lt-good">4h</span> | <span class="mut-good">34/34</span> | <span class="flaky-good">0</span> | <span class="trend-down">↓</span> |
+
+</div>
 
 ### DORA Levels (June 2026)
 
 | Metric | Value | Level |
 |--------|-------|-------|
-| CFR | 6% | High |
-| Lead Time | 4h | High |
-| MTTR | 4h | High |
+| CFR | 6% | <span class="badge badge-high">High</span> |
+| Lead Time | 4h | <span class="badge badge-high">High</span> |
+| MTTR | 4h | <span class="badge badge-high">High</span> |
 
 [Methodology →](methodology.md)
 
@@ -30,10 +73,14 @@ Centralised DORA metrics dashboard for QA Automation Sandbox projects.
 
 ## OrangeHRM
 
+<div class="table-wrapper">
+
 | Month | Coverage | Modules | POMs | Smoke Tests |
 |-------|----------|---------|------|-------------|
-| [May 2026](orangehrm/2026-05.md) | 20% | 4 | 0 | 0 |
-| [June 2026](orangehrm/2026-06.md) | 73% | 14 | 14 | 25 |
+| [May 2026](orangehrm/2026-05.md) | <span class="cov-bad">20%</span> | 4 | 0 | 0 |
+| [June 2026](orangehrm/2026-06.md) | <span class="cov-warn">73%</span> | 14 | 14 | 25 |
+
+</div>
 
 > **Note:** OrangeHRM does not yet have DORA core metrics (CI/CD, Allure).
 > Only test coverage data is available at this stage.

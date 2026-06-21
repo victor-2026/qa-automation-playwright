@@ -1,0 +1,190 @@
+/* DORA Dashboard Custom Styles */
+/* Quick wins: color-coded cells, status badges, card layout, mobile responsive */
+
+:root {
+  --cfr-good: #c8e6c9;
+  --cfr-warn: #fff3e0;
+  --cfr-bad: #fdecea;
+  --text-good: #1b5e20;
+  --text-warn: #e65100;
+  --text-bad: #c62828;
+  --bg-card: #fafafa;
+  --border-color: #e0e0e0;
+  --text-primary: #1a1a2e;
+  --text-secondary: #666;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid var(--border-color);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+th {
+  background: #1a1a2e;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+tr:nth-child(even) td {
+  background: #f8f9fa;
+}
+
+tr:hover td {
+  background: #eef2f7;
+}
+
+/* CFR Color Coding */
+.cfr-good { background: var(--cfr-good); color: var(--text-good); font-weight: 600; }
+.cfr-warn { background: var(--cfr-warn); color: var(--text-warn); font-weight: 600; }
+.cfr-bad { background: var(--cfr-bad); color: var(--text-bad); font-weight: 600; }
+
+/* Lead Time / MTTR Color Coding */
+.lt-good { background: var(--cfr-good); color: var(--text-good); font-weight: 600; }
+.lt-warn { background: var(--cfr-warn); color: var(--text-warn); font-weight: 600; }
+.lt-bad { background: var(--cfr-bad); color: var(--text-bad); font-weight: 600; }
+
+/* Mutation CFR Color Coding */
+.mut-good { background: var(--cfr-good); color: var(--text-good); font-weight: 600; }
+.mut-warn { background: var(--cfr-warn); color: var(--text-warn); font-weight: 600; }
+.mut-bad { background: var(--cfr-bad); color: var(--text-bad); font-weight: 600; }
+
+/* Flaky Color Coding */
+.flaky-good { background: var(--cfr-good); color: var(--text-good); font-weight: 600; }
+.flaky-warn { background: var(--cfr-warn); color: var(--text-warn); font-weight: 600; }
+.flaky-bad { background: var(--cfr-bad); color: var(--text-bad); font-weight: 600; }
+
+/* Trend indicators */
+.trend-up { color: var(--text-bad); }
+.trend-down { color: var(--text-good); }
+.trend-flat { color: var(--text-secondary); }
+
+/* DORA Level Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-elite { background: #e8eaf6; color: #283593; }
+.badge-high { background: #e8eaf6; color: #283593; }
+.badge-medium { background: #fff3e0; color: #e65100; }
+.badge-low { background: #fdecea; color: #c62828; }
+
+/* Coverage badges */
+.cov-good { background: var(--cfr-good); color: var(--text-good); }
+.cov-warn { background: var(--cfr-warn); color: var(--text-warn); }
+.cov-bad { background: var(--cfr-bad); color: var(--text-bad); }
+
+/* Card Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.metric-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-card .value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-card .trend {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Responsive Tables */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  table {
+    font-size: 13px;
+  }
+  
+  th, td {
+    padding: 8px 10px;
+  }
+  
+  .metric-card .value {
+    font-size: 2rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .badge {
+    font-size: 0.75em;
+    padding: 3px 8px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .table-wrapper {
+    overflow-x: visible;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+  }
+}
+
+/* GitHub Pages specific */
+.markdown-body {
+  max-width: 1200px;
+  margin: 0 auto;
+}
