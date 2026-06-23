@@ -157,6 +157,12 @@ jobs:
             echo "::warning::Frontend was not available — UI tests skipped"
           fi
 
+      - name: Import results to Notion
+        if: always()
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: python3 scripts/allure-to-notion.py --dir allure-results --project qa-automation-sandbox --env "CI/CD (nightly)"
+
 # Full suite skipped - run locally with Docker
   # full-suite:
   #   name: Full Suite

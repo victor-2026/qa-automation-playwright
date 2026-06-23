@@ -133,13 +133,57 @@ a0cded2 fix(ci): API_BASE_URL should not include /api suffix
 - Editing `AGENTS.md` directly
 - Committing `.env*` files or secrets
 
-## Next Steps (Session 46+)
-1. (Optional) Migrate Render `buzzhive-api` from `docker-compose`-era config to a clean Static Site setup in `render.yaml` (IaC)
-2. (Optional) Delete orphaned `buzzhive-test` service on Render dashboard (legacy backend)
-3. (Optional) Add 429 retry that respects `Retry-After` header in API client
-4. (Optional) Run mutation tests nightly — verify they stay green
-5. LinkedIn posts: Webwright Limitations + Strategy (pending publication)
+## Session 53 (2026-06-19) — Skill Reliability Experiment: Buzzhive Replication ✅
+
+## What was done
+- **Buzzhive skill reliability experiment completed**: 18 runs on Buzzhive (REST API + React) replicating OrangeHRM experiment
+- **Total experiment scope**: 36 runs (18 OrangeHRM + 18 Buzzhive) across 3 skills
+- **All 18 runs PASS on Buzzhive**: same 0% lift as OrangeHRM
+
+## Buzzhive Experiment Results (18 runs)
+
+| Skill | Without Skill | With Skill | Lift |
+|-------|---------------|------------|------|
+| fault-injection | 3/3 PASS | 3/3 PASS | 0% |
+| rest-api-qa | 3/3 PASS | 3/3 PASS | 0% |
+| bdd-gherkin | 3/3 PASS | 3/3 PASS | 0% |
+
+**Combined with OrangeHRM**: 36 runs total, 0% lift across all 3 skills on both stacks.
+
+### Key Finding: Mutation Wasn't a Bug on Either Stack
+- **OrangeHRM (PHP/jQuery)**: null handled gracefully
+- **Buzzhive (React/REST)**: React handles null in title gracefully
+- Both systems resilient by design — mutation testing measures tests, not bugs. When system absorbs fault, test correctly passes.
+
+### rest-api-qa & bdd-gherkin: Confirmed on Modern Stack
+- rest-api-qa: Base model already knows REST API patterns (JWT, validation, timeouts)
+- bdd-gherkin: Gherkin syntax already mastered in training data
+
+## Modified Files
+- `experiments/skill-reliability/eval-fault-injection.ts`
+- `experiments/skill-reliability/eval-rest-api-qa.ts`
+- `experiments/skill-reliability/eval-bdd-gherkin.ts`
+- `experiments/skill-reliability/run-experiment.ts`
+- `experiments/skill-reliability/results-tracker.json`
+- `experiments/skill-reliability/generated/` (6 Buzzhive test files)
+- `experiments/skill-reliability/runs/` (18 evaluation outputs)
+- `Projects/Articles/linkedin-posts/AI-Agents/7-skills-reliability-experiment.md` (updated with 36-run results)
+- `Projects/Articles/linkedin-posts/AI-Agents/7-skills-reliability-feed-post.md` (NEW)
+
+## Article 7 Updated
+- **Updated**: `Articles/linkedin-posts/AI-Agents/7-skills-reliability-experiment.md` — now covers 2 projects, 36 runs
+- **NEW**: `Articles/linkedin-posts/AI-Agents/7-skills-reliability-feed-post.md` (feed post version)
+- **NEW**: Screenshot HTMLs: `7-results-table.html`, `7-stack-comparison.html`, `7-artifacts-tree.html`
+
+## Next Steps
+1. Publish Article 7 (Article + feed post) to LinkedIn
+2. Create Article 8: Response to Anton Gulin's 3-layer architecture
+3. (Optional) Migrate Render `buzzhive-api` to clean Static Site in `render.yaml`
+4. (Optional) Add 429 retry respecting `Retry-After` header
+5. LinkedIn posts: Webwright Limitations + Strategy (pending)
 6. Cover Letter: Precisely (pending)
+
+---
 
 ---
 
@@ -457,3 +501,93 @@ These were applied between Sessions 36 and 37, but checkpoint wasn't updated:
 - Trial: 14 days (until ~2026-06-30)
 - After: $39/user/month
 - Decision needed: continue (pay) or revert (remove workflow)
+
+---
+
+## Session 54 (2026-06-20) — Skill Reliability Experiment + Article 7/8 + OneJar Application Prep ✅
+
+## What was done
+
+### 1. Buzzhive Skill Reliability Experiment (18 runs) — COMPLETE
+Replicated OrangeHRM experiment on Buzzhive (React/TypeScript, REST API) to validate cross-stack findings.
+
+| Skill | Without Skill (3/3) | With Skill (3/3) | Lift |
+|-------|---------------------|------------------|------|
+| fault-injection | 100% PASS | 100% PASS | 0% |
+| rest-api-qa | 100% PASS | 100% PASS | 0% |
+| bdd-gherkin | 100% PASS | 100% PASS | 0% |
+
+**Combined with OrangeHRM**: 36 runs total (18 OrangeHRM + 18 Buzzhive), 0% lift across all 3 skills on both stacks.
+
+**Key Finding**: Mutation wasn't a bug on either stack:
+- OrangeHRM (PHP/jQuery): null handled gracefully
+- Buzzhive (React/REST): React handles null in title gracefully
+- Both systems resilient by design — mutation testing measures tests, not bugs. When system absorbs fault, test correctly passes.
+
+### rest-api-qa & bdd-gherkin: Confirmed on Modern Stack
+- rest-api-qa: Base model already knows REST API patterns (JWT, validation, timeouts)
+- bdd-gherkin: Gherkin syntax already mastered in training data
+
+### 2. Article 7 Updated + Article 8 Created
+- **Article 7** (`Articles/linkedin-posts/AI-Agents/7-skills-reliability-experiment.md`): Updated with 36-run cross-stack results (OrangeHRM + Buzzhive), Buzzhive replication section added
+- **Article 7 Feed Post** (`7-skills-reliability-feed-post.md`): Short LinkedIn version with corrected hashtags (5), "I ran with AI", disclaimer removed from hook
+- **Article 8** (`8-skills-as-validators.md`): Response to Anton Gulin's 3-layer architecture — skills as validators in Evidence layer, not generators
+
+### 3. OneJar Application Prep — COMPLETE
+- **CV** (`outputs/CV_Victor_Ematin_Head_of_AQA.md/.docx`): 
+  - Summary: "fintech-adjacent" → "HRMS domains", OrangeHRM expertise highlighted
+  - Core Skills: Added "OrangeHRM Product Expertise" (full module list)
+  - Domains: "Fintech-Adjacent" → "HRMS/HR SaaS (OrangeHRM — full module automation)..."
+  - Professional Experience: OrangeHRM moved from "Personal Project" → "ORANGEHRM AUTOMATION PROJECT" (after WIMARK, before MERLION) with 200+ test details
+- **Cover Letter** (`catalog/OneJar_Payment/cover-letter.md/.docx`):
+  - Opening hook: "built full end-to-end test automation for the exact product your client sells: OrangeHRM 5.8.1"
+  - Added "OrangeHRM Product Mastery" section
+  - Replaced "Fintech/Payments" → "Regulated Enterprise Environments"
+  - Closing: "Ready to relocate to Limassol... hit the ground running Day 1"
+- **Index.md** (`catalog/OneJar_Payment/index.md`): Fintech → Regulated Enterprise, next steps updated, date 2026-06-20
+
+### 4. Article 7 Final + Article 8 + Screenshots
+- **Article 7** updated with 36 runs across 2 projects (OrangeHRM + Buzzhive), Buzzhive replication section added
+- **Article 7 Feed Post** (`7-skills-reliability-feed-post.md`): Short version, 5 hashtags, "I ran with AI", disclaimer removed from hook
+- **Article 8** (`8-skills-as-validators.md`): Response to Anton Gulin's 3-layer architecture — skills as validators in Evidence layer, not generators
+- **Screenshots HTML**: `7-results-table.html`, `7-stack-comparison.html`, `7-artifacts-tree.html`
+
+### 5. CV & Cover Letter Regenerated
+- **CV** (`outputs/CV_Victor_Ematin_Head_of_AQA.md/.docx`): 74 paragraphs, all changes applied
+- **Cover Letter** (`catalog/OneJar_Payment/cover-letter.md/.docx`): Regenerated via pandoc
+
+### 6. Git Commit
+- **Buzzhive experiment committed** in qa-automation-sandbox: `cdb1769 feat(experiment): skill reliability experiment — 36 runs, 2 projects, 0% lift`
+
+## Modified Files (This Session)
+```
+Projects/qa-automation-sandbox/
+├── experiments/skill-reliability/ (eval-*.ts, run-experiment.ts, results-tracker.json, generated/, runs/)
+├── session-checkpoint.md (this file)
+
+Projects/OrangeHRM/
+├── (experiment files in OrangeHRM/experiments/skill-reliability/)
+
+Projects/Articles/linkedin-posts/AI-Agents/
+├── 7-skills-reliability-experiment.md (updated)
+├── 7-skills-reliability-feed-post.md (new)
+├── 8-skills-as-validators.md (new)
+├── 7-results-table.html (screenshot)
+├── 7-stack-comparison.html (screenshot)
+├── 7-artifacts-tree.html (screenshot)
+
+Private/Positions-CV-CL/
+├── outputs/CV_Victor_Ematin_Head_of_AQA.md/.docx
+├── catalog/OneJar_Payment/cover-letter.md
+├── outputs/CL_Victor_Ematin_Head_of_AQA.docx
+├── catalog/OneJar_Payment/index.md
+```
+
+## Next Steps (Session 55+)
+1. **Publish Article 7 + Feed Post** to LinkedIn
+2. **Apply to OneJar** via LinkedIn Easy Apply (attach CV.docx + CL.docx)
+3. **Create Article 9** — follow-up on skill reliability (if Buzzhive runs 2-3 yield same results)
+4. **Monitor OneJar** response, prepare for interview
+5. **Allure TestOps trial decision** (ends ~2026-06-30)
+6. **Logifuture interview prep** (Jun 24, 13:00 CET)
+7. **Morgan Stanley screening** monitoring

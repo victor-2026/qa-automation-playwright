@@ -225,7 +225,9 @@ test.describe('CONTRACT-001: OpenAPI Schema Validation', () => {
 
   // TEMP: Demonstrates schema drift — remove after screenshot
   test('CONTRACT-DEMO: schema drift caught — field missing from API response', async ({ request }) => {
-    const res = await request.get(`${API_BASE}/api/posts`);
+    const res = await request.get(`${API_BASE}/api/posts`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
     expect(res.status()).toBe(200);
     const body = await res.json();
     // API returns { items: [...], total: ... } but we assert a 'data' field

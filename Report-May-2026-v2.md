@@ -1,126 +1,126 @@
-# QA Automation Sandbox — Сводный отчёт за Май 2026
+# QA Automation Sandbox — May 2026 Summary Report
 
-**Проект:** Buzzhive QA Sandbox  
-**Бюджет:** $0 (бесплатные инструменты)  
-**Репозиторий:** [victor-2026/qa-automation-playwright](https://github.com/victor-2026/qa-automation-playwright)  
-**Render стенд:** [buzzhive-test.onrender.com](https://buzzhive-test.onrender.com)
+**Project:** Buzzhive QA Sandbox  
+**Budget:** $0 (free tools)  
+**Repository:** [victor-2026/qa-automation-playwright](https://github.com/victor-2026/qa-automation-playwright)  
+**Render URL:** [buzzhive-test.onrender.com](https://buzzhive-test.onrender.com)
 
 ---
 
 ## Executive Summary
 
-Май стал месяцем **архитектуры и честных цифр**. Ни одного нового теста — только рефакторинг, стабилизация, документация.
+May was a month of **architecture and honest numbers**. Zero new tests — only refactoring, stabilization, documentation.
 
-| Метрика | Апрель | Май | Комментарий |
-|---------|--------|-----|-------------|
-| Уникальных тестов | ~489 | **292** (×4 браузера = **1157** runs) | Честная цифра, не «2000+» |
-| API покрытие | 94% | **94%** (стабильно) | 49/52 endpoints |
-| Монолиты | 2 (~4,000 строк) | **0** | Разделены на 23 модуля |
-| Языки тестов | 3 (TS + Go + Python) | **5 (TS + Go + C# + Python + k6)** | +C#, +k6 |
+| Metric | April | May | Comment |
+|--------|-------|-----|---------|
+| Unique tests | ~489 | **292** (×4 browsers = **1157** runs) | Honest count, not "2000+" |
+| API coverage | 94% | **94%** (stable) | 49/52 endpoints |
+| Monoliths | 2 (~4,000 lines) | **0** | Split into 23 modules |
+| Test languages | 3 (TS + Go + Python) | **5 (TS + Go + C# + Python + k6)** | +C#, +k6 |
 | CI/CD | Render smoke | **Render smoke + quality gates + uptime monitor** | |
-| Документация | — | **5 TEST_ARCHITECTURE.md, 3 Canvas схемы** | |
-| Архитектурных схем | 0 | **3 (Go, C#, Mutation)** | Obsidian Canvas |
-| Найдено багов | 0 | **6 (1 race + 2 mutation + 3 fuzzer)** | |
+| Documentation | — | **5 TEST_ARCHITECTURE.md, 3 Canvas diagrams** | |
+| Architecture diagrams | 0 | **3 (Go, C#, Mutation)** | Obsidian Canvas |
+| Bugs found | 0 | **6 (1 race + 2 mutation + 3 fuzzer)** | |
 
 ---
 
-## 🏗️ Архитектура тестов (5 слоёв)
+## 🏗️ Test Architecture (5 Layers)
 
 ```
-                        npx playwright test
-                   1157 runs × 4 browser projects
+                         npx playwright test
+                    1157 runs × 4 browser projects
+                            │
+         ┌──────────────────┼──────────────────┐
+         │                  │                   │
+    ┌────┴────┐       ┌────┴────┐        ┌────┴────┐
+    │  api/   │       │  ui/    │        │  load/  │
+    │ 9 files │       │14 files │        │ 4 files │
+    │ request │       │ page +  │        │  page   │
+    │ (HTTP)  │       │   POM   │        │ (timing)│
+    └────┬────┘       └────┬────┘        └────┬────┘
+         │                  │                   │
+    ┌────┴──────────────────┴──────────────────┴────┐
+    │              mutation/ (3 stages)              │
+    │     API Response → DB Data → Chaos (Docker)    │
+    └──────────────────────┬────────────────────────┘
                            │
-        ┌──────────────────┼──────────────────┐
-        │                  │                   │
-   ┌────┴────┐       ┌────┴────┐        ┌────┴────┐
-   │  api/   │       │  ui/    │        │  load/  │
-   │ 9 файлов│       │14 файлов│        │ 4 файла │
-   │ request │       │ page +  │        │  page   │
-   │ (HTTP)  │       │   POM   │        │ (timing)│
-   └────┬────┘       └────┬────┘        └────┬────┘
-        │                  │                   │
-   ┌────┴──────────────────┴──────────────────┴────┐
-   │              mutation/ (3 стадии)              │
-   │     API Response → DB Data → Chaos (Docker)    │
-   └──────────────────────┬────────────────────────┘
-                          │
-   ┌──────────────────────┴────────────────────────┐
-   │  Shared: fixtures.ts / pages/ / teardown/     │
-   │  POM: BasePage → LoginPage, NavPage, FeedPage │
-   └───────────────────────────────────────────────┘
+    ┌──────────────────────┴────────────────────────┐
+    │  Shared: fixtures.ts / pages/ / teardown/     │
+    │  POM: BasePage → LoginPage, NavPage, FeedPage │
+    └───────────────────────────────────────────────┘
 ```
 
-### 23 модуля вместо 2 монолитов
+### 23 Modules Instead of 2 Monoliths
 
-**Апрель (было):**
+**April (before):**
 ```
 e2e/
-  ├── buzzhive.spec.ts       ← 2349 строк, монолит (UI + API)
-  └── api-expanded.spec.ts   ← 1559 строк, дубликат
+  ├── buzzhive.spec.ts       ← 2349 lines, monolith (UI + API)
+  └── api-expanded.spec.ts   ← 1559 lines, duplicate
 ```
 
-**Май (стало):**
+**May (after):**
 ```
 e2e/
-  ├── api/     (9 файлов, 2906 строк)  — Auth, Posts, Users, Admin,
+  ├── api/     (9 files, 2906 lines)  — Auth, Posts, Users, Admin,
   │                                        Conversations, Notifications,
   │                                        Health, Metamorphic, Smoke
-  ├── ui/      (14 файлов, 1270 строк) — Auth, Posts, Profile, Admin,
+  ├── ui/      (14 files, 1270 lines) — Auth, Posts, Profile, Admin,
   │                                        Comments, Navigation, Messages,
   │                                        Notifications, Follows, Search,
   │                                        Moderator, Logout, Performance
-  ├── load/    (4 файла)               — Smoke, Basic, Stress, Network
-  ├── mutation/(3 файла)               — API, DB, Chaos
-  ├── pages/   (4 класса)              — BasePage, LoginPage, NavPage, FeedPage
-  └── fixtures.ts                      — test.extend (единый для всех)
+  ├── load/    (4 files)               — Smoke, Basic, Stress, Network
+  ├── mutation/(3 files)               — API, DB, Chaos
+  ├── pages/   (4 classes)             — BasePage, LoginPage, NavPage, FeedPage
+  └── fixtures.ts                      — test.extend (shared across all)
 ```
 
 ---
 
-## 🌐 Multi-Browser стратегия
+## 🌐 Multi-Browser Strategy
 
-Каждый `test()` автоматически запускается ×4:
+Each `test()` runs automatically ×4:
 
-| Проект | Устройство | Тестов | Исключения |
-|--------|-----------|--------|------------|
-| Chromium | Desktop | **281** | `mobile.spec.ts` исключён |
-| Mobile Safari | iPhone 15 Pro | **292** | Все |
-| Mobile Safari Plus | iPhone 15 Pro Max | **292** | Все |
-| Mobile Chrome | Pixel 5 | **292** | Все |
+| Project | Device | Tests | Exceptions |
+|---------|--------|-------|------------|
+| Chromium | Desktop | **281** | `mobile.spec.ts` excluded |
+| Mobile Safari | iPhone 15 Pro | **292** | All |
+| Mobile Safari Plus | iPhone 15 Pro Max | **292** | All |
+| Mobile Chrome | Pixel 5 | **292** | All |
 
 **Total: 1157 runs (292 unique × 4 projects)**
 
 ---
 
-## 🗂️ Архитектурная документация (новая в мае)
+## 🗂️ Architectural Documentation (New in May)
 
-За май созданы **5 документов TEST_ARCHITECTURE.md** и **3 визуальные схемы (Canvas)**:
+May created **5 TEST_ARCHITECTURE.md documents** and **3 visual diagrams (Canvas)**:
 
-| Документ | Строк | О чём |
+| Document | Lines | About |
 |----------|-------|-------|
-| `e2e/TEST_ARCHITECTURE.md` | 334 | Главный TS-стек: 23 модуля, 5 слоёв, CI, паттерны |
-| `e2e/mutation/TEST_ARCHITECTURE.md` | 214 | 3 стадии мутации (API/DB/Chaos), gzip fix, BUG-005, BUG-006 |
+| `e2e/TEST_ARCHITECTURE.md` | 334 | Main TS stack: 23 modules, 5 layers, CI, patterns |
+| `e2e/mutation/TEST_ARCHITECTURE.md` | 214 | 3 mutation stages (API/DB/Chaos), gzip fix, BUG-005, BUG-006 |
 | `go-backend/TEST_ARCHITECTURE.md` | 105 | Go: Users + Follows, error handling, race detection |
 | `csharp-backend/TEST_ARCHITECTURE.md` | 185 | C#: Fuzzer + PBT + Schema + Race + Meta, porting rules |
-| `e2e/mutation/MUTATION_PLAN.md` | 225 | План мутационного тестирования |
+| `e2e/mutation/MUTATION_PLAN.md` | 225 | Mutation testing plan |
 
-| Canvas | Нод | Рёбер | Визуализирует |
-|--------|-----|-------|--------------|
+| Canvas | Nodes | Edges | Visualizes |
+|--------|-------|-------|------------|
 | `Go-Test-Architecture.canvas` | 7 | 9 | Go API + UI layer diagram |
-| `CSharp-Test-Architecture.canvas` | 8 | 10 | C# module diagram (цветной) |
-| `Mutation-Test-Architecture.canvas` | 7 | 9 | 3 стадии + patterns + bugs |
+| `CSharp-Test-Architecture.canvas` | 8 | 10 | C# module diagram (color-coded) |
+| `Mutation-Test-Architecture.canvas` | 7 | 9 | 3 stages + patterns + bugs |
 
 ---
 
-## 🧪 Многоязычный тестовый стек
+## 🧪 Multi-Language Test Stack
 
-Май расширил проект с 3 до 5 языков:
+May expanded the project from 3 to 5 languages:
 
 ```
                    ┌──────────────────────┐
                    │   QA Automation       │
-                   │   5 языков, 7 фрейм-  │
-                   │   ворков              │
+                   │   5 languages, 7      │
+                   │   frameworks          │
                    └──────┬───────────────┘
           ┌────────────────┼────────────────┐
           ▼                ▼                 ▼
@@ -143,61 +143,61 @@ e2e/
    └──────────┘    └──────────┘
 ```
 
-| Язык | Тестов | Фреймворк | Что покрывает |
-|------|--------|-----------|--------------|
+| Language | Tests | Framework | What It Covers |
+|----------|-------|-----------|---------------|
 | **TypeScript** | 1157 (×4) | Playwright + Jest | E2E API + UI + Load + Mutation |
-| **TypeScript (PBT)** | 56 | fast-check | Property-based для 7 методов |
-| **TypeScript (DB)** | ~20 | Jest + pg | PostgreSQL прямыми запросами |
-| **TypeScript (Gherkin)** | 42 | Cucumber | BDD-сценарии |
+| **TypeScript (PBT)** | 56 | fast-check | Property-based for 7 methods |
+| **TypeScript (DB)** | ~20 | Jest + pg | PostgreSQL direct queries |
+| **TypeScript (Gherkin)** | 42 | Cucumber | BDD scenarios |
 | **Go** | 11 | net/http + testify | Users + Follows API |
 | **C#** | 41 | xUnit + FsCheck | Fuzzer + PBT + Schema + Race + Metamorphic |
 | **Python** | 28 | Pytest | API smoke + ad-hoc |
 | **k6** | 5 | k6 | Load + stress |
-| **Total** | **~1351** | 7 фреймворков | |
+| **Total** | **~1351** | 7 frameworks | |
 
 ---
 
-## 🎯 Ключевые изменения в мае
+## 🎯 Key Changes in May
 
-### 1. Монолиты → Модули
-- `buzzhive.spec.ts` (2349 строк) → 14 UI модулей
-- `api-expanded.spec.ts` (1559 строк) → 9 API модулей (удалён как дубликат)
-- Все файлы переведены на `import { test, expect } from '../fixtures'`
+### 1. Monoliths → Modules
+- `buzzhive.spec.ts` (2349 lines) → 14 UI modules
+- `api-expanded.spec.ts` (1559 lines) → 9 API modules (deleted as duplicate)
+- All files migrated to `import { test, expect } from '../fixtures'`
 
-### 2. Найден и исправлен Race Condition
-- **Root cause:** `datetime.now()` как JWT `exp` → одинаковый timestamp → одинаковый JWT → `unique_violation`
-- **Fix:** `jti: uuid.uuid4()` в refresh token payload
-- **Когда жил:** с запуска API (апрель)
+### 2. Race Condition Found and Fixed
+- **Root cause:** `datetime.now()` as JWT `exp` → same timestamp → same JWT → `unique_violation`
+- **Fix:** `jti: uuid.uuid4()` in refresh token payload
+- **When it lived:** since API launch (April)
 
-### 3. Render Stabilization (27 мая, 3 коммита за час)
-- Глобальные exception handlers (все ошибки → JSON, не HTML)
+### 3. Render Stabilization (May 27, 3 commits in 1 hour)
+- Global exception handlers (all errors → JSON, not HTML)
 - Connection pool (pool_size=10, pool_pre_ping)
 - URL transformation (sslmode=require)
 - UUID safe parsing (ValueError → UnauthorizedException)
-- Удалены неиспользуемые Pillow/slowapi
+- Removed unused Pillow/slowapi
 
 ### 4. Uptime Monitor
-- GitHub Actions workflow — проверка Render health каждые 15 мин
+- GitHub Actions workflow — checks Render health every 15 min
 - Failure → GitHub email alert
 
-### 5. Smoke-тесты расширены
-- 6 → 12 эндпойнтов
-- safeJson() — не падают на HTML-ответах
+### 5. Smoke Tests Expanded
+- 6 → 12 endpoints
+- safeJson() — don't fail on HTML responses
 - 12 tests: health, login, register, posts, users, admin, CORS
 
 ### 6. GitHub Pages
-- Jekyll build step: `.md` → `.html` без расширения
+- Jekyll build step: `.md` → `.html` without extension
 - Monthly reports (April archive + May report)
-- 5 страниц: presentations, test report, AI-ready DOR, API contract, bugs
+- 5 pages: presentations, test report, AI-ready DOR, API contract, bugs
 
 ---
 
-## 🧬 Mutation Testing (новое в мае)
+## 🧬 Mutation Testing (New in May)
 
-Три подхода мутационного тестирования без доступа к исходному коду:
+Three mutation testing approaches without access to source code:
 
 ```
-Stage 1 — API Response (8 тестов)    Stage 2 — DB Data (4 теста)
+Stage 1 — API Response (8 tests)    Stage 2 — DB Data (4 tests)
 ─────────────────────────────        ─────────────────────────
 page.route() intercept              pg direct SQL mutation
 likes→0, null username,             is_active→false (banned)
@@ -207,7 +207,7 @@ unverified, missing avatar,         XSS injection → BUG-005
         │                                    │
         └────────────────┬───────────────────┘
                          ▼
-              Stage 3 — Chaos (3 теста)
+              Stage 3 — Chaos (3 tests)
               ─────────────────────────
               Docker stop/restart
               db down, backend down,
@@ -215,49 +215,49 @@ unverified, missing avatar,         XSS injection → BUG-005
               Guard: DOCKER_CHAOS=1
 ```
 
-### Баги, найденные мутацией
+### Bugs Found by Mutation
 
-| Bug | Severity | Что | Где |
-|-----|----------|-----|-----|
-| BUG-005 | 🔴 Critical | Post content рендерит HTML как есть — XSS | `PostCard.tsx` |
-| BUG-006 | 🟡 Low | Отрицательный likes_count = -5, не 0 | `PostCard.tsx` |
-
----
-
-## 🐛 Все баги, найденные в проекте
-
-| Bug | Где | Нашёл | Месяц |
-|-----|-----|-------|-------|
-| Refresh token race condition | Auth API | Рефакторинг | Май |
-| BUG-001: Unicode control chars → 500 | Posts | C# Fuzzer | Май |
-| BUG-002: Concurrent follow/unfollow → 500 | Follows | C# Race | Май |
-| BUG-003: Parallel register → duplicates | Auth | C# PBT | Май |
-| BUG-004: Parallel register → 500 | Auth | C# PBT | Май |
-| BUG-005: Post content XSS (HTML rendering) | UI | Mutation | Май |
-| BUG-006: Negative likes displayed as -5 | UI | Mutation | Май |
+| Bug | Severity | What | Where |
+|-----|----------|------|-------|
+| BUG-005 | 🔴 Critical | Post content renders HTML as-is — XSS | `PostCard.tsx` |
+| BUG-006 | 🟡 Low | Negative likes_count = -5, not 0 | `PostCard.tsx` |
 
 ---
 
-## 🤖 AI Tools Landscape (динамика за 2 месяца)
+## 🐛 All Bugs Found in the Project
+
+| Bug | Where | Found By | Month |
+|-----|-------|----------|-------|
+| Refresh token race condition | Auth API | Refactoring | May |
+| BUG-001: Unicode control chars → 500 | Posts | C# Fuzzer | May |
+| BUG-002: Concurrent follow/unfollow → 500 | Follows | C# Race | May |
+| BUG-003: Parallel register → duplicates | Auth | C# PBT | May |
+| BUG-004: Parallel register → 500 | Auth | C# PBT | May |
+| BUG-005: Post content XSS (HTML rendering) | UI | Mutation | May |
+| BUG-006: Negative likes displayed as -5 | UI | Mutation | May |
+
+---
+
+## 🤖 AI Tools Landscape (2-Month Dynamics)
 
 ```
-Phase 1 (апрель)                          Phase 2 (май)
+Phase 1 (April)                          Phase 2 (May)
 ─────────────────                        ──────────────
-GPT-5.0 Mini (OpenCode)   ──заменён──→   GPT-5 Nano
+GPT-5.0 Mini (OpenCode)   ──replaced──→   GPT-5 Nano
 Groq Llama 3.3 70B                       Groq Llama 3.3 70B
 Ollama qwen2.5:3b                        Ollama qwen2.5:3b
 GitHub Copilot                           GitHub Copilot
-                    ──новые──→           MiniMax M2.5 free (акция кончилась)
-                    ──новые──→           Cursor Hobby (лимит 50 req)
-                    ──новые──→           Cline (не справилась с >2000 строк)
+                     ──new──→            MiniMax M2.5 free (promo ended)
+                     ──new──→            Cursor Hobby (limit 50 req)
+                     ──new──→            Cline (couldn't handle >2000 lines)
 ```
 
-**За 2 месяца сменилось 17 AI-моделей/инструментов. 5 остались бесплатными, 7 ушли.**
+**Over 2 months, 17 AI models/tools cycled through. 5 remained free, 7 left.**
 
-### Бесплатные сейчас
+### Currently Free
 
-| Инструмент | Модель | Статус |
-|-----------|--------|--------|
+| Tool | Model | Status |
+|------|-------|--------|
 | OpenCode Desktop | `glm-5-free`, `minimax-m2.7-free`, `gpt-5-nano` | ✅ |
 | GitHub Copilot | — | ✅ |
 | Ollama | `qwen2.5:3b` (1.9GB local) | ✅ |
@@ -287,7 +287,7 @@ Nightly (3 AM UTC)
             API smoke (12 tests)
             UI smoke (5 tests)
 
-Uptime Monitor (каждые 15 мин)
+Uptime Monitor (every 15 min)
      │
      └──► Render health check
             Failure → GitHub email alert
@@ -295,35 +295,35 @@ Uptime Monitor (каждые 15 мин)
 
 ---
 
-## 📋 Известные ограничения
+## 📋 Known Limitations
 
-| Ограничение | Причина | Статус |
-|-------------|---------|--------|
-| Full suite только локально | Требует Docker (PostgreSQL + backend + frontend) | ❌ |
-| CI Docker отключён | GHA ubuntu-latest не имеет Docker socket | ❌ |
-| Render только smoke | Cold start 503 + таймауты | ❌ |
-| Mobile — эмуляторы | Не реальные устройства | ⚠️ |
-| Load — single-threaded | Не распределённый | ⚠️ |
-| Go — без helpers | `client.go` утерян, тесты не компилируются | ❌ |
-| Нет Page Objects для всех страниц | Profile, Admin, Search — голый page | ⚠️ |
-
----
-
-## 🔜 План на июнь
-
-1. **Go:** восстановить helper-файлы + добавить `-race` + `t.Cleanup`
-2. **C#:** добавить CI-прогон C# тестов
-3. **TS:** Page Objects для Profile, Admin, Search
-4. **Infra:** Docker CI в GitHub Actions
-5. **Article:** опубликовать Phase 2 статью на LinkedIn
-6. **Docs:** 1-pager по AI Tools Landscape для портфолио
+| Limitation | Reason | Status |
+|------------|--------|--------|
+| Full suite only local | Requires Docker (PostgreSQL + backend + frontend) | ❌ |
+| CI Docker disabled | GHA ubuntu-latest has no Docker socket | ❌ |
+| Render only smoke | Cold start 503 + timeouts | ❌ |
+| Mobile — emulators | Not real devices | ⚠️ |
+| Load — single-threaded | Not distributed | ⚠️ |
+| Go — no helpers | `client.go` lost, tests don't compile | ❌ |
+| No Page Objects for all pages | Profile, Admin, Search — raw page | ⚠️ |
 
 ---
 
-## 🔗 Ссылки
+## 🔜 June Plan
 
-- [Главная](.) — портал
-- [Отчёт за Апрель 2026](Report-April-2026)
+1. **Go:** restore helper files + add `-race` + `t.Cleanup`
+2. **C#:** add C# test CI run
+3. **TS:** Page Objects for Profile, Admin, Search
+4. **Infra:** Docker CI in GitHub Actions
+5. **Article:** publish Phase 2 article on LinkedIn
+6. **Docs:** 1-pager on AI Tools Landscape for portfolio
+
+---
+
+## 🔗 Links
+
+- [Home](.) — portal
+- [April 2026 Report](Report-April-2026)
 - [Presentation for Management](PRESENTATION_FOR_MANAGEMENT)
 - [Presentation PART 2](PRESENTATION_PART2)
 - [Test Report](TEST_REPORT)
@@ -336,4 +336,4 @@ Uptime Monitor (каждые 15 мин)
 
 ---
 
-*Сгенерировано 2026-05-28 | Данные из playwright --list, git log, TEST_ARCHITECTURE.md*
+*Generated 2026-05-28 | Data from playwright --list, git log, TEST_ARCHITECTURE.md*

@@ -2,7 +2,7 @@
   "experiment": "Skill Reliability Experiment - Buzzhive",
   "date": "2026-06-19",
   "methodology": "3 runs without skill, 3 runs with skill per skill",
-  "model": "big-pickle (opencode default)",
+  "model": "Nemotron 3 Ultra Free (opencode)",
   "target": "Buzzhive (REST API + React, Docker, port 8000/3000)",
   "skills": [
     {

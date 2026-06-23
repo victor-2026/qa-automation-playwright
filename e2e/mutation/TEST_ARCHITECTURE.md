@@ -318,10 +318,10 @@ npx playwright test e2e/mutation/ --project=chromium
 
 ## Limitations
 
-| Ограничение | Причина |
-|-------------|---------|
-| DB mutation только локально | Нет доступа к Render Postgres из CI |
-| Chaos только локально | Нет Docker в GHA ubuntu runner |
-| API mutation не тестирует бэкенд | Только фронтенд-обработку ответов |
-| UI Fuzzing зависит от data-testid | Тесты ломаются при изменении UI |
-| 49 тестов vs 100+ при Stryker | Без кода бэкенда — максимум возможного |
+| Limitation | Reason |
+|------------|--------|
+| DB mutation only local | No access to Render Postgres from CI |
+| Chaos only local | No Docker in GHA ubuntu runner |
+| API mutation doesn't test backend | Only frontend response handling |
+| UI Fuzzing depends on data-testid | Tests break on UI changes |
+| 49 tests vs 100+ with Stryker | No backend code — maximum possible |

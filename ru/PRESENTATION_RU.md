@@ -1,29 +1,29 @@
-# Презентация — QA Automation
+# Presentation — QA Automation
 
-## Slide 1: Титульный слайд
+## Slide 1: Title Slide
 
 **QA Automation — Buzzhive Sandbox**  
 Zero-Budget AI-Assisted Testing
 
 ---
 
-## Slide 2: Цель проекта
+## Slide 2: Project Goal
 
-Практика QA Automation на реальном проекте с изучением современных подходов.
-
----
-
-## Slide 3: Результаты
-
-- 456 тестов (+7.5x)
-- 94% покрытие API
-- $0 бюджет
-- -19% время выполнения
+Practice QA Automation on a real project while learning modern approaches.
 
 ---
 
-[Полная презентация доступна в PRESENTATION_FOR_MANAGEMENT.md]
+## Slide 3: Results
+
+- 456 tests (+7.5x)
+- 94% API coverage
+- $0 budget
+- -19% execution time
 
 ---
 
-*Презентация сгенерирована с помощью NotebookLM*
+[Full presentation available in PRESENTATION_FOR_MANAGEMENT.md]
+
+---
+
+*Presentation generated with NotebookLM*

@@ -18,6 +18,13 @@ export default defineConfig({
     video: 'retain-on-failure',
     trace: 'on-first-retry',
   },
+  snapshotDir: './e2e/visual/snapshots',
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02,
+      threshold: 0.2,
+    },
+  },
   projects: [
     {
       name: 'contracts',
@@ -41,6 +48,11 @@ export default defineConfig({
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'visual',
+      testMatch: 'e2e/visual/**/*.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 });

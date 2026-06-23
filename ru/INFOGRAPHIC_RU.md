@@ -1,19 +1,19 @@
-# Инфографика — QA Automation Results
+# Infographic — QA Automation Results
 
 ![QA Metrics Infographic]
 
-[Вставить изображение инфографики из NotebookLM]
+[Insert infographic image from NotebookLM]
 
 ---
 
-## Метрики
+## Metrics
 
-| Метрика | До | После |
-|---------|-----|-------|
-| Тесты | 60 | 456 |
-| Покрытие API | 73% | 94% |
-| Время | 2.6 мин | 2.1 мин |
+| Metric | Before | After |
+|--------|--------|-------|
+| Tests | 60 | 456 |
+| API Coverage | 73% | 94% |
+| Execution Time | 2.6 min | 2.1 min |
 
 ---
 
-*Инфографика сгенерирована с помощью NotebookLM*
+*Infographic generated with NotebookLM*

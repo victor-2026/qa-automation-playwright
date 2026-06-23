@@ -1,176 +1,176 @@
 # QA Automation — Buzzhive Sandbox
 
-## Отчёт о проделанной работе
+## Progress Report
 
-**Период:** 2026-04-14 — 2026-04-15  
-**Проект:** Buzzhive QA Sandbox  
-**Бюджет:** $0 (бесплатные инструменты)
-
----
-
-## Результаты
-
-| Метрика | До | После | Изменение |
-|---------|-----|-------|-----------|
-| Тестов | 60 | **456** | **+7.5x** |
-| Покрытие API | 73% | **94%** | +21% |
-| Время выполнения | 2.6 мин | **2.1 мин** | **-19%** |
-| Flaky тесты | много | **0** | -100% |
+**Period:** 2026-04-14 — 2026-04-15  
+**Project:** Buzzhive QA Sandbox  
+**Budget:** $0 (free tools)
 
 ---
 
-Отчет о масштабировании и модернизации
-системы автоматизации тестирования:
-Проект Buzzhive Sandbox
-1. Стратегический обзор и аппаратная конфигурация
-В условиях жестко лимитированных ресурсов переход от фрагментарного тестирования к
-многоуровневой архитектуре является не просто технической задачей, а стратегической
-необходимостью для обеспечения стабильности продукта. Проект Buzzhive Sandbox
-подтвердил: высокопроизводительная QA-инфраструктура может быть развернута при
-нулевом бюджете на проприетарное ПО, если в основу заложен принцип «Discovery-first» и
-интеллектуальное управление ресурсами. Данная архитектура теперь является
-валидированным стандартом для сред с ограниченными аппаратными мощностями.
-Оценка аппаратного обеспечения В качестве хост-системы использовался 2019 Intel
-MacBook Pro (16GB RAM). Выбор инструментов был жестко продиктован этим лимитом:
-• Архитектурное решение по AI: Для локального запуска была выбрана модель
-qwen2.5:3b через Ollama. Ее footprint в 1.9 ГБ ОЗУ позволил сохранить
-вычислительные мощности для параллельного прогона тестов и работы IDE, в отличие
-от тяжелых моделей (например, qwen2.5:14b), вызывавших таймауты.
-• Эффективность генерации: Комбинация локальной qwen2.5:3b для анализа
-документации и облачной Llama 3.3 70B (Groq, free tier) для кодогенерации
-обеспечила скорость до 500 токенов/сек, превратив инфраструктуру в полноценный
-полигон для AI-агентов.
-Целеполагание Ключевая задача заключалась в радикальном расширении покрытия при
-одновременном снижении Execution Time. Мы доказали, что масштабируемость системы
-определяется не количеством тестов, а качеством их архитектуры и отсутствием
-инфраструктурного «шума».
---------------------------------------------------------------------------------
-2. Пирамида тестирования: Текущее состояние и
-потенциал
-Для минимизации стоимости владения (TCO) системой автоматизации мы внедрили жесткий
-баланс уровней тестирования. Это позволило избежать «анти-паттерна мороженого» и
-сфокусировать усилия на наиболее эффективных слоях проверки.
-Анализ текущей пирамиды На текущий момент реализовано 456 тестов, что составляет
-~60% от целевого покрытия в режиме Black Box:
-Уровень тестирования Кол-
-Инструментарий KPI Покрытия
-во
-E2E (UI) 122 Playwright Критические пути пользователя
-API Testing 280 Playwright 94% (49 из 52 эндпоинтов)
-DB / PBT / Gherkin 54 Jest, fast-check, Cucumber Целостность данных и инварианты
-ИТОГО 456 60% (без доступа к коду)
-Прогноз расширения (Code Access) При получении доступа к исходному коду (White Box)
-пирамида будет дополнена слоем из 300–450 Unit-тестов. Это доведет общее количество
-проверок до ~750–900, обеспечивая 100% уверенность в логике компонентов при сохранении
-минимального времени выполнения всей системы за счет переноса части проверок с UI/API на
-уровень модулей.
---------------------------------------------------------------------------------
-3. Сравнительный анализ производительности (Метрики
-До/После)
-Объективная ценность модернизации выражается в качественном скачке метрик, достигнутом
-всего за 10 рабочих часов.
-Трансформация показателей
-Метрика До После Изменение Impact (Влияние)
-Количество тестов 60 456 +7.5x Глубина проверки всех модулей
-Объем кода тестов ~800 строк ~4500 строк +5.6x Масштабируемость кодовой базы
-Покрытие API 73 % 94 % 21 % Минимизация «слепых зон»
-Время прогона 2.6 мин 2.1 мин -19 % Быстрая обратная связь
-Flaky тесты Много 0 -100 % Доверие к результатам прогона
-Интерпретация «Парадокса эффективности» Несмотря на рост объема кода в 5.6 раз и
-количества тестов в 7.5 раз, время выполнения сократилось на 19%. Это результат
-агрессивного Anti-flaky рефакторинга: мы полностью устранили waitForTimeout (~40
-случаев), заменив их на динамические предикаты expect().toPass(). Система перешла
-от статических ожиданий к событийной модели.
---------------------------------------------------------------------------------
-4. Расширенные методики: PBT, DB и BDD
-Выход за рамки стандартных сценариев позволил обнаружить глубокие дефекты, которые
-обычно игнорируются классической автоматизацией.
-• Property-Based Testing (PBT): Использование fast-check для 13 тестов
-обеспечило покрытие api-client.ts на уровне 44.82%. Генерация тысяч
-случайных комбинаций данных позволила верифицировать устойчивость системы к
-некорректному вводу в полях Email и Post.
-• Тестирование базы данных (DB): Фаза Discovery выявила критические
-архитектурные несоответствия:
-◦ Schema Mismatch: Реальное поле posts.author_id вместо ожидаемого
-user_id.
-◦ Computed Fields: Поле followers_count в таблице users отсутствует,
-так как является вычисляемым (риск производительности).
-◦ Data Integrity: Выяснено, что ID сущностей должны передаваться строго как
-UUID, а не генерироваться сиквенсом.
-• BDD (Gherkin): 23 сценария обеспечили прозрачность требований для бизнеса,
-связывая техническую реализацию в Playwright с живой документацией.
---------------------------------------------------------------------------------
-5. Экосистема AI-инструментов и автоматизация
-спецификаций
-Использование генеративного ИИ позволило трансформировать процесс создания
-документации из рутинного описания в инженерную дисциплину.
-Концепция AI-Ready Documentation Одним из главных достижений стало сокращение
-объема TEST_CASES.md с 1343 строк до ~250 строк. Мы устранили дублирование, сделав
-код единственным источником истины, а документацию — машиночитаемым реестром (ID,
-Name, Priority). Созданный AI_READY_DOR.md (49 эндпоинтов, 6 стейт-машин, 10
-инвариантов) стал фундаментом для автономных AI-агентов.
-AI как стратегический коллаборатор Локальная модель qwen2.5:3b не только
-генерировала код, но и обнаружила критические пробелы в Definition of Ready (DoR):
-1. 2. Отсутствие стратегии изоляции тестов (Test isolation strategy).
-Неопределенные лимиты запросов (Rate limits). Эти находки позволили
-скорректировать тестовую стратегию до начала массовой разработки.
---------------------------------------------------------------------------------
-6. Реестр обнаруженных дефектов и системные
-ограничения
-В ходе модернизации была выявлена серия уязвимостей, классифицированных по степени
-риска для бизнеса.
-Анализ ключевых багов:
-• AUTH-011-02 (High): Эндпоинт POST /api/auth/refresh возвращает 500
-Error. Критическая блокировка механизма обновления сессий.
-• AUTH-011-01 (Medium): Отсутствие атрибута minlength на фронтенд-валидации
-паролей. Риск создания слабых учетных записей.
-Текущие ограничения:
-• iOS Runtime: Настройка окружения для мобильного тестирования требует
-завершения сборки WebDriverAgent.
-• White Box: Отсутствие доступа к коду пока не позволяет внедрить Unit-слой и достичь
-100% покрытия.
---------------------------------------------------------------------------------
-7. Выводы и дорожная карта развития
-Проект Buzzhive Sandbox доказал, что профессиональная экспертиза в QA способна
-компенсировать отсутствие бюджета на ПО. Нам удалось создать систему, которая работает
-быстрее, покрывает больше и требует меньше документации.
-Ключевые уроки:
-1. Discovery-first — обязательная фаза: Разведка схемы БД и API до начала кодинга
-экономит до 30% времени на рефакторинг.
-2. Документационный парадокс: Упрощение документации (1343 -> 250 строк) при
-росте сложности кода — признак зрелой архитектуры.
-3. Параллельные AI-агенты: Использование нескольких LLM одновременно ускоряет
-извлечение данных в 3 раза.
-Следующие шаги:
-1. 2. 3. Завершение Mobile Setup: Интеграция iOS-тестов в общий CI-пайплайн.
-Масштабирование PBT: Доведение покрытия api-client.ts до 75%+.
-Автоматизация инвариантов: Внедрение ночных прогонов для проверки 10 правил
-бизнес-логики на уровне БД.
-Созданная инфраструктура на базе MacBook Pro 2019 является эталоном эффективности: мы
-получили 7.5-кратный рост системы при снижении временных затрат на прогон, потратив на
-это всего 10 часов чистого времени.
+## Results
 
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Tests | 60 | **456** | **+7.5x** |
+| API Coverage | 73% | **94%** | +21% |
+| Execution Time | 2.6 min | **2.1 min** | **-19%** |
+| Flaky Tests | Many | **0** | -100% |
 
 ---
 
-## Детали
+Report on scaling and modernizing
+the test automation system:
+Buzzhive Sandbox Project
 
-### Стек технологий
+1. Strategic Overview and Hardware Configuration
+Under severely limited resources, transitioning from fragmented testing to a
+multi-layered architecture is not just a technical task but a strategic
+necessity for ensuring product stability. The Buzzhive Sandbox project
+confirmed: a high-performance QA infrastructure can be deployed at
+zero budget for proprietary software if built on the principle of
+"Discovery-first" and intelligent resource management. This architecture
+is now a validated standard for resource-constrained environments.
+Hardware Assessment The host system used was a 2019 Intel
+MacBook Pro (16GB RAM). Tool selection was strictly driven by this limit:
+- Architectural AI Decision: The qwen2.5:3b model via Ollama was
+chosen for local execution. Its 1.9GB RAM footprint preserved
+computing power for parallel test runs and IDE operation, unlike
+heavier models (e.g., qwen2.5:14b) that caused timeouts.
+- Generation Efficiency: The combination of local qwen2.5:3b for
+documentation analysis and cloud Llama 3.3 70B (Groq, free tier)
+for code generation achieved speeds up to 500 tokens/sec,
+turning the infrastructure into a full AI agent proving ground.
+Goal Setting The key objective was radical coverage expansion while
+simultaneously reducing execution time. We proved that system scalability
+is determined not by the number of tests, but by the quality of their
+architecture and the absence of infrastructural "noise."
+--------------------------------------------------------------------------------
+2. Testing Pyramid: Current State and Potential
+To minimize TCO of the automation system, we implemented a strict
+balance of testing levels. This avoided the "ice cream cone" anti-pattern and
+focused efforts on the most effective verification layers.
+Current Pyramid Analysis Currently, 456 tests are implemented, which is
+~60% of the target coverage in Black Box mode:
+| Level | Count | Tooling | KPI |
+|-------|-------|---------|-----|
+| E2E (UI) | 122 | Playwright | Critical user paths |
+| API Testing | 280 | Playwright | 94% (49 of 52 endpoints) |
+| DB / PBT / Gherkin | 54 | Jest, fast-check, Cucumber | Data integrity and invariants |
+| TOTAL | 456 | | 60% (without code access) |
+Expansion Forecast (Code Access) Once source code is available (White Box),
+the pyramid will be supplemented with 300–450 unit tests. This will bring
+the total to ~750–900 checks, ensuring 100% confidence in component logic
+while maintaining minimal execution time by shifting some checks from
+UI/API to the module level.
+--------------------------------------------------------------------------------
+3. Performance Comparison (Before/After Metrics)
+The objective value of the modernization is reflected in the qualitative
+metric leap achieved in just 10 working hours.
+Metric Transformation
+| Metric | Before | After | Change | Impact |
+|--------|--------|-------|--------|--------|
+| Test Count | 60 | 456 | +7.5x | Depth of all module checks |
+| Test Code Volume | ~800 lines | ~4500 lines | +5.6x | Codebase scalability |
+| API Coverage | 73% | 94% | +21% | Minimized blind spots |
+| Execution Time | 2.6 min | 2.1 min | -19% | Fast feedback |
+| Flaky Tests | Many | 0 | -100% | Trust in results |
+The "Efficiency Paradox" Despite a 5.6x growth in code volume and
+7.5x growth in test count, execution time decreased by 19%. This is the
+result of aggressive anti-flaky refactoring: we completely eliminated
+waitForTimeout (~40 cases), replacing them with dynamic predicates
+expect().toPass(). The system moved from static waits to an event-driven
+model.
+--------------------------------------------------------------------------------
+4. Advanced Techniques: PBT, DB, and BDD
+Going beyond standard scenarios uncovered deep defects typically
+overlooked by classical automation.
+- Property-Based Testing (PBT): Using fast-check for 13 tests
+achieved 44.82% coverage of api-client.ts. Generating thousands
+of random data combinations verified system resilience to incorrect
+input in Email and Post fields.
+- Database Testing (DB): The Discovery phase revealed critical
+architectural mismatches:
+  - Schema Mismatch: Actual field posts.author_id instead of
+  expected user_id.
+  - Computed Fields: Field followers_count in the users table
+  is absent as it is computed (performance risk).
+  - Data Integrity: Entity IDs must be passed strictly as UUID,
+  not generated by sequence.
+- BDD (Gherkin): 23 scenarios ensured requirement transparency
+for business stakeholders, linking Playwright technical
+implementation with living documentation.
+--------------------------------------------------------------------------------
+5. AI Tool Ecosystem and Specification Automation
+Generative AI transformed the documentation process from a routine
+task into an engineering discipline.
+AI-Ready Documentation Concept One of the main achievements was
+reducing TEST_CASES.md from 1,343 lines to ~250 lines. We eliminated
+redundancy, making code the single source of truth and documentation a
+machine-readable registry (ID, Name, Priority). The AI_READY_DOR.md
+(49 endpoints, 6 state machines, 10 invariants) became the foundation
+for autonomous AI agents.
+AI as Strategic Collaborator The local qwen2.5:3b model not only
+generated code but also identified critical gaps in the Definition of Ready
+(DoR):
+1. Missing test isolation strategy.
+2. Undefined rate limits.
+These findings allowed test strategy correction before mass development.
+--------------------------------------------------------------------------------
+6. Defect Registry and System Limitations
+During modernization, a series of vulnerabilities were identified and
+classified by business risk.
+Key Bug Analysis:
+- **AUTH-011-02 (High):** Endpoint POST /api/auth/refresh returns
+500 Error. Critical blocking of session refresh mechanism.
+- **AUTH-011-01 (Medium):** Missing minlength attribute on
+frontend password validation. Risk of weak account creation.
+Current Limitations:
+- **iOS Runtime:** Mobile test environment setup requires
+completing WebDriverAgent build.
+- **White Box:** No access to source code yet prevents
+introducing the Unit layer and achieving 100% coverage.
+--------------------------------------------------------------------------------
+7. Conclusions and Roadmap
+The Buzzhive Sandbox project proved that professional QA expertise can
+compensate for zero software budget. We built a system that runs faster,
+covers more, and requires less documentation.
+Key Lessons:
+1. Discovery-first is mandatory: Exploring DB schema and API before
+coding saves up to 30% refactoring time.
+2. Documentation paradox: Simplifying documentation (1343 → 250 lines)
+while code complexity grows is a sign of mature architecture.
+3. Parallel AI agents: Using multiple LLMs simultaneously accelerates
+data extraction 3x.
+Next Steps:
+1. Complete Mobile Setup: Integrate iOS tests into common CI pipeline.
+2. Scale PBT: Increase api-client.ts coverage to 75%+.
+3. Automate Invariants: Implement nightly runs for 10 business logic
+rules at DB level.
+The infrastructure built on a 2019 MacBook Pro is a benchmark of
+efficiency: we achieved 7.5x system growth while reducing execution time,
+spending only 10 hours of pure work time.
+
+---
+
+## Details
+
+### Tech Stack
 - Playwright (E2E + API)
 - Jest + fast-check (PBT)
-- Jest + pg (DB тесты)
+- Jest + pg (DB tests)
 - Cucumber (Gherkin)
 - GitHub Actions (CI/CD)
 
-### AI модели (бесплатно)
-- Groq Llama 3.3 70B — работает, 500 tok/s
-- Ollama qwen2.5:3b — локально, 1.9 GB
+### AI Models (free)
+- Groq Llama 3.3 70B — works, 500 tok/s
+- Ollama qwen2.5:3b — local, 1.9 GB
 
-### Не сработало
+### Didn't Work
 - Google Gemini — quota exceeded
-- Ollama qwen2.5:14b — слишком медленно
-- Autonoma — требует подписку
+- Ollama qwen2.5:14b — too slow
+- Autonoma — requires subscription
 
 ---
 
-*Сгенерировано с помощью NotebookLM*
+*Generated with NotebookLM*

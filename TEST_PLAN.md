@@ -1,121 +1,121 @@
-# Тест-план — Buzzhive QA Sandbox
+# Test Plan — Buzzhive QA Sandbox
 
-**Версия:** 1.0  
-**Дата:** 2026-04-17  
-**Автор:** QA Automation Sandbox  
-**Статус:** Draft  
-
----
-
-## 1. Введение (Introduction)
-
-### 1.1 Цель документа
-
-Определить стратегию, подходы, ресурсы и план тестирования для Buzzhive Social Network.
-
-### 1.2 Scope (Область тестирования)
-
-| Включено                    | Исключено                          |
-| --------------------------- | ---------------------------------- |
-| ✅ E2E UI тесты (Playwright) | ❌ Бэкенд код (нет доступа)         |
-| ✅ API тесты                 | ❌ Мобильные нативные (iOS/Android) |
-| ✅ DB тесты                  | ❌ Performance тесты бэкенда        |
-| ✅ Property-Based тесты      | ❌ Security penetration             |
-| ✅ BDD/Gherkin сценарии      |                                    |
-| ✅ Нагрузка (браузерная)     |                                    |
-
-### 1.3 Ограничения проекта
-
-| Ограничение | Влияние |
-|-------------|---------|
-| $0 бюджет | Только бесплатные инструменты |
-| Нет доступа к бэкенду | Нельзя запускать в CI полноценно |
-| Backend Docker недоступен | Smoke tests skipped |
-| 16GB RAM MacBook Pro | Ограниченная параллелизация |
+**Version:** 1.0  
+**Date:** 2026-04-17  
+**Author:** QA Automation Sandbox  
+**Status:** Draft
 
 ---
 
-## 2. Стратегия тестирования (Test Strategy)
+## 1. Introduction
 
-### 2.1 Виды тестирования
+### 1.1 Document Purpose
 
-| Вид | Инструмент | Покрытие | Приоритет |
-|-----|-----------|----------|-----------|
-| **E2E UI** | Playwright | 122 теста | Critical |
-| **API** | Playwright | 280 тестов | Critical |
-| **DB** | Jest + pg | 18 тестов | High |
-| **PBT** | Jest + fast-check | 46 тестов | High |
-| **BDD** | Cucumber/Gherkin | 2 сценария | Medium |
+Define the strategy, approaches, resources, and testing plan for Buzzhive Social Network.
+
+### 1.2 Scope
+
+| Included | Excluded |
+| -------- | -------- |
+| ✅ E2E UI tests (Playwright) | ❌ Backend code (no access) |
+| ✅ API tests | ❌ Native mobile (iOS/Android) |
+| ✅ DB tests | ❌ Backend performance tests |
+| ✅ Property-Based tests | ❌ Security penetration |
+| ✅ BDD/Gherkin scenarios | |
+| ✅ Load (browser-based) | |
+
+### 1.3 Project Constraints
+
+| Constraint | Impact |
+|------------|--------|
+| $0 budget | Only free tools |
+| No backend access | Cannot run full suite in CI |
+| Backend Docker unavailable | Smoke tests skipped |
+| 16GB RAM MacBook Pro | Limited parallelization |
+
+---
+
+## 2. Test Strategy
+
+### 2.1 Test Types
+
+| Type | Tool | Coverage | Priority |
+|------|------|----------|----------|
+| **E2E UI** | Playwright | 122 tests | Critical |
+| **API** | Playwright | 280 tests | Critical |
+| **DB** | Jest + pg | 18 tests | High |
+| **PBT** | Jest + fast-check | 46 tests | High |
+| **BDD** | Cucumber/Gherkin | 2 scenarios | Medium |
 | **Visual** | Playwright | Baseline | Low |
-| **Нагрузка** | Playwright (multi-context) | Manual | Low |
+| **Load** | Playwright (multi-context) | Manual | Low |
 
-### 2.2 Подходы к тестированию
+### 2.2 Testing Approaches
 
-#### Discovery-first (Рекомендуемый)
+#### Discovery-first (Recommended)
 ```
-1. Исследовать систему (API, UI, БД)
-2. Выявить требования
-3. Написать тесты
-4. Документировать
-```
-
-#### Spec-driven (Альтернатива)
-```
-1. Получить спецификацию
-2. Написать тесты по ней
-3. Запустить и проверить
+1. Explore the system (API, UI, DB)
+2. Identify requirements
+3. Write tests
+4. Document
 ```
 
-### 2.3 Тестовая пирамида
+#### Spec-driven (Alternative)
+```
+1. Get specification
+2. Write tests against it
+3. Run and verify
+```
+
+### 2.3 Test Pyramid
 
 ```
         /\
-       /E2E\        ← 122 тестов (мало, дорого)
+       /E2E\        ← 122 tests (few, expensive)
       /------\
-     /  API   \     ← 280 тестов (средне)
+     /  API   \     ← 280 tests (moderate)
     /----------\
-   /    PBT     \   ← 46 тестов (много, дешево)
+   /    PBT     \   ← 46 tests (many, cheap)
   /--------------\
- /   DB Tests    \  ← 18 тестов
+ /   DB Tests    \  ← 18 tests
 /------------------\
 ```
 
-### 2.4 Уровни тестирования
+### 2.4 Test Levels
 
-| Уровень | Что тестируем | Инструмент |
-|---------|---------------|------------|
-| **Component** | React компоненты | Jest |
+| Level | What We Test | Tool |
+|-------|-------------|------|
+| **Component** | React components | Jest |
 | **Integration** | API + DB | Playwright |
-| **System** | Полный UI flow | Playwright |
+| **System** | Full UI flow | Playwright |
 | **Acceptance** | User stories | Gherkin |
 
 ---
 
-## 3. Реализация (Test Implementation)
+## 3. Test Implementation
 
-### 3.1 Цели
+### 3.1 Goals
 
-| # | Цель | Метрика успеха |
-|---|------|----------------|
-| 1 | Покрыть все API endpoints | ≥94% endpoints |
-| 2 | Обеспечить стабильность | 0 flaky тестов |
-| 3 | Data-driven тесты | 3 формата (JSON/YAML/Python) |
-| 4 | Нагрузочное тестирование | 10+ браузеров одновременно |
+| # | Goal | Success Metric |
+|---|------|---------------|
+| 1 | Cover all API endpoints | ≥94% endpoints |
+| 2 | Ensure stability | 0 flaky tests |
+| 3 | Data-driven tests | 3 formats (JSON/YAML/Python) |
+| 4 | Load testing | 10+ browsers simultaneously |
 
-### 3.2 Ожидаемые результаты
+### 3.2 Expected Results
 
-| Результат | Целевое значение |
-|-----------|-----------------|
-| Total тестов | 489+ |
+| Result | Target Value |
+|--------|-------------|
+| Total tests | 489+ |
 | API Coverage | 94% |
 | PBT Coverage | 100% |
-| Execution time | < 10 мин |
+| Execution time | < 10 min |
 | Pass rate | ≥ 80% |
 
-### 3.3 Тестовые данные
+### 3.3 Test Data
 
 ```python
-# Тестовые аккаунты
+# Test accounts
 ACCOUNTS = {
     "alice": {"email": "alice@buzzhive.com", "password": "alice123", "role": "user"},
     "bob":   {"email": "bob@buzzhive.com", "password": "bob123", "role": "user"},
@@ -127,48 +127,48 @@ ACCOUNTS = {
 
 ---
 
-## 4. Ресурсы (Resources)
+## 4. Resources
 
-### 4.1 Аппаратные (Hardware)
+### 4.1 Hardware
 
-| Ресурс | Характеристика | Примечание |
-|--------|----------------|------------|
-| MacBook Pro | 16GB RAM, Apple Silicon | Основная машина |
-| CPU | 8 cores | Ограничивает параллелизацию |
-| Disk | SSD 512GB | Достаточно |
+| Resource | Specification | Notes |
+|----------|--------------|-------|
+| MacBook Pro | 16GB RAM, Apple Silicon | Main machine |
+| CPU | 8 cores | Limits parallelization |
+| Disk | SSD 512GB | Sufficient |
 
-### 4.2 Программные (Software)
+### 4.2 Software
 
-| Инструмент | Версия | Назначение |
-|------------|--------|------------|
+| Tool | Version | Purpose |
+|------|---------|---------|
 | Node.js | 22 | Runtime |
 | Playwright | 1.59 | E2E + API |
 | Jest | 30.3 | Unit/PBT |
-| pytest | 8.x | Python тесты |
+| pytest | 8.x | Python tests |
 | Docker | Latest | Container |
 
 ### 4.3 CI/CD
 
-| Платформа | Назначение |
-|-----------|------------|
+| Platform | Purpose |
+|----------|---------|
 | GitHub Actions | Quality Gates, Nightly |
-| GitHub Pages | Документация |
+| GitHub Pages | Documentation |
 
 ---
 
-## 5. Среда тестирования (Test Environment)
+## 5. Test Environment
 
-### 5.1 Компоненты
+### 5.1 Components
 
-| Компонент | URL | Статус |
+| Component | URL | Status |
 |-----------|-----|--------|
-| Frontend | http://localhost:3000 | ✅ Работает |
-| Backend | http://localhost:8000 | ❌ Недоступен |
-| API | http://localhost:8000/api | ❌ Недоступен |
-| DB (PostgreSQL) | localhost:5432 | ❌ Недоступен |
-| PGWeb | http://localhost:8081 | ❌ Недоступен |
+| Frontend | http://localhost:3000 | ✅ Running |
+| Backend | http://localhost:8000 | ❌ Unavailable |
+| API | http://localhost:8000/api | ❌ Unavailable |
+| DB (PostgreSQL) | localhost:5432 | ❌ Unavailable |
+| PGWeb | http://localhost:8081 | ❌ Unavailable |
 
-### 5.2 Конфигурация
+### 5.2 Configuration
 
 ```yaml
 # playwright.config.ts
@@ -183,78 +183,78 @@ projects:
 
 ---
 
-## 6. График (Schedule)
+## 6. Schedule
 
-| Фаза | Длительность | Статус |
-|------|--------------|--------|
-| Setup (Docker, Node, Playwright) | 1 час | ✅ Done |
-| E2E Tests (120+) | 4 часа | ✅ Done |
-| API Tests (280+) | 2 часа | ✅ Done |
-| DB Tests (18) | 1 час | ✅ Done |
-| PBT Tests (46) | 2 часа | ✅ Done |
-| BDD Tests (2) | 1 час | ✅ Done |
-| **Total** | **~11 часов** | |
+| Phase | Duration | Status |
+|-------|----------|--------|
+| Setup (Docker, Node, Playwright) | 1 hour | ✅ Done |
+| E2E Tests (120+) | 4 hours | ✅ Done |
+| API Tests (280+) | 2 hours | ✅ Done |
+| DB Tests (18) | 1 hour | ✅ Done |
+| PBT Tests (46) | 2 hours | ✅ Done |
+| BDD Tests (2) | 1 hour | ✅ Done |
+| **Total** | **~11 hours** | |
 
 ---
 
-## 7. Метрики (Metrics)
+## 7. Metrics
 
-### 7.1 Тестовые метрики
+### 7.1 Test Metrics
 
-| Метрика | Целевое | Текущее |
-|---------|---------|---------|
+| Metric | Target | Current |
+|--------|--------|---------|
 | Total tests | 500+ | 489 |
 | Code coverage | 80% | 70% |
 | API coverage | 95% | 94% |
 | PBT coverage | 100% | 100% |
 | Flaky tests | 0% | <5% |
 
-### 7.2 Бизнес метрики
+### 7.2 Business Metrics
 
-| Метрика | Описание |
-|---------|---------|
-| Pass rate | % успешных тестов |
-| Execution time | Время прогона |
-| Bug density | Багов на 1000 строк |
-| Requirement coverage | Покрытие требований |
-
----
-
-## 8. Риски (Risks)
-
-| Риск | Вероятность | Влияние | Митигация |
-|------|-------------|---------|-----------|
-| Backend недоступен | High | High | Skip smoke tests |
-| Flaky тесты | Medium | Medium | retries: 2 |
-| Данные БД грязные | Medium | Low | Cleanup queue |
-| Нет доступа к CI ресурсам | Low | Medium | Локальный запуск |
+| Metric | Description |
+|--------|------------|
+| Pass rate | % of successful tests |
+| Execution time | Run duration |
+| Bug density | Bugs per 1000 lines |
+| Requirement coverage | Requirements-to-tests mapping |
 
 ---
 
-## 9. Управление дефектами (Defect Management)
+## 8. Risks
 
-| ID | Дефект | Severity | Статус |
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Backend unavailable | High | High | Skip smoke tests |
+| Flaky tests | Medium | Medium | retries: 2 |
+| Dirty DB data | Medium | Low | Cleanup queue |
+| No CI resources | Low | Medium | Local execution |
+
+---
+
+## 9. Defect Management
+
+| ID | Defect | Severity | Status |
 |----|--------|----------|--------|
-| AUTH-011-01 | Нет minlength на пароле | Medium | Open |
+| AUTH-011-01 | No minlength on password | Medium | Open |
 | AUTH-011-02 | POST /auth/refresh = 500 | High | Open |
 
 ---
 
-## 10. Ревью и утверждение (Review & Approval)
+## 10. Review & Approval
 
-| Роль | Ответственный | Статус |
-|------|---------------|--------|
+| Role | Responsible | Status |
+|------|-------------|--------|
 | QA Lead | — | Draft |
 | Dev Lead | — | Pending |
 | Product Owner | — | Pending |
 
 ---
 
-## Приложения
+## Appendices
 
-### A. Нотации тестов
+### A. Test Notation Formats
 
-| Формат | Файл | Статус |
+| Format | File | Status |
 |--------|------|--------|
 | Gherkin | `features/auth.feature` | ✅ |
 | Python list | `python/tests/test_auth.py` | ✅ |
@@ -262,10 +262,10 @@ projects:
 | YAML | `python/tests/test_data/auth.yaml` | ✅ |
 | Groovy | `jenkins/` | Examples |
 
-### B. Команды
+### B. Commands
 
 ```bash
-# Основные
+# Main
 npm test                    # Full suite
 npm run test:smoke         # Smoke
 npm run test:pbt          # PBT
