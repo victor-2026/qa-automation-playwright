@@ -1,6 +1,7 @@
 name: Contract Tests
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -62,6 +63,12 @@ jobs:
           name: pact-files
           path: contracts/pacts/*.json
           retention-days: 7
+
+      - name: Import results to Notion
+        if: always()
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: python3 scripts/allure-to-notion.py --dir allure-results --project qa-automation-sandbox --env "CI/CD (contracts)"
 
   provider-verification:
     name: Provider Verification (Render)
