@@ -13,6 +13,8 @@ const (
 	WarmUpTimeout  = 30 * time.Second
 	WarmUpRetries  = 3
 	WarmUpDelay    = 2 * time.Second
+	RetryBaseDelay = 1 * time.Second
+	MaxRetries     = 3
 )
 
 func BaseURL() string {
@@ -26,7 +28,15 @@ func BaseURL() string {
 }
 
 func HTTPClient() *http.Client {
-	return &http.Client{Timeout: HTTPTimeout}
+	transport := &http.Transport{
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost:  10,
+		IdleConnTimeout:    30 * time.Second,
+	}
+	return &http.Client{
+		Timeout:   HTTPTimeout,
+		Transport: transport,
+	}
 }
 
 func BearerHeader(token string) http.Header {
@@ -47,7 +57,7 @@ func WarmUp(urls ...string) {
 				}
 			}
 			fmt.Printf("  warm-up %s attempt %d: %v\n", u, i+1, err)
-			time.Sleep(WarmUpDelay)
+				time.Sleep(WarmUpDelay)
+			}
 		}
 	}
-}

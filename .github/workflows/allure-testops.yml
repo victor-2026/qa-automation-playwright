@@ -1,6 +1,5 @@
-# Allure TestOps integration (ACTIVATED 2026-06-16)
-# Trial: https://victor2026.testops.cloud — Project ID 2 = qa-automation-sandbox
-# See: wiki/allure-testops-research-2026.md
+# Smoke API tests on Render (daily 06:00 UTC)
+# Local Allure report uploaded as artifact
 # See: docs/ALLURE_TESTOPS_ACTIVATION.md
 
 name: allure-testops
@@ -12,9 +11,6 @@ on:
 
 env:
   ALLURE_RESULTS: "allure-results"
-  ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
-  ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
-  ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
 
 jobs:
   test:
@@ -34,25 +30,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Install allurectl
-        uses: allure-framework/setup-allurectl@v1
-        with:
-          allure-endpoint: ${{ secrets.ALLURE_ENDPOINT }}
-          allure-token: ${{ secrets.ALLURE_TOKEN }}
-          allure-project-id: ${{ secrets.ALLURE_PROJECT_ID }}
-
-      - name: Run API tests with Allure TestOps upload
-        run: |
-          allurectl watch -- npx playwright test e2e/api/ --project=chromium
+      - name: Run API tests
+        run: npx playwright test e2e/api/ --project=chromium
         env:
           API_BASE_URL: ${{ vars.BACKEND_URL }}/api
           APP_BASE_URL: ${{ vars.FRONTEND_URL }}
 
-      - name: Upload to Allure TestOps
-        if: always()
-        run: allurectl upload allure-results
-
-      - name: Generate local Allure report (fallback)
+      - name: Generate local Allure report
         if: always()
         run: npx allure generate allure-results --clean -o allure-report
 
