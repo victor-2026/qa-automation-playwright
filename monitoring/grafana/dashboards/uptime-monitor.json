@@ -13,12 +13,19 @@
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
-          "root_selector": "",
-          "columns": [
-            { "selector": "timestamp", "text": "Time", "type": "time" },
-            { "selector": "backend_status", "text": "Backend", "type": "string" },
-            { "selector": "frontend_status", "text": "Frontend", "type": "string" }
-          ]
+          "root_selector": ""
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "timestamp": "Time",
+              "backend_status": "Backend",
+              "frontend_status": "Frontend"
+            }
+          }
         }
       ],
       "fieldConfig": {
@@ -40,12 +47,12 @@
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
-          "root_selector": "",
-          "columns": [
-            { "selector": "timestamp", "text": "Time", "type": "time" },
-            { "selector": "backend_status", "text": "Backend", "type": "string" }
-          ]
+          "root_selector": ""
         }
+      ],
+      "transformations": [
+        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "backend_status", "config": { "id": "last", "options": {} } }], "type": "include", "match": "any" } },
+        { "id": "organize", "options": { "renameByName": { "backend_status": "Backend" } } }
       ],
       "fieldConfig": {
         "defaults": {
@@ -66,12 +73,12 @@
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
-          "root_selector": "",
-          "columns": [
-            { "selector": "timestamp", "text": "Time", "type": "time" },
-            { "selector": "frontend_status", "text": "Frontend", "type": "string" }
-          ]
+          "root_selector": ""
         }
+      ],
+      "transformations": [
+        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "frontend_status", "config": { "id": "last", "options": {} } }], "type": "include", "match": "any" } },
+        { "id": "organize", "options": { "renameByName": { "frontend_status": "Frontend" } } }
       ],
       "fieldConfig": {
         "defaults": {
