@@ -2,6 +2,8 @@ package api
 
 import (
     "bytes"
+    "crypto/rand"
+    "encoding/hex"
     "encoding/json"
     "fmt"
     "io"
@@ -10,7 +12,6 @@ import (
     "testing"
     "time"
     
-    "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/require"
 )
 
@@ -245,6 +246,86 @@ func SetupTestInfrastructure() {
 
 // CleanupTestInfrastructure performs cleanup operations
 func CleanupTestInfrastructure() {
+}
+
+// ============================================================================
+// Test Infrastructure Setup
+// ============================================================================
+
+// randomSuffix generates a random hex string for unique test usernames
+func randomSuffix() string {
+	b := make([]byte, 4)
+	rand.Read(b)
+	return hex.EncodeToString(b)
+}
+
+// RegisterAndLogin registers a new user and logs in, returning a valid token.
+func RegisterAndLogin(email, password, username string) (*http.Response, *LoginResponse, error) {
+	client := HTTPClient()
+	regBody, _ := json.Marshal(map[string]string{
+		"email": email, "password": password, "username": username,
+		"display_name": username,
+	})
+	regReq, err := http.NewRequest("POST", BaseURL()+"/auth/register", bytes.NewReader(regBody))
+	if err != nil {
+		return nil, nil, fmt.Errorf("register request: %w", err)
+	}
+	regReq.Header.Set("Content-Type", "application/json")
+	regResp, err := client.Do(regReq)
+	if err != nil {
+		return nil, nil, fmt.Errorf("register do: %w", err)
+	}
+	io.Copy(io.Discard, regResp.Body)
+	regResp.Body.Close()
+
+	if regResp.StatusCode != http.StatusOK && regResp.StatusCode != http.StatusCreated {
+		return nil, nil, fmt.Errorf("register returned status %d for %s", regResp.StatusCode, email)
+	}
+
+	loginBody, _ := json.Marshal(map[string]string{"email": email, "password": password})
+	loginReq, err := http.NewRequest("POST", BaseURL()+"/auth/login", bytes.NewReader(loginBody))
+	if err != nil {
+		return nil, nil, fmt.Errorf("login request: %w", err)
+	}
+	loginReq.Header.Set("Content-Type", "application/json")
+	loginResp, err := client.Do(loginReq)
+	if err != nil {
+		return nil, nil, fmt.Errorf("login do: %w", err)
+	}
+	var lr LoginResponse
+	if loginResp.StatusCode == http.StatusOK {
+		if err := json.NewDecoder(loginResp.Body).Decode(&lr); err != nil {
+			return nil, nil, fmt.Errorf("decode login response: %w", err)
+		}
+	} else {
+		bodyBytes, _ := io.ReadAll(loginResp.Body)
+		loginResp.Body.Close()
+		return nil, nil, fmt.Errorf("login returned status %d: %s", loginResp.StatusCode, string(bodyBytes))
+	}
+	return loginResp, &lr, nil
+}
+
+// AdminLogin returns an admin token for admin-only endpoints
+func AdminLogin(t *testing.T) *LoginResponse {
+	t.Helper()
+	resp, loginResp, err := Login("admin@buzzhive.com", "admin123")
+	require.NoError(t, err)
+	resp.Body.Close()
+	return loginResp
+}
+
+// CreateTestPost creates a post and returns its ID for test assertions
+func CreateTestPost(t *testing.T, token, title, content string) string {
+	t.Helper()
+	body, _ := json.Marshal(map[string]string{"title": title, "content": content})
+	req := createRequest(t, "POST", BaseURL()+"/posts", body, token)
+	resp, err := HTTPClient().Do(req)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	requireHTTPStatus(t, resp, http.StatusCreated)
+	var result map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&result)
+	return result["id"].(string)
 }
 
 // init registers global test setup

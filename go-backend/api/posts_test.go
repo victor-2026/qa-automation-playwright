@@ -11,23 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createAuthRequest(t *testing.T, method, url, token string, body []byte) *http.Request {
-	t.Helper()
-	var req *http.Request
-	var err error
-	if body != nil {
-		req, err = http.NewRequest(method, url, bytes.NewReader(body))
-	} else {
-		req, err = http.NewRequest(method, url, nil)
-	}
-	require.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer "+token)
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	return req
-}
-
 func TestPostsListPublic(t *testing.T) {
 	resp, err := HTTPClient().Get(BaseURL() + "/posts")
 	require.NoError(t, err)
