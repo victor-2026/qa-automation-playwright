@@ -18,6 +18,14 @@
       ],
       "transformations": [
         {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              { "targetField": "timestamp", "conversion": { "id": "stringToTime", "config": { "dateFormat": "iso" } } }
+            ]
+          }
+        },
+        {
           "id": "organize",
           "options": {
             "renameByName": {
@@ -51,8 +59,12 @@
         }
       ],
       "transformations": [
-        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "backend_status", "config": { "id": "last", "options": {} } }], "type": "include", "match": "any" } },
-        { "id": "organize", "options": { "renameByName": { "backend_status": "Backend" } } }
+        {
+          "id": "sortBy",
+          "options": { "sort": [{ "field": "timestamp", "desc": true }] }
+        },
+        { "id": "limit", "options": { "limitField": 1 } },
+        { "id": "organize", "options": { "excludeByName": { "timestamp": true, "frontend_status": true }, "renameByName": { "backend_status": "Backend" } } }
       ],
       "fieldConfig": {
         "defaults": {
@@ -77,8 +89,12 @@
         }
       ],
       "transformations": [
-        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "frontend_status", "config": { "id": "last", "options": {} } }], "type": "include", "match": "any" } },
-        { "id": "organize", "options": { "renameByName": { "frontend_status": "Frontend" } } }
+        {
+          "id": "sortBy",
+          "options": { "sort": [{ "field": "timestamp", "desc": true }] }
+        },
+        { "id": "limit", "options": { "limitField": 1 } },
+        { "id": "organize", "options": { "excludeByName": { "timestamp": true, "backend_status": true }, "renameByName": { "frontend_status": "Frontend" } } }
       ],
       "fieldConfig": {
         "defaults": {
