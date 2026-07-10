@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Validate URLs
         run: |
           if [ -z "${{ vars.BACKEND_URL }}" ]; then
@@ -35,8 +37,6 @@ jobs:
         run: |
           echo "Checking $BACKEND_URL/api/health ..."
 
-          # 8 retries with exponential backoff: 10s, 20s, 30s, 40s, 40s, 40s, 40s, 40s
-          # Total sleep: 260s. Total curl budget: 8 × 30s = 240s. Worst case: ~500s.
           for i in 1 2 3 4 5 6 7 8; do
             RESPONSE=$(curl -s -o /tmp/health.json -w "%{http_code}" --max-time 30 "$BACKEND_URL/api/health")
             if [ "$RESPONSE" = "200" ]; then
@@ -47,7 +47,6 @@ jobs:
               echo "$BODY" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get("status")=="healthy" and d.get("database")=="connected"' && echo "Backend healthy, database connected" || { echo "Health payload validation failed"; exit 1; }
               exit 0
             fi
-            # Exponential backoff: 10, 20, 30, 40, then capped at 40
             if [ "$i" -le 3 ]; then
               SLEEP=$((i * 10))
             else
@@ -60,6 +59,62 @@ jobs:
           echo "❌ Health check failed after 8 retries"
           cat /tmp/health.json 2>/dev/null || true
           exit 1
+
+      - name: Check frontend
+        id: frontend
+        env:
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://$FRONTEND_URL" || echo "000")
+          echo "Frontend HTTP: $STATUS"
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Record uptime metric
+        if: always()
+        env:
+          BACKEND_STATUS: ${{ steps.health.outcome }}
+          FRONTEND_STATUS: ${{ steps.frontend.outputs.status }}
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          TIME=$(date -u +%H:%M)
+          BACKEND_OK=$( [ "$BACKEND_STATUS" = "success" ] && echo "up" || echo "down" )
+          FRONTEND_OK=$( [ "$FRONTEND_STATUS" = "200" ] && echo "up" || echo "down" )
+
+          python3 -c "
+          import json, os
+          f = 'monitoring/metrics/uptime.json'
+          data = []
+          if os.path.exists(f):
+              with open(f) as fh:
+                  data = json.load(fh)
+
+          # Update or append today's entry
+          entry = {'date': '$DATE', 'time': '$TIME', 'backend_status': '$BACKEND_OK', 'frontend_status': '$FRONTEND_OK'}
+          updated = False
+          for i, row in enumerate(data):
+              if row.get('date') == '$DATE':
+                  data[i] = entry
+                  updated = True
+                  break
+          if not updated:
+              data.append(entry)
+
+          # Keep last 90 days
+          data = data[-90:]
+
+          with open(f, 'w') as fh:
+              json.dump(data, fh, indent=2)
+              fh.write('\n')
+          print(f'Recorded: backend=$BACKEND_OK frontend=$FRONTEND_OK')
+          "
+
+      - name: Commit metrics
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add monitoring/metrics/uptime.json
+          git diff --cached --quiet || git commit -m "metrics: uptime $(date -u +%Y-%m-%d) [skip ci]" && git push || echo "No changes to commit"
 
       - name: Check history on failure
         if: failure()

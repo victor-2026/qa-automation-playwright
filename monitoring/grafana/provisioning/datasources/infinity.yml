@@ -8,3 +8,4 @@ datasources:
     jsonData:
       allowed_hosts:
         - "http://localhost:3002"
+        - "https://raw.githubusercontent.com"
