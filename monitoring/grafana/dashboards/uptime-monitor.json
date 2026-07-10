@@ -5,115 +5,52 @@
     {
       "title": "Backend & Frontend Uptime",
       "type": "timeseries",
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 8
-      },
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
           "root_selector": "",
           "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "backend_status",
-              "text": "Backend",
-              "type": "string"
-            },
-            {
-              "selector": "frontend_status",
-              "text": "Frontend",
-              "type": "string"
-            }
+            { "selector": "timestamp", "text": "Time", "type": "time" },
+            { "selector": "backend_status", "text": "Backend", "type": "string" },
+            { "selector": "frontend_status", "text": "Frontend", "type": "string" }
           ]
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "up": {
-                  "text": "UP",
-                  "color": "green"
-                },
-                "down": {
-                  "text": "DOWN",
-                  "color": "red"
-                }
-              }
-            }
+            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
           ]
         }
       }
     },
     {
-      "title": "Uptime Status (Latest)",
+      "title": "Backend Status (Latest)",
       "type": "stat",
-      "gridPos": {
-        "x": 0,
-        "y": 8,
-        "w": 12,
-        "h": 4
-      },
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 4 },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
           "root_selector": "",
           "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "backend_status",
-              "text": "Backend",
-              "type": "string"
-            }
+            { "selector": "timestamp", "text": "Time", "type": "time" },
+            { "selector": "backend_status", "text": "Backend", "type": "string" }
           ]
         }
       ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "up": {
-                  "text": "UP",
-                  "color": "green"
-                },
-                "down": {
-                  "text": "DOWN",
-                  "color": "red"
-                }
-              }
-            }
+            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
           ]
         }
       }
@@ -121,65 +58,31 @@
     {
       "title": "Frontend Status (Latest)",
       "type": "stat",
-      "gridPos": {
-        "x": 12,
-        "y": 8,
-        "w": 12,
-        "h": 4
-      },
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 4 },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
           "type": "json",
           "source": "url",
           "url": "https://raw.githubusercontent.com/victor-2026/qa-automation-playwright/main/monitoring/metrics/uptime.json",
           "root_selector": "",
           "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "frontend_status",
-              "text": "Frontend",
-              "type": "string"
-            }
+            { "selector": "timestamp", "text": "Time", "type": "time" },
+            { "selector": "frontend_status", "text": "Frontend", "type": "string" }
           ]
         }
       ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "up": {
-                  "text": "UP",
-                  "color": "green"
-                },
-                "down": {
-                  "text": "DOWN",
-                  "color": "red"
-                }
-              }
-            }
+            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
           ]
         }
       }
     }
   ],
   "schemaVersion": 39,
-  "tags": [
-    "uptime",
-    "health"
-  ],
-  "time": {
-    "from": "now-7d",
-    "to": "now"
-  }
+  "tags": ["uptime", "health"],
+  "time": { "from": "2026-05-01", "to": "now" }
 }

@@ -78,8 +78,7 @@ jobs:
           BACKEND_STATUS: ${{ steps.health.outcome }}
           FRONTEND_STATUS: ${{ steps.frontend.outputs.status }}
         run: |
-          DATE=$(date -u +%Y-%m-%d)
-          TIME=$(date -u +%H:%M)
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           BACKEND_OK=$( [ "$BACKEND_STATUS" = "success" ] && echo "up" || echo "down" )
           FRONTEND_OK=$( [ "$FRONTEND_STATUS" = "200" ] && echo "up" || echo "down" )
 
@@ -91,18 +90,16 @@ jobs:
               with open(f) as fh:
                   data = json.load(fh)
 
-          # Update or append today's entry
-          entry = {'date': '$DATE', 'time': '$TIME', 'backend_status': '$BACKEND_OK', 'frontend_status': '$FRONTEND_OK'}
+          entry = {'timestamp': '$TIMESTAMP', 'backend_status': '$BACKEND_OK', 'frontend_status': '$FRONTEND_OK'}
           updated = False
           for i, row in enumerate(data):
-              if row.get('date') == '$DATE':
+              if row.get('timestamp','')[:10] == '$TIMESTAMP'[:10]:
                   data[i] = entry
                   updated = True
                   break
           if not updated:
               data.append(entry)
 
-          # Keep last 90 days
           data = data[-90:]
 
           with open(f, 'w') as fh:
