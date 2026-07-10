@@ -3,9 +3,10 @@ datasources:
   - name: Infinity
     uid: infinity
     type: yesoreyeram-infinity-datasource
-    access: direct
+    access: proxy
     isDefault: true
     jsonData:
       allowed_hosts:
         - "http://localhost:3002"
+        - "https://cdn.jsdelivr.net"
         - "https://raw.githubusercontent.com"
