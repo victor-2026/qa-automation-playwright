@@ -13,5 +13,10 @@
     "timestamp": "2026-07-11T23:10:27Z",
     "backend_status": "up",
     "frontend_status": "down"
+  },
+  {
+    "timestamp": "2026-07-12T00:10:08Z",
+    "backend_status": "up",
+    "frontend_status": "down"
   }
 ]
