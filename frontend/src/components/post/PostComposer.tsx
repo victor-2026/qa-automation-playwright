@@ -40,7 +40,7 @@ export default function PostComposer({ onCreated }: Props) {
   }
 
   const handleSubmit = async () => {
-    if (!content.trim()) return
+    if (!content) return
     setLoading(true)
     try {
       await postsApi.create({
@@ -112,7 +112,7 @@ export default function PostComposer({ onCreated }: Props) {
               <span className="text-xs text-gray-400">{content.length}/2000</span>
               <button
                 onClick={handleSubmit}
-                disabled={!content.trim() || loading}
+                disabled={!content || loading}
                 data-testid="post-composer-submit"
                 className="btn-primary text-sm px-4 py-1.5 flex items-center gap-1.5"
               >
