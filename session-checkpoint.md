@@ -1,8 +1,62 @@
 # Session Checkpoint - qa-automation-sandbox
 
-**Date:** 2026-06-12
-**Session:** 45 — CI Workflow Audit + Render Deploy Fix + Memory Optimization
+**Date:** 2026-08-03
+**Session:** 87 — DevAssure O2 test (fault-injection) ✅
 **Status:** COMPLETE
+
+## Work Completed
+- **DevAssure O2 (autonomous PR-testing agent) tested on this repo** — fault-injection experiment:
+  - Injected bug into `PostComposer.tsx` (removed `.trim()` guard → whitespace-only posts submit), branch `test/devassure-o2`, commit `1281b3f`
+  - Ran `devassure test --base main --head test/devassure-o2 --url http://localhost:3000`
+  - **O2 CAUGHT the injected bug**: critical "Submit button remains enabled when post composer contains only whitespace characters" + 5 more (mostly false positives from its own `"A".repeat(2000)` input artifact)
+  - Session: `559163b8-2068-4e83-9d1a-610a89ff45a4`, Score 22/100, branch test/devassure-o2
+  - Restored `.trim()` (commit `5bc0ad8`), rebuilt frontend → 200 OK
+- **DevAssure macOS blocker FIXED**: bundled OpenSSL 3.0.0 libssl lacked `_SSL_get0_group_name` needed by `cryptography/_rust.abi3.so` → agent crashed on boot ("Session not found in database"). Fixed by swapping bundled `libssl.3.dylib` + `libcrypto.3.dylib` for Homebrew OpenSSL 3.6.2 (install_name_tool → @rpath). Backups at `*.dylib.bak`.
+- `.devassure/` config created manually (init TTY prompts are unpipeable): `app.yaml`, `personas.yaml`, `test_data.yaml` (url http://localhost:3000, users alice/alice123, admin/admin123)
+
+## Modified Files
+- `frontend/src/components/post/PostComposer.tsx` — fault-injection (1281b3f) → restored (5bc0ad8) on branch `test/devassure-o2`
+- `.devassure/{app,personas,test_data}.yaml` — NEW (config)
+- `~/Library/Application Support/devassure/bin/.devassure-agent-internal/libssl.3.dylib` + `libcrypto.3.dylib` — swapped for OpenSSL 3.6.2 (`.bak` backups)
+
+## Verification Results
+- Command: `devassure test --base main --head test/devassure-o2 --url http://localhost:3000 --headless true --no-ui`
+- Result: PASS (agent ran 5 scenarios, found the injected critical bug)
+- Key details: O2 logged in as alice, created posts, verified char count 0/50/2000, button states; its agentic loop self-heals (retried after failed `evaluate` tool)
+
+## Blockers
+- DevAssure O2 pricing claim vs reality: Badri post says $15/mo, pricing page = $25/agent/mo
+- O2 false positives: treats its own JS-injection attempts as app bugs (needs human review gate)
+
+## Next Steps
+1. Reply to Badri Varadarajan with O2 test results (caught injected bug; macOS OpenSSL blocker; false-positive behavior)
+2. Decide: keep branch `test/devassure-o2` or delete (contains fault-injection + restore history)
+3. Optionally: run O2 on a real feature PR next, compare with GitHub Action mode
+
+---
+## Session 80 (2026-07-25) — Regression Advice Script + Workflow ✅
+
+**Date:** 2026-07-25
+**Session:** 80 — Regression Advice Script + Workflow
+**Status:** COMPLETE
+
+## Work Completed
+- `scripts/regression-advice.py` — фильтрует diff по impact radius, шлёт в Groq, выводит regression checklist
+- `.github/workflows/regression-advice.yml` — запускается на PR в main/develop, постит comment
+- Протестирован локально: 9 пунктов по 3 зонам (Backend, Monitoring, Testing)
+- Требует `GROQ_API_KEY` в GitHub Secrets
+
+## Modified Files
+- `scripts/regression-advice.py` — NEW
+- `.github/workflows/regression-advice.yml` — NEW
+
+## Backlog
+1. DB migration detection + rollback checks
+2. Dependency bump → breaking change scan
+3. Config/env change → deploy verify
+4. Test coverage mapping (nearby spec files)
+5. CI Check Run (pass/warn/fail instead of comment)
+6. Secret leak detector in diff
 
 ## Grafana Monitoring (`monitoring/`)
 
