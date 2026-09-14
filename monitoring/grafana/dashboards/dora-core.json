@@ -1,207 +1,79 @@
 {
-  "title": "DORA Core \u2014 QA Metrics",
+  "title": "DORA Core — QA Metrics",
   "uid": "dora-core",
   "panels": [
     {
-      "title": "Change Failure Rate (CFR) \u2014 Mutation Caught",
+      "title": "Change Failure Rate (CFR) — Mutation Caught",
       "type": "timeseries",
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}, {\"date\": \"2026-06-18\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 96, \"regression_hours\": 4}, {\"date\": \"2026-07-10\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 100, \"regression_hours\": 2}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "mutation_caught",
-              "text": "Mutations Caught",
-              "type": "number"
-            },
-            {
-              "selector": "mutation_total",
-              "text": "Total Mutations",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "time,caught,total\n1747296000000,0,34\n1748419200000,28,34\n1748947200000,34,34\n1750243200000,34,34\n1752144000000,34,34"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 20},
+          "unit": "short"
         }
       }
     },
     {
       "title": "CI/CD Pipeline Stability (%)",
       "type": "timeseries",
-      "gridPos": {
-        "x": 12,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}, {\"date\": \"2026-06-18\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 96, \"regression_hours\": 4}, {\"date\": \"2026-07-10\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 100, \"regression_hours\": 2}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "pipe_pass",
-              "text": "Pipeline Pass %",
-              "type": "number"
-            },
-            {
-              "selector": "flaky_count",
-              "text": "Flaky Tests",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "time,pipe_pct,flaky\n1747296000000,78,12\n1748419200000,92.5,1\n1748947200000,94,0\n1750243200000,96,0\n1752144000000,100,0"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 20},
+          "unit": "percent"
         }
       }
     },
     {
-      "title": "Regression Time (hours) \u2014 Lead Time for Changes",
+      "title": "Regression Time (hours)",
       "type": "timeseries",
-      "gridPos": {
-        "x": 0,
-        "y": 7,
-        "w": 12,
-        "h": 6
-      },
+      "gridPos": {"x": 0, "y": 7, "w": 12, "h": 6},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}, {\"date\": \"2026-06-18\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 96, \"regression_hours\": 4}, {\"date\": \"2026-07-10\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 100, \"regression_hours\": 2}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "regression_hours",
-              "text": "Regression (hours)",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "time,hours\n1747296000000,48\n1748419200000,4\n1748947200000,4\n1750243200000,4\n1752144000000,2"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "bars", "fillOpacity": 80},
+          "unit": "h"
         }
       }
     },
     {
       "title": "DORA Level",
       "type": "table",
-      "gridPos": {
-        "x": 12,
-        "y": 7,
-        "w": 12,
-        "h": 6
-      },
+      "gridPos": {"x": 12, "y": 7, "w": 12, "h": 6},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"mutation_caught\": 0, \"mutation_total\": 34, \"flaky_count\": 12, \"pipe_pass\": 78, \"regression_hours\": 48}, {\"date\": \"2026-05-28\", \"mutation_caught\": 28, \"mutation_total\": 34, \"flaky_count\": 1, \"pipe_pass\": 92.5, \"regression_hours\": 4}, {\"date\": \"2026-06-03\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 94, \"regression_hours\": 4}, {\"date\": \"2026-06-18\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 96, \"regression_hours\": 4}, {\"date\": \"2026-07-10\", \"mutation_caught\": 34, \"mutation_total\": 34, \"flaky_count\": 0, \"pipe_pass\": 100, \"regression_hours\": 2}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Date",
-              "type": "string"
-            },
-            {
-              "selector": "mutation_caught",
-              "text": "Mutations Caught",
-              "type": "number"
-            },
-            {
-              "selector": "mutation_total",
-              "text": "Total Mutations",
-              "type": "number"
-            },
-            {
-              "selector": "flaky_count",
-              "text": "Flaky",
-              "type": "number"
-            },
-            {
-              "selector": "pipe_pass",
-              "text": "Pipeline %",
-              "type": "number"
-            },
-            {
-              "selector": "regression_hours",
-              "text": "Regr (hrs)",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "date,caught,total,flaky,pipe_pct,hours\n2026-05-15,0,34,12,78,48\n2026-05-28,28,34,1,92.5,4\n2026-06-03,34,34,0,94,4\n2026-06-18,34,34,0,96,4\n2026-07-10,34,34,0,100,2"
         }
       ]
     }
   ],
   "schemaVersion": 39,
-  "tags": [
-    "dora",
-    "qa",
-    "elite"
-  ],
-  "time": {
-    "from": "2026-05-14",
-    "to": "now"
-  }
+  "tags": ["dora", "qa", "elite"],
+  "time": {"from": "2026-05-14", "to": "now"}
 }

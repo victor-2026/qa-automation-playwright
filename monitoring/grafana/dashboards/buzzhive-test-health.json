@@ -1,169 +1,60 @@
 {
-  "title": "Buzzhive \u2014 Test Health & Stability",
+  "title": "Buzzhive — Test Health & Stability",
   "uid": "buzzhive-test-health",
   "panels": [
     {
       "title": "Pass Rate & API Coverage (%)",
       "type": "timeseries",
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "pass_rate",
-              "text": "Pass Rate %",
-              "type": "number"
-            },
-            {
-              "selector": "api_coverage_pct",
-              "text": "API Cov %",
-              "type": "number"
-            },
-            {
-              "selector": "flaky_count",
-              "text": "Flaky",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "time,pass_rate,api_cov,flaky\n1747296000000,78,44,12\n1747468800000,84,67,8\n1747641600000,89,82,4\n1748073600000,91,88,2\n1748419200000,92.5,92,1\n1748947200000,94,94,0"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 20},
+          "unit": "percent"
         }
       }
     },
     {
       "title": "Test Suite Growth",
       "type": "timeseries",
-      "gridPos": {
-        "x": 12,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Time",
-              "type": "time"
-            },
-            {
-              "selector": "tests_total",
-              "text": "Total Tests",
-              "type": "number"
-            },
-            {
-              "selector": "tests_pass",
-              "text": "Passing",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "time,total,passing\n1747296000000,489,381\n1747468800000,2000,1680\n1747641600000,2000,1780\n1748073600000,2000,1820\n1748419200000,2000,1850\n1748947200000,2000,1880"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "bars", "fillOpacity": 80, "stacking": {"mode": "normal"}},
+          "unit": "short"
         }
       }
     },
     {
       "title": "Health Log",
       "type": "table",
-      "gridPos": {
-        "x": 0,
-        "y": 7,
-        "w": 24,
-        "h": 5
-      },
+      "gridPos": {"x": 0, "y": 7, "w": 24, "h": 5},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"date\": \"2026-05-15\", \"tests_total\": 489, \"tests_pass\": 381, \"pass_rate\": 78, \"api_coverage_pct\": 44, \"flaky_count\": 12}, {\"date\": \"2026-05-17\", \"tests_total\": 2000, \"tests_pass\": 1680, \"pass_rate\": 84, \"api_coverage_pct\": 67, \"flaky_count\": 8}, {\"date\": \"2026-05-19\", \"tests_total\": 2000, \"tests_pass\": 1780, \"pass_rate\": 89, \"api_coverage_pct\": 82, \"flaky_count\": 4}, {\"date\": \"2026-05-24\", \"tests_total\": 2000, \"tests_pass\": 1820, \"pass_rate\": 91, \"api_coverage_pct\": 88, \"flaky_count\": 2}, {\"date\": \"2026-05-28\", \"tests_total\": 2000, \"tests_pass\": 1850, \"pass_rate\": 92.5, \"api_coverage_pct\": 92, \"flaky_count\": 1}, {\"date\": \"2026-06-03\", \"tests_total\": 2000, \"tests_pass\": 1880, \"pass_rate\": 94, \"api_coverage_pct\": 94, \"flaky_count\": 0}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "date",
-              "text": "Date",
-              "type": "string"
-            },
-            {
-              "selector": "pass_rate",
-              "text": "Pass %",
-              "type": "number"
-            },
-            {
-              "selector": "api_coverage_pct",
-              "text": "API %",
-              "type": "number"
-            },
-            {
-              "selector": "flaky_count",
-              "text": "Flaky",
-              "type": "number"
-            },
-            {
-              "selector": "tests_pass",
-              "text": "Passing",
-              "type": "number"
-            },
-            {
-              "selector": "tests_total",
-              "text": "Total",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "date,pass_rate,api_cov,flaky,passing,total\n2026-05-15,78,44,12,381,489\n2026-05-17,84,67,8,1680,2000\n2026-05-19,89,82,4,1780,2000\n2026-05-24,91,88,2,1820,2000\n2026-05-28,92.5,92,1,1850,2000\n2026-06-03,94,94,0,1880,2000"
         }
       ]
     }
   ],
   "schemaVersion": 39,
-  "tags": [
-    "buzzhive",
-    "tests"
-  ],
-  "time": {
-    "from": "2026-05-14",
-    "to": "now"
-  }
+  "tags": ["buzzhive", "tests"],
+  "time": {"from": "2026-05-14", "to": "now"}
 }

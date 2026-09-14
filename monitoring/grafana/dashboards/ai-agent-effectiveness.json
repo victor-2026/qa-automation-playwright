@@ -1,280 +1,81 @@
 {
-  "title": "AI Agent \u2014 Test Generation Effectiveness",
+  "title": "AI Agent — Test Generation Effectiveness",
   "uid": "ai-agent-effectiveness",
   "panels": [
     {
       "title": "Success Rate & Cost per Agent",
       "type": "barchart",
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "agent",
-              "text": "Agent",
-              "type": "string"
-            },
-            {
-              "selector": "runs",
-              "text": "Runs",
-              "type": "number"
-            },
-            {
-              "selector": "passed",
-              "text": "Passed",
-              "type": "number"
-            },
-            {
-              "selector": "cost_usd",
-              "text": "Cost $",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "agent,runs,passed,cost\nKISS Sorcar (Nemotron),1,1,0.00\nKISS Sorcar (DeepSeek),2,2,0.05\nAutonoma,1,1,0.00\nWebwright,50,1,2.37\nManual,1,1,0.00"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "bars", "fillOpacity": 80, "stacking": {"mode": "normal"}}
         }
       }
     },
     {
-      "title": "Time per Task (minutes, log scale)",
+      "title": "Time per Task (minutes)",
       "type": "barchart",
-      "gridPos": {
-        "x": 12,
-        "y": 0,
-        "w": 12,
-        "h": 7
-      },
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 7},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "agent",
-              "text": "Agent",
-              "type": "string"
-            },
-            {
-              "selector": "time_min",
-              "text": "Time (min)",
-              "type": "number"
-            },
-            {
-              "selector": "steps",
-              "text": "Steps",
-              "type": "number"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "agent,time_min,steps\nKISS Sorcar (Nemotron),2,16\nKISS Sorcar (DeepSeek),5,26\nAutonoma,10,5\nWebwright,2400,100\nManual,15,0"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
+          "custom": {"drawStyle": "bars", "fillOpacity": 80}
         }
       }
     },
     {
       "title": "Agent Comparison",
       "type": "table",
-      "gridPos": {
-        "x": 0,
-        "y": 7,
-        "w": 24,
-        "h": 6
-      },
+      "gridPos": {"x": 0, "y": 7, "w": 24, "h": 6},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"agent\": \"KISS Sorcar (Nemotron free)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.0, \"model\": \"Nemotron 120B free\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"POM + spec + fixtures\", \"runs\": 1, \"passed\": 1, \"steps\": 16, \"cost_usd\": 0.01, \"model\": \"DeepSeek V3.2\", \"time_min\": 2, \"output\": \"runnable .ts\"}, {\"agent\": \"KISS Sorcar (DeepSeek V3.2)\", \"task\": \"Fix 8 TS errors\", \"runs\": 1, \"passed\": 1, \"steps\": 10, \"cost_usd\": 0.04, \"model\": \"DeepSeek V3.2\", \"time_min\": 3, \"output\": \"refactored POMs + specs\"}, {\"agent\": \"Autonoma\", \"task\": \"Discovery + specs\", \"runs\": 1, \"passed\": 1, \"steps\": 5, \"cost_usd\": 0.0, \"model\": \"GPT-4 mini\", \"time_min\": 10, \"output\": \"28 .md specs + 6 factories\"}, {\"agent\": \"Webwright\", \"task\": \"POM + spec\", \"runs\": 50, \"passed\": 1, \"steps\": 100, \"cost_usd\": 2.37, \"model\": \"Claude + GPT\", \"time_min\": 2400, \"output\": \"1 broken POM + test\"}, {\"agent\": \"Manual (human)\", \"task\": \"POM + spec\", \"runs\": 1, \"passed\": 1, \"steps\": 0, \"cost_usd\": 0.0, \"model\": \"Human\", \"time_min\": 15, \"output\": \"hand-written .ts\"}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "agent",
-              "text": "Agent",
-              "type": "string"
-            },
-            {
-              "selector": "task",
-              "text": "Task",
-              "type": "string"
-            },
-            {
-              "selector": "model",
-              "text": "Model",
-              "type": "string"
-            },
-            {
-              "selector": "runs",
-              "text": "Runs",
-              "type": "number"
-            },
-            {
-              "selector": "passed",
-              "text": "Passed",
-              "type": "number"
-            },
-            {
-              "selector": "steps",
-              "text": "Steps",
-              "type": "number"
-            },
-            {
-              "selector": "cost_usd",
-              "text": "Cost $",
-              "type": "number"
-            },
-            {
-              "selector": "time_min",
-              "text": "Time (min)",
-              "type": "number"
-            },
-            {
-              "selector": "output",
-              "text": "Output",
-              "type": "string"
-            }
-          ]
+          "scenarioId": "csv_content",
+          "csvContent": "agent,task,model,runs,passed,steps,cost,time_min,output\nKISS Sorcar,POM + spec,Nemotron free,1,1,16,0.00,2,runnable .ts\nKISS Sorcar,POM + spec,DeepSeek V3.2,1,1,16,0.01,2,runnable .ts\nKISS Sorcar,Fix errors,DeepSeek V3.2,1,1,10,0.04,3,refactored POMs\nAutonoma,Discovery,GPT-4 mini,1,1,5,0.00,10,28 .md specs\nWebwright,POM + spec,Claude + GPT,50,1,100,2.37,2400,1 broken POM\nManual,POM + spec,Human,1,1,0,0.00,15,hand-written .ts"
         }
       ]
     },
     {
-      "title": "Agent Cost Efficiency ($/passing test)",
+      "title": "Cost Efficiency ($/pass)",
       "type": "stat",
-      "gridPos": {
-        "x": 0,
-        "y": 13,
-        "w": 6,
-        "h": 3
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"agent\": \"KISS Sorcar (best)\", \"cost_per_pass\": 0.01}, {\"agent\": \"Autonoma\", \"cost_per_pass\": 0.00}, {\"agent\": \"Webwright\", \"cost_per_pass\": 2.37}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "cost_per_pass",
-              "text": "$/pass",
-              "type": "number"
-            }
-          ]
-        }
-      ],
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value_and_name"
-      },
+      "gridPos": {"x": 0, "y": 13, "w": 8, "h": 3},
+      "datasource": {"type": "testdata", "uid": "testdata"},
+      "targets": [{"refId": "A", "scenarioId": "csv_content", "csvContent": "value\n0.01"}],
       "fieldConfig": {
         "defaults": {
-          "thresholds": {
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "orange",
-                "value": 0.5
-              },
-              {
-                "color": "red",
-                "value": 1.0
-              }
-            ]
-          }
+          "unit": "currencyUSD",
+          "thresholds": {"steps": [{"color": "green"}, {"color": "orange", "value": 0.5}, {"color": "red", "value": 1.0}]}
         }
       }
     },
     {
       "title": "Total Spend",
       "type": "stat",
-      "gridPos": {
-        "x": 6,
-        "y": 13,
-        "w": 6,
-        "h": 3
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "yesoreyeram-infinity-datasource",
-            "uid": "infinity"
-          },
-          "type": "json",
-          "source": "inline",
-          "data": "[{\"total_spend\": 2.42}]",
-          "root_selector": "",
-          "columns": [
-            {
-              "selector": "total_spend",
-              "text": "Total Spent",
-              "type": "number"
-            }
-          ]
-        }
-      ],
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value_and_name"
-      },
+      "gridPos": {"x": 8, "y": 13, "w": 8, "h": 3},
+      "datasource": {"type": "testdata", "uid": "testdata"},
+      "targets": [{"refId": "A", "scenarioId": "csv_content", "csvContent": "value\n2.42"}],
       "fieldConfig": {
-        "defaults": {
-          "unit": "currencyUSD"
-        }
+        "defaults": {"unit": "currencyUSD"}
       }
     }
   ],
   "schemaVersion": 39,
-  "tags": [
-    "ai",
-    "agent",
-    "comparison",
-    "testing"
-  ],
-  "time": {
-    "from": "now-60d",
-    "to": "now"
-  }
+  "tags": ["ai", "agent", "comparison", "testing"],
+  "time": {"from": "now-60d", "to": "now"}
 }

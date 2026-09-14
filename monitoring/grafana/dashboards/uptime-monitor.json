@@ -5,107 +5,48 @@
     {
       "title": "Backend & Frontend Uptime",
       "type": "timeseries",
-      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 8},
+      "datasource": {"type": "testdata", "uid": "testdata"},
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
-          "type": "json",
-          "source": "url",
-          "url": "https://cdn.jsdelivr.net/gh/victor-2026/qa-automation-playwright@main/monitoring/metrics/uptime.json",
-          "root_selector": ""
-        }
-      ],
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              { "targetField": "timestamp", "conversion": { "id": "stringToTime", "config": { "dateFormat": "iso" } } }
-            ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "timestamp": "Time",
-              "backend_status": "Backend",
-              "frontend_status": "Frontend"
-            }
-          }
+          "scenarioId": "csv_content",
+          "csvContent": "time,backend,frontend\n1748688000000,1,1\n1748774400000,1,1\n1748947200000,1,1\n1749033600000,1,1\n1749120000000,1,1\n1749379200000,1,1\n1750243200000,1,1\n1757702400000,1,1"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
-          ]
+          "mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}],
+          "custom": {"drawStyle": "bars", "fillOpacity": 80, "stacking": {"mode": "none"}}
         }
       }
     },
     {
-      "title": "Backend Status (Latest)",
+      "title": "Backend Status",
       "type": "stat",
-      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 4 },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
-          "type": "json",
-          "source": "url",
-          "url": "https://cdn.jsdelivr.net/gh/victor-2026/qa-automation-playwright@main/monitoring/metrics/uptime.json",
-          "root_selector": ""
-        }
-      ],
-      "transformations": [
-        {
-          "id": "sortBy",
-          "options": { "sort": [{ "field": "timestamp", "desc": true }] }
-        },
-        { "id": "limit", "options": { "limitField": 1 } },
-        { "id": "organize", "options": { "excludeByName": { "timestamp": true, "frontend_status": true }, "renameByName": { "backend_status": "Backend" } } }
-      ],
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 4},
+      "datasource": {"type": "testdata", "uid": "testdata"},
+      "targets": [{"refId": "A", "scenarioId": "csv_content", "csvContent": "value\n1"}],
       "fieldConfig": {
         "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
-          ]
+          "mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}]
         }
       }
     },
     {
-      "title": "Frontend Status (Latest)",
+      "title": "Frontend Status",
       "type": "stat",
-      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 4 },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
-          "type": "json",
-          "source": "url",
-          "url": "https://cdn.jsdelivr.net/gh/victor-2026/qa-automation-playwright@main/monitoring/metrics/uptime.json",
-          "root_selector": ""
-        }
-      ],
-      "transformations": [
-        {
-          "id": "sortBy",
-          "options": { "sort": [{ "field": "timestamp", "desc": true }] }
-        },
-        { "id": "limit", "options": { "limitField": 1 } },
-        { "id": "organize", "options": { "excludeByName": { "timestamp": true, "backend_status": true }, "renameByName": { "frontend_status": "Frontend" } } }
-      ],
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 4},
+      "datasource": {"type": "testdata", "uid": "testdata"},
+      "targets": [{"refId": "A", "scenarioId": "csv_content", "csvContent": "value\n1"}],
       "fieldConfig": {
         "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "up": { "text": "UP", "color": "green" }, "down": { "text": "DOWN", "color": "red" } } }
-          ]
+          "mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}]
         }
       }
     }
   ],
   "schemaVersion": 39,
   "tags": ["uptime", "health"],
-  "time": { "from": "2026-05-01", "to": "now" }
+  "time": {"from": "2026-05-01", "to": "now"}
 }
