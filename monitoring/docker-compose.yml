@@ -6,11 +6,14 @@ services:
     ports:
       - "3003:3000"
     environment:
-      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Editor
     volumes:
+      - grafana-data:/var/lib/grafana
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     restart: unless-stopped
+
+volumes:
+  grafana-data:

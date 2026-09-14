@@ -1,0 +1,6 @@
+apiVersion: 1
+datasources:
+  - name: TestData
+    uid: testdata
+    type: testdata
+    isDefault: true
