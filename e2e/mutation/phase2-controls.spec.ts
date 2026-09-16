@@ -21,7 +21,7 @@ test.describe('Mutation — Phase 2 equivalence controls', () => {
   }
 
   test('P2E-001 - null-mutant control (identical payload)', async ({ page }) => {
-    await page.route('**/api/posts*', async route => {
+    await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
       await route.fulfill({ json }); // byte-identical passthrough: no observable change
@@ -34,7 +34,7 @@ test.describe('Mutation — Phase 2 equivalence controls', () => {
   });
 
   test('P2E-002 - extra ignorable field (debug flag)', async ({ page }) => {
-    await page.route('**/api/posts*', async route => {
+    await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
       if (json.items) json.items.forEach((p: any) => { p.debug = true; });

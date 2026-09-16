@@ -651,3 +651,9 @@ Private/Positions-CV-CL/
 - Ran batch (chromium): DBMUT-007 PASS · DBMUT-006 PASS · DBMUT-001 FAIL×3 (genuine: banned user NOT logged out on reload — real product gap) · DBMUT-008 FAIL (broken test: `column "data" of relation "notifications" does not exist` — schema drift, maintenance debt, excluded) · MUT-002/004/005/006/007 all PASS (resilience greens).
 - Classification rule applied: detection-style → Y; resilience/defense greens → N (invariant-verification, different measurement); E controls → E. Results CSV + verdict in verdictgate `reviews/`.
 - Modified: `e2e/mutation/phase2-controls.spec.ts` (new). No backend/frontend touched (boundary respected).
+
+## 2026-09-16 (night) — Phase 2b roster + blank-mock finding
+- Added `e2e/mutation/phase2b-roster.spec.ts` (7 tests: E3/E4/O1/O2/D1-D3, chromium green except D2/D3 red genuine).
+- MAJOR suite finding: `**/api/posts*` route pattern never matches `/api/posts/feed?...` — 12 existing occurrences run BLANK (mutants never applied). Fixed only in phase2* files; suite-wide fix = maintenance task for another session (blast radius).
+- Product findings: M4 stale feed on posts-500 (follow-up: confirm staleness); DBMUT-001 banned-not-logged-out stands; DBMUT-008 still broken (schema drift).
+- Modified: `e2e/mutation/phase2b-roster.spec.ts` (new), `e2e/mutation/phase2-controls.spec.ts` (pattern fix).
