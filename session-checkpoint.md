@@ -667,3 +667,8 @@ Private/Positions-CV-CL/
 - Open debts: 12 blank `**/api/posts*` mocks suite-wide · DBMUT-008 schema drift
   (test SQL vs notifications table) · M4 stale-feed follow-up · B2-survivor run.
 - VerdictGate Phase 2b roster v2 uses route-mock rows only (all verified applied).
+
+## 2026-09-16 (night) — B2-band spec + M4 stale-feed confirmed
+- Added `e2e/mutation/phase2b-band.spec.ts` (20 API-mock rows + SURV2 twin): 19 red + SURV green as designed.
+- M4 CONFIRMED product bug: posts API 500 → byte-identical feed, zero error banners (silent stale). Needs app-side fix (stale indicator / error state).
+- Lesson: use --retries=0 for detection batches (a hung test ate 30 min under retries=2).
