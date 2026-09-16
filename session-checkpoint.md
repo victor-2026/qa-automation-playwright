@@ -645,3 +645,9 @@ Private/Positions-CV-CL/
 5. **Allure TestOps trial decision** (ends ~2026-06-30)
 6. **Logifuture interview prep** (Jun 24, 13:00 CET)
 7. **Morgan Stanley screening** monitoring
+
+## 2026-09-16 (night) — Phase 2 equivalence batch for VerdictGate
+- Added `e2e/mutation/phase2-controls.spec.ts`: P2E-001 null-mutant (identical payload), P2E-002 extra debug field. Both green on chromium (8.6s, 7.6s).
+- Ran batch (chromium): DBMUT-007 PASS · DBMUT-006 PASS · DBMUT-001 FAIL×3 (genuine: banned user NOT logged out on reload — real product gap) · DBMUT-008 FAIL (broken test: `column "data" of relation "notifications" does not exist` — schema drift, maintenance debt, excluded) · MUT-002/004/005/006/007 all PASS (resilience greens).
+- Classification rule applied: detection-style → Y; resilience/defense greens → N (invariant-verification, different measurement); E controls → E. Results CSV + verdict in verdictgate `reviews/`.
+- Modified: `e2e/mutation/phase2-controls.spec.ts` (new). No backend/frontend touched (boundary respected).
