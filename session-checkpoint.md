@@ -657,3 +657,13 @@ Private/Positions-CV-CL/
 - MAJOR suite finding: `**/api/posts*` route pattern never matches `/api/posts/feed?...` — 12 existing occurrences run BLANK (mutants never applied). Fixed only in phase2* files; suite-wide fix = maintenance task for another session (blast radius).
 - Product findings: M4 stale feed on posts-500 (follow-up: confirm staleness); DBMUT-001 banned-not-logged-out stands; DBMUT-008 still broken (schema drift).
 - Modified: `e2e/mutation/phase2b-roster.spec.ts` (new), `e2e/mutation/phase2-controls.spec.ts` (pattern fix).
+
+## 2026-09-16 (night) — split-brain: :3000 proxies /api past local DB
+- PROVEN by divergent counts (in-page proxy 4 vs direct :8000 API 6+; nginx.conf
+  proxy_pass → render): local postgres writes are INVISIBLE to the :3000 UI.
+- Consequences: DBMUT-001 red / DBMUT-007 green / DBMUT-008 red are architecture
+  artifacts in this setup, not product readings. db-mutation.spec.ts reverted to
+  HEAD (COMMIT-pattern fix documented here for when backend reads local DB).
+- Open debts: 12 blank `**/api/posts*` mocks suite-wide · DBMUT-008 schema drift
+  (test SQL vs notifications table) · M4 stale-feed follow-up · B2-survivor run.
+- VerdictGate Phase 2b roster v2 uses route-mock rows only (all verified applied).
