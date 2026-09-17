@@ -672,3 +672,9 @@ Private/Positions-CV-CL/
 - Added `e2e/mutation/phase2b-band.spec.ts` (20 API-mock rows + SURV2 twin): 19 red + SURV green as designed.
 - M4 CONFIRMED product bug: posts API 500 → byte-identical feed, zero error banners (silent stale). Needs app-side fix (stale indicator / error state).
 - Lesson: use --retries=0 for detection batches (a hung test ate 30 min under retries=2).
+
+## 2026-09-16 (night) — blank-mock fix fallout: 5 genuine, 0 false
+- Fixed patterns `**/api/posts*`→`**/api/posts**`, `**/api/posts`→`**/api/posts**`, `**/api/search*`→`**/api/search**` (api-mutation, fault-injection-test, ui-fuzz, extended) + import path `./fixtures` in fault-injection-test.spec.ts (file never loaded before).
+- Rerun (chromium, --retries=0): 52 passed, 5 failed — ALL genuine: MUT-006 no placeholder at all (B3) · MUT-008 XSS script+onerror reflected UNESCAPED ×2 (B1 security) · fault-injection null-title/HOM timeouts (detection by design).
+- M8 avatar row moved to Y/fail in VerdictGate roster; XSS pair added (B1 caught).
+- Modified: 4 spec files (patterns) + fault-injection import + checkpoint.

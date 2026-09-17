@@ -20,7 +20,7 @@ test.describe('Mutation — API Response Extended', () => {
   // ── MUT-009 - Feed empty ──
 
   test('MUT-009 - empty feed shows no posts', async ({ page }) => {
-    await page.route('**/api/posts**', async route => {
+    await page.route('**/api/posts***', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -84,7 +84,7 @@ test.describe('Mutation — API Response Extended', () => {
   // ── MUT-012 - Comments empty ──
 
   test('MUT-012 - empty comments section', async ({ page }) => {
-    await page.route('**/api/posts**', async route => {
+    await page.route('**/api/posts***', async route => {
       const response = await route.fetch();
       const json = await response.json();
       if (json.items) {
@@ -165,7 +165,7 @@ test.describe('Mutation — API Response Extended', () => {
   // ── MUT-015 - Search empty ──
 
   test('MUT-015 - empty search shows no results', async ({ page }) => {
-    await page.route('**/api/search*', async route => {
+    await page.route('**/api/search**', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -188,7 +188,7 @@ test.describe('Mutation — API Response Extended', () => {
   // ── HOM-001 - Feed empty + likes zeroed ──
 
   test('HOM-001 - empty feed and zero likes combined', async ({ page }) => {
-    await page.route('**/api/posts**', async route => {
+    await page.route('**/api/posts***', async route => {
       const response = await route.fetch();
       const json = await response.json();
       json.items = [];

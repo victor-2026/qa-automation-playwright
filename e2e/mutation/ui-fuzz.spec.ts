@@ -107,7 +107,7 @@ test.describe('Mutation — UI Fuzzing', () => {
       await page.waitForURL('**/');
 
       let rejected = false;
-      await page.route('**/api/posts', async route => {
+      await page.route('**/api/posts**', async route => {
         if (route.request().method() === 'POST') {
           rejected = true;
           await route.fulfill({
@@ -145,7 +145,7 @@ test.describe('Mutation — UI Fuzzing', () => {
       await page.waitForURL('**/');
 
       let postedContent = '';
-      await page.route('**/api/posts', async route => {
+      await page.route('**/api/posts**', async route => {
         if (route.request().method() === 'POST') {
           const postData = route.request().postDataJSON();
           postedContent = postData?.content || '';
@@ -187,7 +187,7 @@ test.describe('Mutation — UI Fuzzing', () => {
       await page.click('[data-testid="auth-login-btn"]');
       await page.waitForURL('**/');
 
-      await page.route('**/api/search*', async route => {
+      await page.route('**/api/search**', async route => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -217,7 +217,7 @@ test.describe('Mutation — UI Fuzzing', () => {
       await page.waitForURL('**/');
 
       let searchRequested = false;
-      await page.route('**/api/search*', async route => {
+      await page.route('**/api/search**', async route => {
         searchRequested = true;
         await route.fulfill({
           status: 200,

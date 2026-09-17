@@ -1,9 +1,9 @@
-import { test, expect } from '../fixtures';
+import { test, expect } from './fixtures';
 
 test.describe('Posts API — Fault Injection (with skill)', () => {
   test('injects null into post title via page.route() and verifies mutation is caught', async ({ page, request }) => {
     // Intercept the posts API response (skill pattern: page.route with fetch/fulfill)
-    await page.route('**/api/posts*', async (route) => {
+    await page.route('**/api/posts**', async (route) => {
       const response = await route.fetch();
       const json = await response.json();
       
@@ -38,7 +38,7 @@ test.describe('Posts API — Fault Injection (with skill)', () => {
 
   test('HOM: null title + negative likes_count via page.route()', async ({ page, request }) => {
     // Skill HOM pattern: combine multiple mutations
-    await page.route('**/api/posts*', async (route) => {
+    await page.route('**/api/posts**', async (route) => {
       const response = await route.fetch();
       const json = await response.json();
       

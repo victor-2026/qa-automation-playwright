@@ -26,7 +26,7 @@ test.describe('Mutation — API Response', () => {
   ];
   for (const { name, value, expected } of LIKES_MUTATIONS) {
     test(`MUT-001 - likes_count ${name}`, async ({ page }) => {
-      await page.route('**/api/posts*', async route => {
+      await page.route('**/api/posts**', async route => {
         const response = await route.fetch();
         const json = await response.json();
         if (json.items) json.items.forEach((p: any) => { p.likes_count = value; });
@@ -44,7 +44,7 @@ test.describe('Mutation — API Response', () => {
   // ── MUT-002 - author.username → null ──
 
   test('MUT-002 - author.username removed from post', async ({ page }) => {
-    await page.route('**/api/posts*', async route => {
+    await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
       if (json.items) json.items.forEach((p: any) => { if (p.author) p.author.username = null; });
@@ -92,7 +92,7 @@ test.describe('Mutation — API Response', () => {
   // ── MUT-004 - items → [] empty feed ──
 
   test('MUT-004 - empty posts feed', async ({ page }) => {
-    await page.route('**/api/posts*', async route => {
+    await page.route('**/api/posts**', async route => {
       const response = await route.fetch();
       const json = await response.json();
       json.items = [];
@@ -183,7 +183,7 @@ test.describe('Mutation — API Response', () => {
   ];
   for (const { name, value } of XSS_PAYLOADS) {
     test(`MUT-008 - XSS (${name}) is escaped`, async ({ page }) => {
-      await page.route('**/api/posts*', async route => {
+      await page.route('**/api/posts**', async route => {
         const response = await route.fetch();
         const json = await response.json();
         if (json.items && json.items.length > 0) json.items[0].content = value;
