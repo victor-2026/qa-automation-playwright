@@ -1,8 +1,5 @@
 # AGENTS.md — qa-automation-sandbox
 
-## Purpose
-This file defines the working rules for AI agents and contributors in this repository.
-
 ## Core Rules
 - Read `session-checkpoint.md` at the start of each session.
 - **MANDATORY: Save checkpoint before closing session.** Update `session-checkpoint.md` AND `~/.opencode-memory.md` at end of each session. No exceptions. If you close without saving — you failed the session.
@@ -54,20 +51,11 @@ This file defines the working rules for AI agents and contributors in this repos
 ## Architecture
 
 ```
-qa-automation-sandbox/
-├── e2e/              — Playwright E2E + API tests
-│   ├── api/          — Domain API tests (auth, posts, admin, etc.)
-│   ├── ui/           — UI tests (auth, profile, navigation, etc.)
-│   ├── pages/        — Page Objects
-│   ├── fixtures.ts   — Shared test fixtures
-│   ├── setup/        — Test setup (credentials, tokens)
-│   └── teardown/     — Cleanup after tests
-├── backend/          — FastAPI + SQLAlchemy (Docker, AI never edits)
-├── frontend/         — React (Docker, AI never edits)
-├── .github/workflows/— CI/CD pipelines
-├── render.yaml       — Render deployment config
-├── AGENTS.md         — Project rules (this file)
-└── session-checkpoint.md — Current state handover
+e2e/          — Playwright tests: api/ · ui/ · pages/ (Page Objects) · setup/ (creds, tokens) · teardown/ (cleanup) · fixtures.ts · load/
+backend/      — FastAPI + SQLAlchemy (Docker; AI never edits)
+frontend/     — React (Docker; AI never edits)
+.github/workflows/ — CI/CD · render.yaml — Render deploy
+AGENTS.md · session-checkpoint.md — rules + current state
 ```
 
 ## Test Stack
@@ -251,7 +239,27 @@ If any gate fails, the test is not production-ready.
 - **No model-specific instructions** — rules must work with any AI model
 - **Size ≤ 32 KiB** — file must fit in one context window
 
-## Communication — Full File Paths (MANDATORY)
+
+## Subagents & OpenRouter — Free First (cross-project — consolidate to `~/.opencode-memory.md`)
+
+- Pi via `pi-subagents` (scout, researcher, worker, reviewer, oracle, delegate) — global `~/.pi/agent/settings.json`: `defaultProvider: openrouter`, `defaultModel: openrouter/free`, `enabledModels: [openrouter/*:free, openrouter/*, groq/*]`
+- Free limits: 20 RPM, 1000/day (≥$10 lifetime credits, else 50/day) — shared across all `:free`, 429 = hit cap or provider pool busy
+- Rule: try `:free` / `openrouter/free` first, on 429 fallback to paid variant (same slug without `:free`), concurrency 1-2, exponential backoff, Retry-After
+- OpenCode delegates via bash: `pi --provider openrouter --model openrouter/free --print "Use reviewer to review this diff." -- @diff.txt`
+- Интенсивность платного режима: `maxSubagentSpawnsPerRun=3` (было 64), `thinking medium=4096` (было 10240), `compaction 8192/10000` — лимит длительности/интенсивности если не free (0.5$/сессию)
+- Also works headless in CI: `pi --mode json` or via `opencode` bash tool
+
+
+### OpenRouter — Лимит и отчет (платный режим)
+
+- Лимит зафиксирован: **1$/день**, **0.5$/сессию агента** (в дашборде https://openrouter.ai/keys → Edit → Limit 1 / daily, сейчас там 3 — поменяй вручную)
+- Проверка: `~/.pi/agent/scripts/openrouter-guard.sh` (проверяет daily + сессию 0.5$ — ` --check-session 0.5`) (выводит `daily / 2.0`, остаток; пишет в `~/.pi/agent/openrouter-guard.log`)
+- Уведомление оперативное: при ≥0.75$ (75%) — macOS notification `Glass`, при ≤0.1$ остатка — `Sosumi` + лог
+- Отчетик по завершении платной работы: `~/.pi/agent/scripts/openrouter-guard.sh --report` → `~/Backups/ai-qa-wiki/openrouter-report-YYYY-MM-DD.md` + notification `Pop`
+- LaunchAgent: `com.openrouter.guard` каждые 10 мин (`StartInterval 600`) + при загрузке
+- Перед платной сессией: `openrouter-guard.sh` (проверка), после: `openrouter-guard.sh --report` (отчет)
+
+## Communication — Full File Paths (MANDATORY, cross-project — consolidate to `~/.opencode-memory.md`)
 
 In opencode-desktop TUI (macOS): **only `mailto:` is clickable**. file://, /Users/.../path, markdown links = NOT clickable.
 
