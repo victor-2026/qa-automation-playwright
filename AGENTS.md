@@ -2,7 +2,7 @@
 
 ## Core Rules
 - Read `session-checkpoint.md` at the start of each session.
-- **MANDATORY: Save checkpoint before closing session.** Update `session-checkpoint.md` AND `~/.opencode-memory.md` at end of each session. No exceptions. If you close without saving — you failed the session.
+- Save checkpoint before closing session: update `session-checkpoint.md` AND `~/.opencode-memory.md` at end of each session.
 - Use commit prefixes: `feat:`, `fix:`, `docs:`, `chore:`.
 - Never commit PAT/API tokens or secrets; use `gh auth`.
 - Keep test code and documentation aligned when flows change.
