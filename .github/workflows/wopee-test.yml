@@ -1,0 +1,38 @@
+# .github/workflows/wopee-test.yml
+name: Wopee Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      user_story_id:
+        description: 'User Story ID (e.g. US001, US002, US003)'
+        required: true
+        type: string
+      test_case_id:
+        description: 'Test Case ID (e.g. TC001, TC002)'
+        required: true
+        type: string
+
+jobs:
+  wopee-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18'
+
+      - name: Run Wopee agent
+        uses: Wopee-io/run-agent@v1
+        env:
+          WOPEE_API_KEY: ${{ secrets.WOPEE_API_KEY }}
+          WOPEE_PROJECT_UUID: f7553f66-0712-4ef4-8f0c-309a804d7c0f
+          WOPEE_API_URL: https://api.wopee.io
+          WOPEE_PROJECT_URL: https://urchin-grumble-filler.ngrok-free.dev/
+          WOPEE_STARTING_URL: https://urchin-grumble-filler.ngrok-free.dev/
+          WOPEE_USER_STORY_ID: ${{ inputs.user_story_id }}
+          WOPEE_TEST_CASE_ID: ${{ inputs.test_case_id }}
+          WOPEE_INSTRUCTIONS: Test the login flow. Cover the main happy paths and report anything that looks broken. Check that pages render correctly and report any visual defects.
